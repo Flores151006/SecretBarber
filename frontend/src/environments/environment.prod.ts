@@ -1,5 +1,5 @@
 export const environment = {
     production:       true,
-    apiUrl:           'https://secretbarber.onrender.com/api',
+    apiUrl:           'https://secret-barber-api.onrender.com/api',
     recaptchaSiteKey: '6Ldfnd0sAAAAAN9J73arWSPFEJ12qv7ZVvLgpoyy'
 };
