@@ -1,5 +1,5 @@
 export const environment = {
     production:       true,
-    apiUrl:           '/api',
-    recaptchaSiteKey: '' // Rellena con tu Site Key de Google reCAPTCHA v3 en producción
+    apiUrl:           'https://secretbarber.onrender.com/api',
+    recaptchaSiteKey: '6Ldfnd0sAAAAAN9J73arWSPFEJ12qv7ZVvLgpoyy'
 };
