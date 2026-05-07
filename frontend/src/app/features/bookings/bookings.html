@@ -1,0 +1,188 @@
+<div class="min-h-screen bg-background py-12 px-4">
+  <div class="max-w-2xl mx-auto">
+
+    <div class="text-center mb-10">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <div class="h-px w-12 bg-gold"></div>
+        <span class="text-gold text-sm tracking-widest uppercase">{{ 'RESERVAS.BADGE' | translate }}</span>
+        <div class="h-px w-12 bg-gold"></div>
+      </div>
+      <h1 class="font-serif text-4xl text-foreground font-bold">{{ 'RESERVAS.TITULO' | translate }}</h1>
+    </div>
+
+    <div class="glass rounded-2xl p-8">
+
+      @if (error) {
+        <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded mb-6 text-sm">
+          {{ error }}
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6">
+
+        <!-- Barbero -->
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-2">{{ 'RESERVAS.BARBERO' | translate }}</label>
+          <div class="grid grid-cols-2 gap-3">
+            @for (b of barberos; track b._id) {
+              <button type="button"
+                      (click)="seleccionarBarbero(b._id)"
+                      [class]="form.get('barbero')?.value === b._id
+                        ? 'border-gold bg-gold/10 text-foreground'
+                        : 'border-gold/20 text-foreground/60 hover:border-gold/50'"
+                      class="border rounded-lg p-3 text-center transition-colors">
+                <img [src]="fotosBarberos[b.nombre] || 'gallery/default.jpeg'"
+                     [alt]="b.nombre" loading="lazy"
+                     class="w-16 h-16 rounded-full object-cover mx-auto mb-2 border-2 border-gold/20"/>
+                <span class="block text-sm font-medium">{{ b.nombre }}</span>
+                <span class="block text-foreground/40 text-xs mt-0.5">{{ b.horaInicio }} - {{ b.horaFin }}</span>
+              </button>
+            }
+          </div>
+          @if (form.get('barbero')?.invalid && form.get('barbero')?.touched) {
+            <span class="text-red-400 text-xs mt-1 block">{{ 'RESERVAS.ERROR_BARBERO' | translate }}</span>
+          }
+        </div>
+
+        <!-- Servicios -->
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-2">
+            {{ 'RESERVAS.SERVICIOS' | translate }}
+            <span class="text-foreground/40 text-xs">({{ 'RESERVAS.SERVICIOS_HINT' | translate }})</span>
+          </label>
+          <div class="grid grid-cols-2 gap-3">
+            @for (s of servicios; track s._id) {
+              <button type="button"
+                      (click)="toggleServicio(s._id)"
+                      [class]="servicioSeleccionado(s._id)
+                        ? 'border-gold bg-gold/10 text-foreground'
+                        : 'border-gold/20 text-foreground/60 hover:border-gold/50'"
+                      class="border rounded-lg p-3 text-left transition-colors">
+                <span class="block text-sm font-medium">{{ getNombreServicio(s.nombre) }}</span>
+                <span class="block text-gold font-bold mt-1">{{ s.precio }}€</span>
+                <span class="block text-foreground/40 text-xs mt-0.5">{{ s.duracion }} {{ 'MIS_RESERVAS.MINUTOS' | translate }}</span>
+              </button>
+            }
+          </div>
+          @if (form.get('servicios')?.invalid && form.get('servicios')?.touched) {
+            <span class="text-red-400 text-xs mt-1 block">{{ 'RESERVAS.ERROR_SERVICIO' | translate }}</span>
+          }
+        </div>
+
+        <!-- Cejas -->
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-2">{{ 'RESERVAS.ANIADIDOS' | translate }}</label>
+          <button type="button"
+                  (click)="form.get('cejas')?.setValue(!form.get('cejas')?.value)"
+                  [class]="form.get('cejas')?.value
+                    ? 'border-gold bg-gold/10 text-foreground'
+                    : 'border-gold/20 text-foreground/60 hover:border-gold/50'"
+                  class="border rounded-lg px-5 py-3 text-left transition-colors">
+            <span class="block text-sm font-medium">{{ 'RESERVAS.CEJAS' | translate }}</span>
+            <span class="block text-gold font-bold mt-1">+1€</span>
+          </button>
+        </div>
+
+        <!-- Fecha -->
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-2">{{ 'RESERVAS.FECHA' | translate }}</label>
+          <input formControlName="fecha" type="date" [min]="fechaMin"
+                 (change)="onFechaChange($event)" style="color-scheme: dark;"
+                 class="w-full bg-background border border-gold/20 focus:border-gold text-foreground rounded px-4 py-2.5 text-sm outline-none transition-colors"/>
+          @if (errorFecha) {
+            <span class="text-red-400 text-xs mt-1 block">{{ errorFecha | translate }}</span>
+          }
+          @if (!errorFecha && form.get('fecha')?.invalid && form.get('fecha')?.touched) {
+            <span class="text-red-400 text-xs mt-1 block">{{ 'RESERVAS.ERROR_FECHA' | translate }}</span>
+          }
+        </div>
+
+        <!-- Hora -->
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-2">{{ 'RESERVAS.HORA' | translate }}</label>
+          @if (!form.get('barbero')?.value || !form.get('fecha')?.value || duracionTotal === 0) {
+            <p class="text-foreground/40 text-sm">{{ 'RESERVAS.SELECCIONA_PARA_HORAS' | translate }}</p>
+          } @else if (horas.length === 0) {
+            <p class="text-red-400 text-sm">{{ 'RESERVAS.SIN_HORAS' | translate }}</p>
+          } @else {
+            <div class="grid grid-cols-4 gap-2">
+              @for (h of horas; track h) {
+                <button type="button"
+                        (click)="form.get('hora')?.setValue(h)"
+                        [class]="form.get('hora')?.value === h
+                          ? 'border-gold bg-gold/10 text-foreground'
+                          : 'border-gold/20 text-foreground/60 hover:border-gold/50'"
+                        class="border rounded py-2 text-sm transition-colors">
+                  {{ h }}
+                </button>
+              }
+            </div>
+          }
+          @if (form.get('hora')?.invalid && form.get('hora')?.touched) {
+            <span class="text-red-400 text-xs mt-1 block">{{ 'RESERVAS.ERROR_HORA' | translate }}</span>
+          }
+        </div>
+
+        <!-- Método de pago -->
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-2">{{ 'RESERVAS.METODO_PAGO' | translate }}</label>
+          <div class="grid grid-cols-2 gap-3">
+            <button type="button"
+                    (click)="form.get('metodoPago')?.setValue('efectivo')"
+                    [class]="form.get('metodoPago')?.value === 'efectivo'
+                      ? 'border-gold bg-gold/10 text-foreground'
+                      : 'border-gold/20 text-foreground/60 hover:border-gold/50'"
+                    class="select-card flex flex-col items-center gap-1.5">
+              <ng-icon name="lucideBanknote" style="font-size:1.5rem" />
+              <span class="block text-sm font-medium">{{ 'RESERVAS.EFECTIVO' | translate }}</span>
+              <span class="block text-xs text-foreground/40">{{ 'RESERVAS.EFECTIVO_DESC' | translate }}</span>
+            </button>
+            <button type="button"
+                    (click)="form.get('metodoPago')?.setValue('tarjeta')"
+                    [class]="form.get('metodoPago')?.value === 'tarjeta'
+                      ? 'border-gold bg-gold/10 text-foreground'
+                      : 'border-gold/20 text-foreground/60 hover:border-gold/50'"
+                    class="select-card flex flex-col items-center gap-1.5">
+              <ng-icon name="lucideCreditCard" style="font-size:1.5rem" />
+              <span class="block text-sm font-medium">{{ 'RESERVAS.TARJETA' | translate }}</span>
+              <span class="block text-xs text-foreground/40">{{ 'RESERVAS.TARJETA_DESC' | translate }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Notas -->
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-2">
+            {{ 'RESERVAS.NOTAS' | translate }}
+            <span class="text-foreground/30">({{ 'RESERVAS.NOTAS_HINT' | translate }})</span>
+          </label>
+          <textarea formControlName="notas" rows="3"
+                    [placeholder]="'RESERVAS.NOTAS_PLACEHOLDER' | translate"
+                    class="w-full bg-background border border-gold/20 focus:border-gold text-foreground placeholder-foreground/30 rounded px-4 py-2.5 text-sm outline-none transition-colors resize-none">
+          </textarea>
+        </div>
+
+        <!-- Total y botón -->
+        <div class="border-t border-gold/10 pt-6">
+          @if (precioTotal > 0) {
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-foreground/60 text-sm">{{ 'RESERVAS.TOTAL' | translate }}</span>
+              <span class="text-gold font-bold text-2xl">{{ precioTotal }}€</span>
+            </div>
+            @if (duracionTotal > 0) {
+              <p class="text-foreground/40 text-xs mb-4">
+                {{ 'RESERVAS.DURACION' | translate }}: {{ duracionTotal }} {{ 'MIS_RESERVAS.MINUTOS' | translate }}
+              </p>
+            }
+          }
+          <button type="submit"
+                  [disabled]="cargando || form.invalid"
+                  class="btn-shimmer w-full bg-gold hover:bg-gold-light text-background font-bold py-3 rounded-lg shadow-gold hover:shadow-gold-lg disabled:opacity-50 disabled:cursor-not-allowed">
+            {{ cargando ? ('RESERVAS.PROCESANDO' | translate) : ('RESERVAS.CONFIRMAR' | translate) }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

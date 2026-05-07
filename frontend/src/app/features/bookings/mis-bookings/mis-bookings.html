@@ -1,0 +1,325 @@
+<div class="min-h-screen bg-background py-12 px-4">
+  <div class="max-w-3xl mx-auto">
+
+    <div class="text-center mb-10">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <div class="h-px w-12 bg-gradient-to-r from-transparent to-gold"></div>
+        <span class="label-overline">{{ 'MIS_RESERVAS.BADGE' | translate }}</span>
+        <div class="h-px w-12 bg-gradient-to-l from-transparent to-gold"></div>
+      </div>
+      <h1 class="font-serif text-4xl text-foreground font-bold">{{ 'MIS_RESERVAS.TITULO' | translate }}</h1>
+    </div>
+
+    @if (cargando) {
+      <div class="text-center text-foreground/50 py-20">
+        <div class="spinner mb-5"></div>
+        <p class="text-sm tracking-wide">{{ 'MIS_RESERVAS.CARGANDO' | translate }}</p>
+      </div>
+    }
+
+    @if (error) {
+      <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl mb-6 text-sm flex items-center gap-2">
+        <ng-icon name="lucideAlertTriangle" class="flex-shrink-0" />
+        {{ error }}
+      </div>
+    }
+
+    @if (!cargando && !error && bookings.length === 0) {
+      <div class="text-center py-20">
+        <div class="w-16 h-16 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center mx-auto mb-5">
+          <ng-icon name="lucideCalendar" class="text-gold" style="font-size:1.6rem" />
+        </div>
+        <p class="text-foreground/50 mb-6">{{ 'MIS_RESERVAS.SIN_RESERVAS' | translate }}</p>
+        <a routerLink="/reservas"
+           class="btn-shimmer inline-block bg-gold hover:bg-gold-light text-background font-bold px-6 py-3 rounded-lg shadow-gold transition-all">
+          {{ 'MIS_RESERVAS.RESERVAR_AHORA' | translate }}
+        </a>
+      </div>
+    }
+
+    @if (!cargando && bookings.length > 0) {
+      <div class="flex flex-col gap-4">
+        @for (booking of bookings; track booking._id) {
+          <div class="glass rounded-2xl p-6 border-l-2 border-l-gold/40 hover:border-gold/20 hover:shadow-card-hover card-hover">
+
+            <div class="flex justify-between items-start mb-5 gap-4">
+              <div class="min-w-0">
+                <h3 class="font-serif text-xl text-foreground font-semibold truncate">{{ getNombresServicios(booking) }}</h3>
+                <p class="text-foreground/50 text-sm mt-1 flex items-center gap-1.5">
+                  <ng-icon name="lucideScissors" class="flex-shrink-0" />
+                  {{ getNombreBarbero(booking) }}
+                </p>
+                <p class="text-foreground/50 text-sm mt-1 flex items-center gap-1.5">
+                  <ng-icon name="lucideCalendar" class="flex-shrink-0" />
+                  {{ booking.fecha | date:'dd/MM/yyyy' }}
+                  &nbsp;{{ 'MIS_RESERVAS.A_LAS' | translate }}&nbsp;
+                  {{ booking.hora }}
+                </p>
+                @if (booking.duracionTotal) {
+                  <p class="text-foreground/40 text-xs mt-1 flex items-center gap-1.5">
+                    <ng-icon name="lucideClock" class="flex-shrink-0" />
+                    {{ booking.duracionTotal }} {{ 'MIS_RESERVAS.MINUTOS' | translate }}
+                  </p>
+                }
+              </div>
+              <span class="badge flex-shrink-0" [class]="'badge-' + booking.estado">
+                {{ 'ESTADOS.' + booking.estado | translate }}
+              </span>
+            </div>
+
+            <div class="flex justify-between items-center pt-4 border-t border-gold/10">
+              <div class="flex items-center gap-3 flex-wrap">
+                <span class="text-foreground/50 text-sm flex items-center gap-1.5">
+                  @if (booking.metodoPago === 'tarjeta') {
+                    <ng-icon name="lucideCreditCard" class="flex-shrink-0" />
+                  } @else {
+                    <ng-icon name="lucideBanknote" class="flex-shrink-0" />
+                  }
+                  {{ (booking.metodoPago === 'tarjeta' ? 'RESERVAS.TARJETA' : 'RESERVAS.EFECTIVO') | translate }}
+                </span>
+                <span [class]="getPagoColor(booking.estadoPago)" class="text-sm font-medium">
+                  {{ 'ESTADOS.PAGO.' + booking.estadoPago | translate }}
+                </span>
+              </div>
+              <span class="text-gold font-bold text-xl font-serif">{{ booking.precio }}€</span>
+            </div>
+
+            @if (booking.notas) {
+              <p class="text-foreground/40 text-sm mt-3 italic">"{{ booking.notas }}"</p>
+            }
+
+            @if (booking.estado === 'pendiente' || booking.estado === 'confirmada') {
+              <div class="mt-4 pt-4 border-t border-gold/10 flex flex-col gap-4">
+
+                @if (reservaEditando !== booking._id) {
+                  <div class="flex gap-4">
+                    <button (click)="abrirEdicion(booking)"
+                            class="text-gold hover:text-gold-light text-sm font-medium transition-colors flex items-center gap-1.5">
+                      <ng-icon name="lucidePencil" />
+                      {{ 'MIS_RESERVAS.MODIFICAR' | translate }}
+                    </button>
+                    <button (click)="cancelarReserva(booking._id)"
+                            class="text-red-400 hover:text-red-300 text-sm font-medium transition-colors flex items-center gap-1.5">
+                      <ng-icon name="lucideX" />
+                      {{ 'MIS_RESERVAS.CANCELAR' | translate }}
+                    </button>
+                  </div>
+                }
+
+                @if (reservaEditando === booking._id) {
+                  <div class="flex flex-col gap-4">
+
+                    @if (errorEdicion) {
+                      <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+                        <ng-icon name="lucideAlertTriangle" class="flex-shrink-0" />
+                        {{ errorEdicion }}
+                      </div>
+                    }
+
+                    <div>
+                      <label class="block text-foreground/70 text-sm font-medium mb-2">{{ 'RESERVAS.BARBERO' | translate }}</label>
+                      <div class="grid grid-cols-2 gap-2">
+                        @for (b of barberos; track b._id) {
+                          <button type="button"
+                                  (click)="formEditar.get('barbero')?.setValue(b._id); actualizarHorasEdicion()"
+                                  [class]="formEditar.get('barbero')?.value === b._id
+                                    ? 'border-gold bg-gold/10 text-foreground'
+                                    : 'border-gold/20 text-foreground/60 hover:border-gold/50'"
+                                  class="select-card">
+                            <span class="block font-medium text-sm">{{ b.nombre }}</span>
+                            <span class="block text-foreground/40 text-xs mt-0.5">{{ b.horaInicio }} - {{ b.horaFin }}</span>
+                          </button>
+                        }
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="block text-foreground/70 text-sm font-medium mb-2">
+                        {{ 'RESERVAS.SERVICIOS' | translate }}
+                        <span class="text-foreground/40 text-xs">({{ 'RESERVAS.SERVICIOS_HINT' | translate }})</span>
+                      </label>
+                      <div class="grid grid-cols-2 gap-2">
+                        @for (s of servicios; track s._id) {
+                          <button type="button"
+                                  (click)="toggleServicioEdicion(s._id)"
+                                  [class]="servicioEdicionSeleccionado(s._id)
+                                    ? 'border-gold bg-gold/10 text-foreground'
+                                    : 'border-gold/20 text-foreground/60 hover:border-gold/50'"
+                                  class="select-card">
+                            <span class="block font-medium text-sm">{{ getNombreServicioEdicion(s.nombre) }}</span>
+                            <span class="block text-gold font-bold mt-0.5">{{ s.precio }}€</span>
+                            <span class="block text-foreground/40 text-xs mt-0.5">{{ s.duracion }} {{ 'MIS_RESERVAS.MINUTOS' | translate }}</span>
+                          </button>
+                        }
+                      </div>
+                    </div>
+
+                    <div>
+                      <button type="button"
+                              (click)="formEditar.get('cejas')?.setValue(!formEditar.get('cejas')?.value); actualizarPrecioEdicion()"
+                              [class]="formEditar.get('cejas')?.value
+                                ? 'border-gold bg-gold/10 text-foreground'
+                                : 'border-gold/20 text-foreground/60 hover:border-gold/50'"
+                              class="select-card flex items-center gap-2">
+                        <ng-icon name="lucideScissors" />
+                        {{ 'RESERVAS.CEJAS' | translate }} <span class="text-gold font-bold">+1€</span>
+                      </button>
+                    </div>
+
+                    <div>
+                      <label class="block text-foreground/70 text-sm font-medium mb-2">{{ 'RESERVAS.FECHA' | translate }}</label>
+                      <input [formControl]="$any(formEditar.get('fecha'))"
+                             type="date" [min]="fechaMin" style="color-scheme: dark;"
+                             (change)="actualizarHorasEdicion()"
+                             class="input-field"/>
+                    </div>
+
+                    <div>
+                      <label class="block text-foreground/70 text-sm font-medium mb-2">{{ 'RESERVAS.HORA' | translate }}</label>
+                      @if (horasEdicion.length === 0) {
+                        <p class="text-foreground/40 text-sm">{{ 'RESERVAS.SELECCIONA_PARA_HORAS' | translate }}</p>
+                      } @else {
+                        <div class="grid grid-cols-4 gap-2">
+                          @for (h of horasEdicion; track h) {
+                            <button type="button"
+                                    (click)="formEditar.get('hora')?.setValue(h)"
+                                    [class]="formEditar.get('hora')?.value === h
+                                      ? 'border-gold bg-gold/10 text-foreground'
+                                      : 'border-gold/20 text-foreground/60 hover:border-gold/50'"
+                                    class="border rounded-lg py-2 text-sm transition-colors">
+                              {{ h }}
+                            </button>
+                          }
+                        </div>
+                      }
+                    </div>
+
+                    <div>
+                      <label class="block text-foreground/70 text-sm font-medium mb-2">{{ 'RESERVAS.METODO_PAGO' | translate }}</label>
+                      <div class="grid grid-cols-2 gap-2">
+                        <button type="button"
+                                (click)="formEditar.get('metodoPago')?.setValue('efectivo')"
+                                [class]="formEditar.get('metodoPago')?.value === 'efectivo'
+                                  ? 'border-gold bg-gold/10 text-foreground'
+                                  : 'border-gold/20 text-foreground/60 hover:border-gold/50'"
+                                class="select-card flex flex-col items-center gap-1">
+                          <ng-icon name="lucideBanknote" style="font-size:1.25rem" />
+                          <span class="text-sm font-medium">{{ 'RESERVAS.EFECTIVO' | translate }}</span>
+                        </button>
+                        <button type="button"
+                                (click)="formEditar.get('metodoPago')?.setValue('tarjeta')"
+                                [class]="formEditar.get('metodoPago')?.value === 'tarjeta'
+                                  ? 'border-gold bg-gold/10 text-foreground'
+                                  : 'border-gold/20 text-foreground/60 hover:border-gold/50'"
+                                class="select-card flex flex-col items-center gap-1">
+                          <ng-icon name="lucideCreditCard" style="font-size:1.25rem" />
+                          <span class="text-sm font-medium">{{ 'RESERVAS.TARJETA' | translate }}</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <span class="text-foreground/60 text-sm">{{ 'RESERVAS.TOTAL' | translate }}</span>
+                      <span class="text-gold font-bold text-xl font-serif">{{ precioEdicion }}€</span>
+                    </div>
+
+                    <div class="flex gap-2">
+                      <button (click)="guardarEdicion()"
+                              [disabled]="enviandoEdicion || formEditar.invalid"
+                              class="btn-shimmer bg-gold hover:bg-gold-light text-background font-bold px-6 py-2.5 rounded-lg text-sm transition-colors disabled:opacity-50 flex items-center gap-2">
+                        <ng-icon name="lucideCheck" />
+                        {{ enviandoEdicion ? ('MIS_RESERVAS.GUARDANDO' | translate) : ('MIS_RESERVAS.GUARDAR' | translate) }}
+                      </button>
+                      <button (click)="cerrarEdicion()"
+                              class="border border-gold/20 text-foreground/60 hover:text-gold px-6 py-2.5 rounded-lg text-sm transition-colors flex items-center gap-2">
+                        <ng-icon name="lucideX" />
+                        {{ 'COMUN.CANCELAR' | translate }}
+                      </button>
+                    </div>
+
+                  </div>
+                }
+
+              </div>
+            }
+
+            @if (booking.estado === 'completada' && !reservasReseniadas.has(booking._id)) {
+              <div class="mt-4 pt-4 border-t border-gold/10">
+                @if (reservaResena !== booking._id) {
+                  <button (click)="abrirFormResena(booking._id)"
+                          class="text-gold hover:text-gold-light text-sm font-medium transition-colors flex items-center gap-1.5">
+                    <ng-icon name="lucideStar" />
+                    {{ 'MIS_RESERVAS.DEJAR_RESENA' | translate }}
+                  </button>
+                }
+
+                @if (reservaResena === booking._id) {
+                  <div class="mt-3">
+                    @if (errorResena) {
+                      <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-2 rounded-xl mb-3 text-sm flex items-center gap-2">
+                        <ng-icon name="lucideAlertTriangle" class="flex-shrink-0" />
+                        {{ errorResena }}
+                      </div>
+                    }
+                    <form [formGroup]="formResena" (ngSubmit)="enviarResena()" class="flex flex-col gap-4">
+                      <div>
+                        <label class="block text-foreground/70 text-sm font-medium mb-2">
+                          {{ 'MIS_RESERVAS.PUNTUACION' | translate }}
+                        </label>
+                        <div class="flex gap-1">
+                          @for (star of [1,2,3,4,5]; track star) {
+                            <button type="button" (click)="setPuntuacion(star)"
+                                    class="transition-transform hover:scale-110 p-0.5"
+                                    [class]="star <= formResena.get('puntuacion')?.value ? 'text-gold' : 'text-foreground/20'">
+                              <ng-icon name="lucideStar" style="font-size:1.4rem" />
+                            </button>
+                          }
+                        </div>
+                      </div>
+                      <div>
+                        <label class="block text-foreground/70 text-sm font-medium mb-2">
+                          {{ 'MIS_RESERVAS.COMENTARIO' | translate }}
+                        </label>
+                        <textarea formControlName="comentario" rows="3"
+                                  [placeholder]="'MIS_RESERVAS.PLACEHOLDER_COMENTARIO' | translate"
+                                  class="input-field resize-none">
+                        </textarea>
+                        @if (formResena.get('comentario')?.invalid && formResena.get('comentario')?.touched) {
+                          <span class="text-red-400 text-xs mt-1 block">
+                            {{ 'MIS_RESERVAS.ERROR_COMENTARIO' | translate }}
+                          </span>
+                        }
+                      </div>
+                      <div class="flex gap-2">
+                        <button type="submit"
+                                [disabled]="enviandoResena || formResena.invalid"
+                                class="btn-shimmer bg-gold hover:bg-gold-light text-background font-bold px-5 py-2.5 rounded-lg text-sm transition-colors disabled:opacity-50 flex items-center gap-2">
+                          <ng-icon name="lucideSend" />
+                          {{ enviandoResena ? ('MIS_RESERVAS.ENVIANDO' | translate) : ('MIS_RESERVAS.ENVIAR_RESENA' | translate) }}
+                        </button>
+                        <button type="button" (click)="cerrarFormResena()"
+                                class="border border-gold/20 text-foreground/50 hover:text-gold px-5 py-2.5 rounded-lg text-sm transition-colors flex items-center gap-2">
+                          <ng-icon name="lucideX" />
+                          {{ 'COMUN.CANCELAR' | translate }}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                }
+              </div>
+            }
+
+          </div>
+        }
+      </div>
+
+      <div class="text-center mt-10">
+        <a routerLink="/reservas"
+           class="btn-shimmer inline-block bg-gold hover:bg-gold-light text-background font-bold px-8 py-3 rounded-lg shadow-gold transition-all">
+          {{ 'MIS_RESERVAS.NUEVA_RESERVA' | translate }}
+        </a>
+      </div>
+    }
+
+  </div>
+</div>

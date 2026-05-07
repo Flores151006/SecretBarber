@@ -1,0 +1,101 @@
+<div class="min-h-screen bg-background py-16 px-4">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-12" data-aos="fade-up">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <div class="h-px w-12 bg-gradient-to-r from-transparent to-gold"></div>
+        <span class="label-overline">{{ 'RESENAS_PAGE.BADGE' | translate }}</span>
+        <div class="h-px w-12 bg-gradient-to-l from-transparent to-gold"></div>
+      </div>
+      <h1 class="font-serif text-5xl text-foreground font-bold">{{ 'RESENAS_PAGE.TITULO' | translate }}</h1>
+    </div>
+
+    @if (cargando) {
+      <div class="text-center py-24">
+        <div class="spinner mb-5"></div>
+        <p class="text-foreground/50 text-sm tracking-wide">{{ 'RESENAS_PAGE.CARGANDO' | translate }}</p>
+      </div>
+    }
+
+    @if (error) {
+      <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl mb-6 text-sm flex items-center gap-2">
+        <ng-icon name="lucideAlertTriangle" class="flex-shrink-0" />
+        {{ error }}
+      </div>
+    }
+
+    @if (!cargando && reviews.length > 0) {
+      <div class="glass rounded-2xl p-8 text-center mb-10" data-aos="fade-up">
+        <p class="label-overline mb-3">{{ 'RESENAS_PAGE.MEDIA_LABEL' | translate }}</p>
+        <div class="flex items-baseline justify-center gap-2 mb-3">
+          <span class="text-6xl font-bold text-gradient font-serif">{{ mediaTotal }}</span>
+          <span class="text-foreground/40 text-2xl">/ 5</span>
+        </div>
+        <div class="flex justify-center gap-1 mb-3">
+          @for (star of stars; track star) {
+            <ng-icon name="lucideStar"
+                     [class]="star <= mediaTotalRedondeada ? 'text-gold' : 'text-foreground/15'"
+                     style="font-size:1.25rem" />
+          }
+        </div>
+        <p class="text-foreground/50 text-sm">
+          {{ 'RESENAS_PAGE.BASADO_EN' | translate }}
+          {{ reviews.length }}
+          {{ reviews.length === 1 ? ('RESENAS_PAGE.RESENA_S' | translate) : ('RESENAS_PAGE.RESENAS_P' | translate) }}
+        </p>
+      </div>
+    }
+
+    @if (!cargando && !error && reviews.length === 0) {
+      <div class="text-center py-24" data-aos="fade-up">
+        <div class="w-20 h-20 bg-gold/10 border border-gold/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <ng-icon name="lucideStar" class="text-gold" style="font-size:2rem" />
+        </div>
+        <p class="text-foreground/50 text-lg">{{ 'RESENAS_PAGE.SIN_RESENAS' | translate }}</p>
+      </div>
+    }
+
+    @if (!cargando && reviews.length > 0) {
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        @for (review of reviews; track review._id; let i = $index) {
+          <div class="glass rounded-xl p-6 card-hover relative overflow-hidden" data-aos="fade-up" [attr.data-aos-delay]="(i % 4) * 75">
+            <span class="absolute bottom-4 right-5 text-gold/8 text-7xl font-serif leading-none select-none pointer-events-none">"</span>
+
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gold/10 border border-gold/25 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span class="text-gold font-bold text-sm">
+                    {{ $any(review.cliente)?.name?.charAt(0)?.toUpperCase() || '?' }}
+                  </span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <p class="text-foreground font-medium text-sm">{{ $any(review.cliente)?.name || 'Cliente' }}</p>
+                    @if (esReciente(review.createdAt)) {
+                      <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-gold/15 text-gold border border-gold/30 leading-none">
+                        Reciente
+                      </span>
+                    }
+                  </div>
+                  <p class="text-foreground/35 text-xs" [title]="review.createdAt | date:'dd/MM/yyyy HH:mm'">
+                    {{ tiempoRelativo(review.createdAt) }}
+                  </p>
+                </div>
+              </div>
+              <div class="flex gap-0.5">
+                @for (star of stars; track star) {
+                  <ng-icon name="lucideStar"
+                           [class]="star <= review.puntuacion ? 'text-gold' : 'text-foreground/10'"
+                           style="font-size:0.9rem" />
+                }
+              </div>
+            </div>
+
+            <p class="text-foreground/60 text-sm leading-relaxed italic">"{{ review.comentario }}"</p>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

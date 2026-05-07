@@ -1,0 +1,185 @@
+<div class="p-6 md:p-8">
+
+  <div class="mb-8">
+    <h1 class="font-serif text-3xl text-foreground font-bold">{{ 'ADMIN.ESTADISTICAS.TITULO' | translate }}</h1>
+    <p class="text-foreground/40 text-sm mt-1">{{ 'ADMIN.ESTADISTICAS.SUBTITULO' | translate }}</p>
+  </div>
+
+  @if (cargando()) {
+    <div class="text-center py-24">
+      <div class="spinner mb-4"></div>
+      <p class="text-foreground/40 text-sm">{{ 'ADMIN.ESTADISTICAS.CARGANDO' | translate }}</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl mb-6 text-sm flex items-center gap-2">
+      <ng-icon name="lucideAlertTriangle" class="flex-shrink-0" /> {{ error() }}
+    </div>
+  }
+
+  @if (!cargando() && datos()) {
+
+    <!-- Filtros predefinidos + botón rango -->
+    <div class="flex gap-2 flex-wrap mb-4 items-center">
+      @for (f of filtros; track f.id) {
+        <button (click)="setFiltro(f.id)"
+                [class]="filtro() === f.id && !rangoAplicado() ? 'bg-gold text-background shadow-gold' : 'border border-gold/20 text-foreground/55 hover:border-gold/50 hover:bg-gold/5'"
+                class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-200">
+          {{ f.label | translate }}
+        </button>
+      }
+
+      <!-- Botón intervalo personalizado — muestra las fechas cuando hay rango activo -->
+      <div class="flex items-center gap-1">
+        <button (click)="toggleRango()"
+                [class]="filtro() === 'rango' ? 'bg-gold text-background shadow-gold' : 'border border-gold/20 text-foreground/55 hover:border-gold/50 hover:bg-gold/5'"
+                class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2">
+          <ng-icon name="lucideCalendarRange" style="font-size:0.85rem" />
+          @if (labelBotonRango()) {
+            <span class="font-semibold tabular-nums">{{ labelBotonRango() }}</span>
+          } @else {
+            {{ 'ADMIN.ESTADISTICAS.FILTRO_RANGO' | translate }}
+          }
+        </button>
+
+        <!-- Botón × para limpiar el rango activo -->
+        @if (rangoAplicado()) {
+          <button (click)="limpiarRango()"
+                  title="Limpiar rango"
+                  class="w-7 h-7 rounded-full border border-gold/20 text-foreground/40 hover:border-red-500/40 hover:text-red-400 hover:bg-red-500/5 flex items-center justify-center transition-all duration-200">
+            <ng-icon name="lucideX" style="font-size:0.75rem" />
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Panel de rango de fechas (desplegable) -->
+    @if (mostrarRango()) {
+      <div class="glass rounded-2xl p-5 mb-6 border border-gold/15" data-aos="fade-down">
+        <p class="text-foreground/60 text-xs uppercase tracking-widest mb-4">{{ 'ADMIN.ESTADISTICAS.RANGO_TITULO' | translate }}</p>
+
+        @if (errorRango()) {
+          <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-2 rounded-lg mb-4 text-xs flex items-center gap-2">
+            <ng-icon name="lucideAlertTriangle" class="flex-shrink-0" /> {{ errorRango() }}
+          </div>
+        }
+
+        <form [formGroup]="rangoForm" (ngSubmit)="aplicarRango()" class="flex flex-wrap items-end gap-4">
+          <div class="flex flex-col gap-1.5 min-w-[160px]">
+            <label class="text-foreground/50 text-xs font-medium">{{ 'ADMIN.ESTADISTICAS.RANGO_DESDE' | translate }}</label>
+            <input type="date" formControlName="fechaInicio" [max]="maxFecha"
+                   class="bg-background/60 border border-gold/20 focus:border-gold text-foreground rounded-lg px-3 py-2 text-sm outline-none transition-all [color-scheme:dark]" />
+          </div>
+
+          <div class="flex flex-col gap-1.5 min-w-[160px]">
+            <label class="text-foreground/50 text-xs font-medium">{{ 'ADMIN.ESTADISTICAS.RANGO_HASTA' | translate }}</label>
+            <input type="date" formControlName="fechaFin" [max]="maxFecha"
+                   class="bg-background/60 border border-gold/20 focus:border-gold text-foreground rounded-lg px-3 py-2 text-sm outline-none transition-all [color-scheme:dark]" />
+          </div>
+
+          <button type="submit" [disabled]="rangoForm.invalid || cargandoRango()"
+                  class="btn-shimmer bg-gold hover:bg-gold-light text-background font-semibold px-6 py-2 rounded-lg shadow-gold disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2 transition-all">
+            @if (cargandoRango()) {
+              <div class="spinner-sm"></div>
+              {{ 'ADMIN.ESTADISTICAS.RANGO_APLICANDO' | translate }}
+            } @else {
+              <ng-icon name="lucideSearch" style="font-size:0.85rem" />
+              {{ 'ADMIN.ESTADISTICAS.RANGO_APLICAR' | translate }}
+            }
+          </button>
+        </form>
+      </div>
+    }
+
+    <!-- KPIs -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+
+      <div class="relative glass rounded-2xl p-6 overflow-hidden group hover:shadow-gold transition-all duration-300">
+        <div class="absolute -top-6 -right-6 w-24 h-24 bg-gold/5 rounded-full group-hover:bg-gold/10 transition-colors duration-300"></div>
+        <p class="text-foreground/40 text-xs uppercase tracking-[0.15em] mb-3">{{ 'ADMIN.ESTADISTICAS.KPI_INGRESOS' | translate }}</p>
+        <p class="text-gradient font-bold font-serif" style="font-size: 2.5rem; line-height: 1;">{{ ingresoActual() }}€</p>
+        <p class="text-foreground/25 text-xs mt-2">
+          @if (filtro() === 'rango') {
+            {{ labelFiltro() }}
+          } @else {
+            {{ labelFiltro() | translate }}
+          }
+        </p>
+      </div>
+
+      <div class="relative glass rounded-2xl p-6 overflow-hidden group hover:shadow-gold transition-all duration-300">
+        <div class="absolute -top-6 -right-6 w-24 h-24 bg-gold/5 rounded-full group-hover:bg-gold/10 transition-colors duration-300"></div>
+        <p class="text-foreground/40 text-xs uppercase tracking-[0.15em] mb-3">{{ 'ADMIN.ESTADISTICAS.KPI_RESERVAS' | translate }}</p>
+        <p class="text-foreground font-bold font-serif" style="font-size: 2.5rem; line-height: 1;">{{ reservasActual() }}</p>
+        <p class="text-foreground/25 text-xs mt-2">
+          @if (filtro() === 'rango') {
+            {{ labelFiltro() }}
+          } @else {
+            {{ labelFiltro() | translate }}
+          }
+        </p>
+      </div>
+
+      <div class="relative glass rounded-2xl p-6 overflow-hidden group hover:shadow-gold transition-all duration-300">
+        <div class="absolute -top-6 -right-6 w-24 h-24 bg-gold/5 rounded-full group-hover:bg-gold/10 transition-colors duration-300"></div>
+        <p class="text-foreground/40 text-xs uppercase tracking-[0.15em] mb-3">{{ 'ADMIN.ESTADISTICAS.KPI_TICKET' | translate }}</p>
+        <p class="text-foreground font-bold font-serif" style="font-size: 2.5rem; line-height: 1;">{{ ticketMedio() }}€</p>
+        <p class="text-foreground/25 text-xs mt-2">{{ 'ADMIN.ESTADISTICAS.KPI_TICKET_DESC' | translate }}</p>
+      </div>
+
+    </div>
+
+    <!-- Gráficos -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+      <div class="lg:col-span-2 glass rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+          <h2 class="text-foreground font-semibold">{{ 'ADMIN.ESTADISTICAS.GRAFICO_BARRAS' | translate }}</h2>
+          <span class="text-gold text-xs border border-gold/20 bg-gold/5 px-3 py-1 rounded-full font-medium">
+            {{ datos().resumen.totalAnio }}€ {{ 'ADMIN.ESTADISTICAS.GRAFICO_ANIO' | translate }}
+          </span>
+        </div>
+        @if (barChartData().datasets[0]?.data?.length) {
+          <canvas baseChart [data]="barChartData()" [options]="barChartOptions" type="bar"></canvas>
+        }
+      </div>
+
+      <div class="glass rounded-2xl p-6">
+        <h2 class="text-foreground font-semibold mb-5">{{ 'ADMIN.ESTADISTICAS.GRAFICO_DONUT' | translate }}</h2>
+
+        @if (doughnutData().datasets[0]?.data?.length) {
+          <div class="max-w-[160px] mx-auto mb-5">
+            <canvas baseChart [data]="doughnutData()" [options]="doughnutOptions" type="doughnut"></canvas>
+          </div>
+        }
+
+        <div class="flex flex-col gap-0.5">
+          @for (s of datos().serviciosRanking; track s.nombre; let i = $index) {
+            <div class="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-2 h-2 rounded-full flex-shrink-0"
+                      [style.background]="['#6366F1','#EC4899','#14B8A6','#F59E0B','#8B5CF6'][i]"></span>
+                <span class="text-foreground/60 text-xs truncate">{{ s.nombre }}</span>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0 ml-2">
+                <div class="h-1 bg-white/5 rounded-full w-12">
+                  <div class="h-1 rounded-full transition-all duration-700"
+                       [style.width]="(s.count / datos().serviciosRanking[0].count * 100) + '%'"
+                       [style.background]="['#6366F1','#EC4899','#14B8A6','#F59E0B','#8B5CF6'][i]">
+                  </div>
+                </div>
+                <span class="font-bold text-xs w-4 text-right"
+                      [style.color]="['#6366F1','#EC4899','#14B8A6','#F59E0B','#8B5CF6'][i]">
+                  {{ s.count }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+  }
+
+</div>

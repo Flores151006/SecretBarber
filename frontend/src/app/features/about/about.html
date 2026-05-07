@@ -1,0 +1,86 @@
+<div class="min-h-screen bg-background py-16 px-4">
+  <div class="max-w-3xl mx-auto">
+
+    <div class="text-center mb-14" data-aos="fade-up">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <div class="h-px w-12 bg-gradient-to-r from-transparent to-gold"></div>
+        <span class="label-overline">{{ 'ACERCA.BADGE' | translate }}</span>
+        <div class="h-px w-12 bg-gradient-to-l from-transparent to-gold"></div>
+      </div>
+      <h1 class="font-serif text-5xl text-foreground font-bold">{{ 'ACERCA.TITULO' | translate }}</h1>
+    </div>
+
+    <div class="glass rounded-2xl p-8 mb-5" data-aos="fade-up">
+      <div class="flex items-center gap-5 mb-6">
+        <div class="w-16 h-16 bg-gold/10 border border-gold/25 rounded-2xl flex items-center justify-center flex-shrink-0">
+          <ng-icon name="lucideScissors" class="text-gold" style="font-size:1.6rem" />
+        </div>
+        <div>
+          <h2 class="font-serif text-2xl font-bold">
+            <span class="text-gradient">Secret</span> <span class="text-foreground">Barber</span>
+          </h2>
+          <p class="text-foreground/50 text-sm mt-0.5">{{ 'ACERCA.APP_DESC' | translate }}</p>
+        </div>
+      </div>
+
+      <div class="divider-gold mb-6"></div>
+
+      <div class="grid grid-cols-2 gap-3">
+        @for (tech of [
+          { label: 'Frontend', value: 'Angular 21 + Tailwind CSS' },
+          { label: 'Backend',  value: 'Node.js + Express + MongoDB' },
+          { label: 'Pagos',    value: 'Stripe + Efectivo' },
+          { label: 'Auth',     value: 'JWT + Google OAuth' }
+        ]; track tech.label) {
+          <div class="bg-background/60 border border-gold/10 rounded-xl p-4 hover:border-gold/25 transition-colors">
+            <p class="text-gold font-bold text-sm mb-1">{{ tech.label }}</p>
+            <p class="text-foreground/50 text-sm">{{ tech.value }}</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="glass rounded-2xl p-8 mb-5" data-aos="fade-up" data-aos-delay="50">
+      <h2 class="font-serif text-xl text-foreground font-bold mb-5 flex items-center gap-2">
+        <ng-icon name="lucideUser" class="text-gold" />
+        {{ 'ACERCA.AUTOR' | translate }}
+      </h2>
+      <div class="flex flex-col gap-3">
+        @for (item of [
+          { key: 'ACERCA.AUTOR', value: 'Alejandro Flores Méndez' },
+          { key: 'ACERCA.CICLO', value: 'Desarrollo de Aplicaciones Web (DAW)' },
+          { key: 'ACERCA.CENTRO', value: 'IES Trassierra — Córdoba' }
+        ]; track item.key) {
+          <div class="flex items-center gap-3 py-2 border-b border-gold/8 last:border-0">
+            <span class="text-foreground/40 text-sm w-20 flex-shrink-0">{{ item.key | translate }}</span>
+            <span class="text-foreground font-medium text-sm">{{ item.value }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="glass rounded-2xl p-8" data-aos="fade-up" data-aos-delay="100">
+      <h2 class="font-serif text-xl text-foreground font-bold mb-5 flex items-center gap-2">
+        <ng-icon name="lucideClipboardList" class="text-gold" />
+        Información
+      </h2>
+      <div class="flex flex-col gap-3">
+        @for (item of [
+          { key: 'ACERCA.VERSION', value: '1.0.0' },
+          { key: 'ACERCA.CURSO', value: '2025/2026' },
+          { key: 'ACERCA.PROYECTO', value: '' }
+        ]; track item.key) {
+          <div class="flex items-center gap-3 py-2 border-b border-gold/8 last:border-0">
+            <span class="text-foreground/40 text-sm w-20 flex-shrink-0">{{ item.key | translate }}</span>
+            @if (item.value) {
+              <span class="text-foreground font-medium text-sm">{{ item.value }}</span>
+            } @else {
+              <span class="text-gradient font-bold text-sm">{{ item.key | translate }}</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>

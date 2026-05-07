@@ -1,0 +1,157 @@
+<!-- HERO -->
+<section class="relative bg-background min-h-[90vh] flex items-center justify-center overflow-hidden bg-grid">
+
+  <div class="absolute inset-0 opacity-[0.08]">
+    <div class="absolute top-20 left-20 w-80 h-80 bg-gold rounded-full blur-3xl animate-pulse-gold"></div>
+    <div class="absolute bottom-20 right-20 w-[28rem] h-[28rem] bg-gold rounded-full blur-3xl animate-pulse-gold" style="animation-delay:1s"></div>
+  </div>
+
+  <div class="absolute inset-0 bg-gradient-to-b from-background/0 via-background/0 to-background pointer-events-none"></div>
+
+  <div class="relative text-center px-4 max-w-4xl mx-auto">
+    <div class="flex items-center justify-center gap-4 mb-6" data-aos="fade-down">
+      <div class="h-px w-16 bg-gradient-to-r from-transparent to-gold"></div>
+      <span class="text-gold text-xs font-semibold tracking-[0.25em] uppercase">{{ 'HOME.BADGE' | translate }}</span>
+      <div class="h-px w-16 bg-gradient-to-l from-transparent to-gold"></div>
+    </div>
+
+    <h1 class="font-serif text-6xl md:text-8xl font-bold mb-4 leading-tight"
+        data-aos="fade-up" data-aos-delay="100">
+      <span class="text-gradient">Secret</span> <span class="text-foreground">Barber</span>
+    </h1>
+
+    <p class="text-foreground/55 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+       data-aos="fade-up" data-aos-delay="200">
+      {{ 'HOME.SUBTITULO' | translate }}
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center"
+         data-aos="fade-up" data-aos-delay="300">
+      <a routerLink="/reservas"
+         class="btn-shimmer bg-gold hover:bg-gold-light text-background font-bold px-8 py-4 rounded-lg text-lg shadow-gold hover:shadow-gold-lg">
+        {{ 'HOME.BTN_RESERVAR' | translate }}
+      </a>
+      <a routerLink="/reviews"
+         class="border border-gold/40 text-gold hover:bg-gold/10 hover:border-gold/70 font-medium px-8 py-4 rounded-lg text-lg">
+        {{ 'HOME.BTN_RESENAS' | translate }}
+      </a>
+    </div>
+
+    <!-- Reseñas -->
+    @if (resenas().length > 0) {
+      <div class="mt-20 w-full" data-aos="fade-up" data-aos-delay="400">
+        <div class="flex items-center justify-center gap-4 mb-8">
+          <div class="h-px w-12 bg-gold/40"></div>
+          <span class="text-gold/70 text-xs tracking-widest uppercase">{{ 'HOME.RESENAS_BADGE' | translate }}</span>
+          <div class="h-px w-12 bg-gold/40"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+          @for (resena of resenas(); track resena._id; let i = $index) {
+            <div class="relative glass rounded-xl p-6 text-left hover:border-gold/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-gold"
+                 [attr.data-aos]="'fade-up'" [attr.data-aos-delay]="i * 100">
+              <span class="absolute bottom-4 right-5 text-gold/10 text-6xl font-serif leading-none select-none pointer-events-none">"</span>
+              <div class="flex gap-0.5 mb-3">
+                @for (star of [1,2,3,4,5]; track star) {
+                  <ng-icon name="lucideStar" [class]="star <= resena.puntuacion ? 'text-gold' : 'text-foreground/10'" style="font-size:0.8rem" />
+                }
+              </div>
+              <p class="text-foreground/60 text-sm leading-relaxed mb-4 line-clamp-3">"{{ resena.comentario }}"</p>
+              <div class="flex items-center gap-2 pt-3 border-t border-gold/10">
+                <div class="w-7 h-7 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center">
+                  <span class="text-gold text-xs font-bold">{{ getNombreCliente(resena).charAt(0).toUpperCase() }}</span>
+                </div>
+                <span class="text-foreground/50 text-xs font-medium">{{ getNombreCliente(resena) }}</span>
+              </div>
+            </div>
+          }
+        </div>
+        <div class="mt-6 flex justify-center">
+          <a routerLink="/reviews"
+             class="text-gold/60 hover:text-gold text-xs tracking-widest uppercase transition-colors flex items-center gap-2">
+            {{ 'HOME.VER_RESENAS' | translate }} <ng-icon name="lucideArrowRight" />
+          </a>
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section class="bg-surface py-24 px-4 bg-grid">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <div class="h-px w-12 bg-gradient-to-r from-transparent to-gold"></div>
+        <span class="text-gold text-xs font-semibold tracking-[0.2em] uppercase">{{ 'HOME.SERVICIOS_BADGE' | translate }}</span>
+        <div class="h-px w-12 bg-gradient-to-l from-transparent to-gold"></div>
+      </div>
+      <h2 class="font-serif text-4xl text-foreground font-bold">{{ 'HOME.SERVICIOS_TITULO' | translate }}</h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+      @for (servicio of servicios; track servicio.nombre) {
+        <div class="glass rounded-xl p-6 transition-all duration-300 group card-hover"
+             data-aos="fade-up">
+          
+          <h3 class="font-serif text-xl text-foreground font-semibold mb-2">
+            {{ languageService.idioma() === 'es' ? servicio.nombre : servicio.nombreEn }}
+          </h3>
+          <p class="text-foreground/50 text-sm mb-5">
+            {{ languageService.idioma() === 'es' ? servicio.descripcion : servicio.descripcionEn }}
+          </p>
+          <span class="text-gradient font-bold text-2xl">{{ servicio.precio }}€</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- POR QUÉ ELEGIRNOS -->
+<section class="bg-background py-24 px-4">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <div class="h-px w-12 bg-gradient-to-r from-transparent to-gold"></div>
+        <span class="text-gold text-xs font-semibold tracking-[0.2em] uppercase">{{ 'HOME.POR_QUE_BADGE' | translate }}</span>
+        <div class="h-px w-12 bg-gradient-to-l from-transparent to-gold"></div>
+      </div>
+      <h2 class="font-serif text-4xl text-foreground font-bold">{{ 'HOME.POR_QUE_TITULO' | translate }}</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center group" data-aos="fade-up" data-aos-delay="0">
+        <div class="w-16 h-16 bg-gold/10 border border-gold/20 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:shadow-gold group-hover:border-gold/50 transition-all duration-300">
+          <ng-icon name="lucideStar" class="text-gold group-hover:scale-110 transition-transform duration-300" style="font-size:1.5rem" />
+        </div>
+        <h3 class="font-serif text-xl text-foreground font-semibold mb-2">{{ 'HOME.PROFESIONALES' | translate }}</h3>
+        <p class="text-foreground/50 text-sm leading-relaxed">{{ 'HOME.PROFESIONALES_DESC' | translate }}</p>
+      </div>
+      <div class="text-center group" data-aos="fade-up" data-aos-delay="100">
+        <div class="w-16 h-16 bg-gold/10 border border-gold/20 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:shadow-gold group-hover:border-gold/50 transition-all duration-300">
+          <ng-icon name="lucideCalendar" class="text-gold group-hover:scale-110 transition-transform duration-300" style="font-size:1.5rem" />
+        </div>
+        <h3 class="font-serif text-xl text-foreground font-semibold mb-2">{{ 'HOME.RESERVA_ONLINE' | translate }}</h3>
+        <p class="text-foreground/50 text-sm leading-relaxed">{{ 'HOME.RESERVA_ONLINE_DESC' | translate }}</p>
+      </div>
+      <div class="text-center group" data-aos="fade-up" data-aos-delay="200">
+        <div class="w-16 h-16 bg-gold/10 border border-gold/20 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:shadow-gold group-hover:border-gold/50 transition-all duration-300">
+          <ng-icon name="lucideCreditCard" class="text-gold group-hover:scale-110 transition-transform duration-300" style="font-size:1.5rem" />
+        </div>
+        <h3 class="font-serif text-xl text-foreground font-semibold mb-2">{{ 'HOME.PAGO_FLEXIBLE' | translate }}</h3>
+        <p class="text-foreground/50 text-sm leading-relaxed">{{ 'HOME.PAGO_FLEXIBLE_DESC' | translate }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="relative py-20 px-4 overflow-hidden bg-surface">
+  <div class="absolute inset-0 bg-gradient-to-br from-gold/10 via-transparent to-gold/5"></div>
+  <div class="absolute inset-0 bg-grid opacity-40"></div>
+  <div class="relative max-w-3xl mx-auto text-center" data-aos="zoom-in">
+    <h2 class="font-serif text-4xl md:text-5xl text-foreground font-bold mb-4">{{ 'HOME.CTA_TITULO' | translate }}</h2>
+    <p class="text-foreground/55 text-lg mb-10">{{ 'HOME.CTA_SUBTITULO' | translate }}</p>
+    <a routerLink="/reservas"
+       class="btn-shimmer inline-block bg-gold hover:bg-gold-light text-background font-bold px-10 py-4 rounded-lg text-lg shadow-gold hover:shadow-gold-lg">
+      {{ 'HOME.CTA_BTN' | translate }}
+    </a>
+  </div>
+</section>

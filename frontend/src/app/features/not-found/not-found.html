@@ -1,0 +1,32 @@
+<div class="min-h-screen bg-background bg-grid flex items-center justify-center px-4 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-[0.05]">
+    <div class="absolute top-1/3 left-1/3 w-64 h-64 bg-gold rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/3 right-1/3 w-80 h-80 bg-gold rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative max-w-md w-full text-center" data-aos="fade-up">
+    <h1 class="font-serif font-bold leading-none mb-2" style="font-size: clamp(6rem, 20vw, 10rem);">
+      <span class="text-gradient">404</span>
+    </h1>
+
+    <div class="flex items-center justify-center gap-4 mb-6">
+      <div class="h-px w-12 bg-gradient-to-r from-transparent to-gold/40"></div>
+      <div class="w-10 h-10 bg-gold/10 border border-gold/20 rounded-xl flex items-center justify-center animate-float">
+        <ng-icon name="lucideScissors" class="text-gold" style="font-size:1.1rem" />
+      </div>
+      <div class="h-px w-12 bg-gradient-to-l from-transparent to-gold/40"></div>
+    </div>
+
+    <h2 class="text-foreground/70 font-serif text-2xl font-semibold mb-3">
+      {{ 'ERROR_404.SUBTITULO' | translate }}
+    </h2>
+    <p class="text-foreground/40 mb-10">
+      {{ 'ERROR_404.TEXTO' | translate }}
+    </p>
+
+    <a routerLink="/"
+       class="btn-shimmer inline-block bg-gold hover:bg-gold-light text-background font-bold px-10 py-4 rounded-lg shadow-gold hover:shadow-gold-lg text-lg">
+      {{ 'ERROR_404.BTN' | translate }}
+    </a>
+  </div>
+</div>

@@ -1,0 +1,93 @@
+<div class="min-h-screen bg-background bg-grid flex items-center justify-center px-4 py-12 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-[0.06]">
+    <div class="absolute top-1/4 right-1/4 w-64 h-64 bg-gold rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 left-1/4 w-80 h-80 bg-gold rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative w-full max-w-md" data-aos="fade-up">
+
+    <div class="text-center mb-8">
+      <h1 class="font-serif text-4xl font-bold mb-2">
+        <span class="text-gradient">Secret</span> <span class="text-foreground">Barber</span>
+      </h1>
+      <p class="text-foreground/50">{{ 'REGISTER.TITULO' | translate }}</p>
+    </div>
+
+    <div class="glass rounded-2xl p-8">
+
+      @if (error) {
+        <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl mb-6 text-sm flex items-center gap-2">
+          <ng-icon name="lucideAlertTriangle" class="flex-shrink-0" /> {{ error }}
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-5">
+
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-1.5">
+            {{ 'REGISTER.NOMBRE' | translate }}
+          </label>
+          <input formControlName="name" type="text"
+                 [placeholder]="'REGISTER.PLACEHOLDER_NOMBRE' | translate"
+                 class="w-full bg-background/60 border border-gold/20 focus:border-gold text-foreground placeholder-foreground/30 rounded-lg px-4 py-2.5 text-sm outline-none transition-all"/>
+          @if (form.get('name')?.invalid && form.get('name')?.touched) {
+            <span class="text-red-400 text-xs mt-1.5 block">{{ 'REGISTER.ERROR_NOMBRE' | translate }}</span>
+          }
+        </div>
+
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-1.5">
+            {{ 'REGISTER.EMAIL' | translate }}
+          </label>
+          <input formControlName="email" type="email" placeholder="tu@email.com"
+                 class="w-full bg-background/60 border border-gold/20 focus:border-gold text-foreground placeholder-foreground/30 rounded-lg px-4 py-2.5 text-sm outline-none transition-all"/>
+          @if (form.get('email')?.invalid && form.get('email')?.touched) {
+            <span class="text-red-400 text-xs mt-1.5 block">{{ 'REGISTER.ERROR_EMAIL' | translate }}</span>
+          }
+        </div>
+
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-1.5">
+            {{ 'REGISTER.CONTRASENA' | translate }}
+          </label>
+          <div class="relative">
+            <input formControlName="password" [type]="verPass ? 'text' : 'password'" placeholder="••••••••"
+                   class="w-full bg-background/60 border border-gold/20 focus:border-gold text-foreground placeholder-foreground/30 rounded-lg px-4 py-2.5 text-sm outline-none transition-all pr-10"/>
+            <button type="button" (click)="verPass = !verPass"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-gold transition-colors">
+              <ng-icon [name]="verPass ? 'lucideEyeOff' : 'lucideEye'" />
+            </button>
+          </div>
+          @if (form.get('password')?.invalid && form.get('password')?.touched) {
+            <span class="text-red-400 text-xs mt-1.5 block">{{ 'REGISTER.ERROR_CONTRASENA' | translate }}</span>
+          }
+        </div>
+
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-1.5">
+            {{ 'REGISTER.CONFIRMAR' | translate }}
+          </label>
+          <input formControlName="confirmarPass" [type]="verPass ? 'text' : 'password'" placeholder="••••••••"
+                 class="w-full bg-background/60 border border-gold/20 focus:border-gold text-foreground placeholder-foreground/30 rounded-lg px-4 py-2.5 text-sm outline-none transition-all"/>
+          @if (form.errors?.['noCoinciden'] && form.get('confirmarPass')?.touched) {
+            <span class="text-red-400 text-xs mt-1.5 block">{{ 'REGISTER.ERROR_COINCIDEN' | translate }}</span>
+          }
+        </div>
+
+        <button type="submit" [disabled]="cargando"
+                class="btn-shimmer w-full bg-gold hover:bg-gold-light text-background font-bold py-3 rounded-lg shadow-gold hover:shadow-gold-lg disabled:opacity-50 disabled:cursor-not-allowed mt-2">
+          {{ cargando ? ('REGISTER.BTN_CARGANDO' | translate) : ('REGISTER.BTN' | translate) }}
+        </button>
+
+      </form>
+
+      <p class="text-center text-foreground/50 text-sm mt-6">
+        {{ 'REGISTER.YA_TIENES' | translate }}
+        <a routerLink="/login" class="text-gold hover:text-gold-light transition-colors font-medium">
+          {{ 'REGISTER.INICIAR' | translate }}
+        </a>
+      </p>
+
+    </div>
+  </div>
+</div>

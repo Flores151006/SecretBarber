@@ -1,0 +1,65 @@
+<app-navbar />
+<main class="bg-background min-h-screen">
+  <router-outlet />
+</main>
+
+<footer class="bg-surface border-t border-gold/20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+
+      <!-- Columna 1 -->
+      <div>
+        <h2 class="font-serif text-2xl text-gold font-bold mb-3">Secret Barber</h2>
+        <p class="text-foreground/50 text-sm leading-relaxed">{{ 'FOOTER.DESC' | translate }}</p>
+      </div>
+
+      <!-- Columna 2 -->
+      <div>
+        <h3 class="text-foreground font-semibold text-sm uppercase tracking-widest mb-4">
+          {{ 'FOOTER.ENLACES' | translate }}
+        </h3>
+        <ul class="flex flex-col gap-2">
+          <li><a routerLink="/"         class="text-foreground/50 hover:text-gold text-sm transition-colors">{{ 'FOOTER.INICIO'   | translate }}</a></li>
+          <li><a routerLink="/cortes"   class="text-foreground/50 hover:text-gold text-sm transition-colors">{{ 'FOOTER.CORTES'   | translate }}</a></li>
+          <li><a routerLink="/reviews"  class="text-foreground/50 hover:text-gold text-sm transition-colors">{{ 'FOOTER.RESENAS'  | translate }}</a></li>
+          <li><a routerLink="/reservas" class="text-foreground/50 hover:text-gold text-sm transition-colors">{{ 'FOOTER.RESERVAR' | translate }}</a></li>
+          <li><a routerLink="/ayuda"    class="text-foreground/40 hover:text-gold text-sm transition-colors">{{ 'FOOTER.AYUDA'    | translate }}</a></li>
+          <li><a routerLink="/acerca-de"class="text-foreground/40 hover:text-gold text-sm transition-colors">{{ 'FOOTER.ACERCA'   | translate }}</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3 -->
+      <div>
+        <h3 class="text-foreground font-semibold text-sm uppercase tracking-widest mb-4">
+          {{ 'FOOTER.CONTACTO' | translate }}
+        </h3>
+        <ul class="flex flex-col gap-2 mb-6">
+          <li class="text-foreground/50 text-sm flex items-center gap-1.5">
+            <ng-icon name="lucideMapPin" class="flex-shrink-0 text-gold/60" />
+            Avenida de Andalucia, 16, Cañada Rosal
+          </li>
+        </ul>
+        <div class="flex gap-3">
+          <a href="https://instagram.com/aleex.flrees" target="_blank"
+             class="w-10 h-10 rounded-full border border-gold/20 bg-gold/5 flex items-center justify-center text-foreground/50 hover:text-gold hover:border-gold hover:bg-gold/10 transition-all">
+            <ng-icon name="bootstrapInstagram" size="18" />
+          </a>
+          <a href="https://tiktok.com/@Secretbarber" target="_blank"
+             class="w-10 h-10 rounded-full border border-gold/20 bg-gold/5 flex items-center justify-center text-foreground/50 hover:text-gold hover:border-gold hover:bg-gold/10 transition-all">
+            <ng-icon name="bootstrapTiktok" size="18" />
+          </a>
+          <a href="https://wa.me/34600000000" target="_blank"
+             class="w-10 h-10 rounded-full border border-gold/20 bg-gold/5 flex items-center justify-center text-foreground/50 hover:text-gold hover:border-gold hover:bg-gold/10 transition-all">
+            <ng-icon name="bootstrapWhatsapp" size="18" />
+          </a>
+        </div>
+      </div>
+
+    </div>
+    <div class="border-t border-gold/10 mt-10 pt-6 text-center">
+      <p class="text-foreground/30 text-xs">
+        © {{ currentYear }} Secret Barber. {{ 'FOOTER.DERECHOS' | translate }}
+      </p>
+    </div>
+  </div>
+</footer>

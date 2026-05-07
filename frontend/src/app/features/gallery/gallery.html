@@ -1,0 +1,65 @@
+<div class="min-h-screen bg-background py-16 px-4">
+  <div class="max-w-6xl mx-auto">
+
+    <!-- Cabecera -->
+    <div class="text-center mb-12" data-aos="fade-up">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <div class="h-px w-12 bg-gradient-to-r from-transparent to-gold"></div>
+        <span class="text-gold text-xs font-semibold tracking-[0.2em] uppercase">{{ 'GALERIA.BADGE' | translate }}</span>
+        <div class="h-px w-12 bg-gradient-to-l from-transparent to-gold"></div>
+      </div>
+      <h1 class="font-serif text-5xl text-foreground font-bold mb-4">{{ 'GALERIA.TITULO' | translate }}</h1>
+      <p class="text-foreground/50 max-w-xl mx-auto text-lg leading-relaxed">
+        {{ 'GALERIA.SUBTITULO' | translate }}
+      </p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="flex gap-2 justify-center mb-12 flex-wrap" data-aos="fade-up" data-aos-delay="100">
+      @for (cat of categorias; track cat.id) {
+        <button (click)="categoriaActiva = cat.id"
+                [class]="categoriaActiva === cat.id
+                  ? 'bg-gold text-background shadow-gold'
+                  : 'border border-gold/20 text-foreground/60 hover:border-gold/50 hover:text-foreground hover:bg-gold/5'"
+                class="px-6 py-2 rounded-full text-sm font-medium transition-all duration-200">
+          {{ cat.nombre | translate }}
+        </button>
+      }
+    </div>
+
+    <!-- Grid de trabajos -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      @for (trabajo of trabajosFiltrados; track trabajo.id; let i = $index) {
+        <div class="group relative rounded-xl overflow-hidden card-hover bg-surface border border-gold/10 hover:border-gold/30"
+             data-aos="fade-up" [attr.data-aos-delay]="(i % 6) * 60">
+          <div class="overflow-hidden aspect-[4/5]">
+            <img [src]="trabajo.imagen" [alt]="trabajo.titulo" loading="lazy"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"/>
+          </div>
+          <!-- overlay on hover -->
+          <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
+            <div>
+              <h3 class="text-foreground font-semibold font-serif text-lg">{{ trabajo.titulo }}</h3>
+              <p class="text-foreground/60 text-sm mt-1">{{ trabajo.descripcion }}</p>
+            </div>
+          </div>
+          <!-- info siempre visible en mobile -->
+          <div class="p-4 sm:hidden">
+            <h3 class="text-foreground font-semibold font-serif">{{ trabajo.titulo }}</h3>
+            <p class="text-foreground/50 text-sm mt-0.5">{{ trabajo.descripcion }}</p>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center mt-16" data-aos="fade-up">
+      <p class="text-foreground/50 mb-5 text-lg">{{ 'GALERIA.CTA_TEXTO' | translate }}</p>
+      <a routerLink="/reservas"
+         class="btn-shimmer bg-gold hover:bg-gold-light text-background font-bold px-10 py-4 rounded-lg shadow-gold hover:shadow-gold-lg inline-block text-lg">
+        {{ 'GALERIA.CTA_BTN' | translate }}
+      </a>
+    </div>
+
+  </div>
+</div>

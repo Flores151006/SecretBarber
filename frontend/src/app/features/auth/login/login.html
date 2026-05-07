@@ -1,0 +1,107 @@
+<div class="min-h-screen bg-background bg-grid flex items-center justify-center px-4 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-[0.06]">
+    <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-gold rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative w-full max-w-md" data-aos="fade-up">
+
+    <div class="text-center mb-8">
+      <h1 class="font-serif text-4xl font-bold mb-2">
+        <span class="text-gradient">Secret</span> <span class="text-foreground">Barber</span>
+      </h1>
+      <p class="text-foreground/50">{{ 'LOGIN.SUBTITULO' | translate }}</p>
+    </div>
+
+    <div class="glass rounded-2xl p-8">
+
+      @if (error) {
+        <div [class]="emailNoVerificado
+                        ? 'bg-amber-500/10 border border-amber-500/30 text-amber-400'
+                        : 'bg-red-500/10 border border-red-500/30 text-red-400'"
+             class="px-4 py-3 rounded-xl mb-6 text-sm">
+          <div class="flex items-start gap-2">
+            <ng-icon [name]="emailNoVerificado ? 'lucideMail' : 'lucideAlertTriangle'" class="flex-shrink-0 mt-0.5" />
+            <div>
+              <p>{{ error }}</p>
+              @if (emailNoVerificado) {
+                <a [routerLink]="['/verificar-email']" [queryParams]="{ email: emailDelForm }"
+                   class="inline-block mt-2 underline underline-offset-2 font-medium hover:opacity-80 transition-opacity text-xs">
+                  Reenviar correo de verificación →
+                </a>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-5">
+
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-1.5">
+            {{ 'REGISTER.EMAIL' | translate }}
+          </label>
+          <input formControlName="email"
+                 type="email"
+                 placeholder="tu@email.com"
+                 class="input-field"/>
+          @if (form.get('email')?.invalid && form.get('email')?.touched) {
+            <span class="text-red-400 text-xs mt-1 block">{{ 'LOGIN.ERROR_EMAIL' | translate }}</span>
+          }
+        </div>
+
+        <div>
+          <label class="block text-foreground/70 text-sm font-medium mb-1.5">
+            {{ 'REGISTER.CONTRASENA' | translate }}
+          </label>
+          <div class="relative">
+            <input formControlName="password"
+                   [type]="verPass ? 'text' : 'password'"
+                   placeholder="••••••••"
+                   class="input-field pr-10"/>
+            <button type="button"
+                    (click)="verPass = !verPass"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-gold transition-colors">
+              <ng-icon [name]="verPass ? 'lucideEyeOff' : 'lucideEye'" />
+            </button>
+          </div>
+          @if (form.get('password')?.invalid && form.get('password')?.touched) {
+            <span class="text-red-400 text-xs mt-1 block">{{ 'LOGIN.ERROR_PASSWORD' | translate }}</span>
+          }
+        </div>
+
+        <button type="submit"
+                [disabled]="cargando"
+                class="btn-shimmer w-full bg-gold hover:bg-gold-light text-background font-bold py-3 rounded-lg shadow-gold hover:shadow-gold-lg disabled:opacity-50 disabled:cursor-not-allowed mt-2">
+          {{ cargando ? ('LOGIN.BTN_CARGANDO' | translate) : ('LOGIN.BTN' | translate) }}
+        </button>
+
+      </form>
+
+      <p class="text-center text-foreground/50 text-sm mt-6">
+        {{ 'LOGIN.NO_CUENTA' | translate }}
+        <a routerLink="/register" class="text-gold hover:text-gold-light transition-colors font-medium">
+          {{ 'LOGIN.REGISTRATE' | translate }}
+        </a>
+      </p>
+
+      <div class="flex items-center gap-3 my-4">
+        <div class="flex-1 h-px bg-gold/10"></div>
+        <span class="text-foreground/30 text-xs">{{ 'LOGIN.O_CONTINUA' | translate }}</span>
+        <div class="flex-1 h-px bg-gold/10"></div>
+      </div>
+
+      <a href="http://localhost:4000/api/auth/google"
+         class="flex items-center justify-center gap-3 border border-gold/20 text-foreground/70 hover:border-gold/50 hover:text-foreground hover:bg-gold/5 py-2.5 rounded-lg transition-all text-sm font-medium">
+        <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        {{ 'LOGIN.GOOGLE' | translate }}
+      </a>
+
+    </div>
+  </div>
+</div>
