@@ -18,8 +18,19 @@ import { barberoRoutes }  from './routes/barbero.route.js';
 const app = express();
 
 // ─── CORS ─────────────────────────────────────────────────────────────────────
+const origenesPermitidos = [
+    'http://localhost:4200',
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
 const corsOptions = {
-    origin: 'http://localhost:4200',
+    origin: (origin, callback) => {
+        if (!origin || origenesPermitidos.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error(`CORS bloqueado: ${origin}`));
+        }
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
