@@ -2,12 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient }         from '@angular/common/http';
 import { Observable }         from 'rxjs';
 import { User }               from '../../shared/models/user.model';
+import { environment }        from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
 
     private readonly http = inject(HttpClient);
-    private readonly API  = 'http://localhost:4000/api/users';
+    private readonly API  = `${environment.apiUrl}/users`;
 
     getUsuarios(): Observable<{ data: User[] }> {
         return this.http.get<{ data: User[] }>(this.API);

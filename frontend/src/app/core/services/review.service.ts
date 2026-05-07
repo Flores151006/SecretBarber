@@ -2,12 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient }         from '@angular/common/http';
 import { Observable }         from 'rxjs';
 import { Review, CrearReviewDto } from '../../shared/models/review.model';
+import { environment }            from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ReviewService {
 
     private readonly http = inject(HttpClient);
-    private readonly API  = 'http://localhost:4000/api/reviews';
+    private readonly API  = `${environment.apiUrl}/reviews`;
 
     getReviews(): Observable<{ data: Review[] }> {
         return this.http.get<{ data: Review[] }>(this.API);

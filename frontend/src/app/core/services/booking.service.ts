@@ -2,15 +2,16 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient }         from '@angular/common/http';
 import { Observable }         from 'rxjs';
 import { Booking, CrearBookingDto, Barbero, Servicio } from '../../shared/models/booking.model';
+import { environment }        from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class BookingService {
 
     private readonly http = inject(HttpClient);
 
-    private readonly API           = 'http://localhost:4000/api/bookings';
-    private readonly API_BARBEROS  = 'http://localhost:4000/api/barberos';
-    private readonly API_SERVICIOS = 'http://localhost:4000/api/servicios';
+    private readonly API           = `${environment.apiUrl}/bookings`;
+    private readonly API_BARBEROS  = `${environment.apiUrl}/barberos`;
+    private readonly API_SERVICIOS = `${environment.apiUrl}/servicios`;
 
     getBarberos(): Observable<{ data: Barbero[] }> {
         return this.http.get<{ data: Barbero[] }>(this.API_BARBEROS);
