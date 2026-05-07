@@ -77,6 +77,7 @@
     "TARJETA_DESC": "Paga ahora con Stripe",
     "NOTAS": "Notas",
     "NOTAS_HINT": "opcional",
+    "NOTAS_PLACEHOLDER": "Algún detalle que quieras comentar...",
     "TOTAL": "Total",
     "DURACION": "Duración estimada",
     "CONFIRMAR": "Confirmar reserva",
@@ -103,7 +104,13 @@
     "DEJAR_RESENA": "⭐ Dejar reseña",
     "ENVIAR_RESENA": "Enviar reseña",
     "ENVIANDO": "Enviando...",
-    "MINUTOS": "min"
+    "MINUTOS": "min",
+    "CARGANDO": "Cargando reservas...",
+    "A_LAS": "a las",
+    "PUNTUACION": "Puntuación",
+    "COMENTARIO": "Comentario",
+    "PLACEHOLDER_COMENTARIO": "Cuéntanos tu experiencia...",
+    "ERROR_COMENTARIO": "El comentario debe tener al menos 10 caracteres"
   },
   "RESENAS_PAGE": {
     "BADGE": "Opiniones reales",
@@ -177,6 +184,11 @@
     "CAT_CORTES": "Cortes",
     "CAT_MECHAS": "Mechas",
     "CAT_TINTES": "Tintes"
+  },
+  "ERROR_404": {
+    "SUBTITULO": "Página no encontrada",
+    "TEXTO": "La página que buscas no existe o ha sido movida.",
+    "BTN": "Volver al inicio"
   },
   "COMUN": {
     "CANCELAR": "Cancelar"

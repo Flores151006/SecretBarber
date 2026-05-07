@@ -77,6 +77,7 @@
     "TARJETA_DESC": "Pay now with Stripe",
     "NOTAS": "Notes",
     "NOTAS_HINT": "optional",
+    "NOTAS_PLACEHOLDER": "Any detail you'd like to mention...",
     "TOTAL": "Total",
     "DURACION": "Estimated duration",
     "CONFIRMAR": "Confirm booking",
@@ -103,7 +104,13 @@
     "DEJAR_RESENA": "⭐ Leave a review",
     "ENVIAR_RESENA": "Submit review",
     "ENVIANDO": "Sending...",
-    "MINUTOS": "min"
+    "MINUTOS": "min",
+    "CARGANDO": "Loading bookings...",
+    "A_LAS": "at",
+    "PUNTUACION": "Rating",
+    "COMENTARIO": "Comment",
+    "PLACEHOLDER_COMENTARIO": "Tell us about your experience...",
+    "ERROR_COMENTARIO": "Comment must be at least 10 characters"
   },
   "RESENAS_PAGE": {
     "BADGE": "Real opinions",
@@ -177,6 +184,11 @@
     "CAT_CORTES": "Haircuts",
     "CAT_MECHAS": "Highlights",
     "CAT_TINTES": "Dyes"
+  },
+  "ERROR_404": {
+    "SUBTITULO": "Page not found",
+    "TEXTO": "The page you are looking for does not exist or has been moved.",
+    "BTN": "Back to home"
   },
   "COMUN": {
     "CANCELAR": "Cancel"
