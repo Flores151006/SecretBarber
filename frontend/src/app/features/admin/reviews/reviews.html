@@ -7,16 +7,20 @@
 
   <!-- Filtros estrellas -->
   <div class="flex gap-2 flex-wrap mb-8">
-    <button (click)="filtroEstrellas = 0"
-            [class]="filtroEstrellas === 0 ? 'bg-gold text-background shadow-gold' : 'border border-gold/20 text-foreground/55 hover:border-gold/50 hover:bg-gold/5'"
+    <button (click)="filtroEstrellas.set(0)"
+            [class]="filtroEstrellas() === 0 ? 'bg-gold text-background shadow-gold' : 'border border-gold/20 text-foreground/55 hover:border-gold/50 hover:bg-gold/5'"
             class="px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200">
       {{ 'ADMIN.RESENAS.FILTRO_TODAS' | translate }}
     </button>
     @for (n of [5,4,3,2,1]; track n) {
-      <button (click)="filtroEstrellas = n"
-              [class]="filtroEstrellas === n ? 'bg-gold text-background shadow-gold' : 'border border-gold/20 text-foreground/55 hover:border-gold/50 hover:bg-gold/5'"
-              class="px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-0.5">
-        <ng-icon name="lucideStar" style="font-size:0.7rem" /> {{ n }}
+      <button (click)="filtroEstrellas.set(n)"
+              [class]="filtroEstrellas() === n ? 'bg-gold text-background shadow-gold' : 'border border-gold/20 text-foreground/55 hover:border-gold/50 hover:bg-gold/5'"
+              class="px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-1">
+        <svg viewBox="0 0 24 24" style="width:0.7rem;height:0.7rem"
+             fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        {{ n }}
       </button>
     }
   </div>

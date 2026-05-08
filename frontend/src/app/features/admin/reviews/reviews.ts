@@ -18,14 +18,14 @@ export class AdminReviewsComponent implements OnInit {
     private translate     = inject(TranslateService);
     private cdr           = inject(ChangeDetectorRef);
 
-    reviews       = signal<Review[]>([]);
-    cargando      = true;
-    error         = '';
-    filtroEstrellas = 0; // 0 = todas
+    reviews         = signal<Review[]>([]);
+    cargando        = true;
+    error           = '';
+    filtroEstrellas = signal(0);
 
     reviewsFiltradas = computed(() => {
-        if (this.filtroEstrellas === 0) return this.reviews();
-        return this.reviews().filter(r => r.puntuacion === this.filtroEstrellas);
+        if (this.filtroEstrellas() === 0) return this.reviews();
+        return this.reviews().filter(r => r.puntuacion === this.filtroEstrellas());
     });
 
     ngOnInit(): void {
