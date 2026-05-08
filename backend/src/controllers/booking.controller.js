@@ -135,7 +135,9 @@ export const crearBooking = async (req, res) => {
                 .populate('barbero', 'nombre');
 
             const usuario = await User.findById(req.user.id);
-            await enviarConfirmacionReserva(usuario, bookingPopulado);
+            try { await enviarConfirmacionReserva(usuario, bookingPopulado); } catch (e) {
+                console.error('[EMAIL] Error al enviar confirmación:', e.message);
+            }
 
             return res.status(201).json({ message: 'Reserva creada. Pago en local.', bookingId: booking._id });
         }
