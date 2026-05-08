@@ -131,6 +131,15 @@ export class MisBookingsComponent implements OnInit {
         });
     }
 
+    private aplicarAutoSeleccion(ids: string[]): string[] {
+        const corte      = this.servicios.find(s => s.nombre === 'Corte')?._id;
+        const barba      = this.servicios.find(s => s.nombre === 'Barba')?._id;
+        const corteBarba = this.servicios.find(s => s.nombre === 'Corte y barba')?._id;
+        if (corte && barba && corteBarba && ids.includes(corte) && ids.includes(barba))
+            return [...ids.filter(id => id !== corte && id !== barba), corteBarba];
+        return ids;
+    }
+
     private getIncompatibles(id: string): string[] {
         const s = this.servicios.find(s => s._id === id);
         if (!s) return [];
@@ -158,6 +167,7 @@ export class MisBookingsComponent implements OnInit {
             const incompatibles = this.getIncompatibles(id);
             nuevos = [...actuales.filter(s => !incompatibles.includes(s)), id];
         }
+        nuevos = this.aplicarAutoSeleccion(nuevos);
         this.formEditar.get('servicios')?.setValue(nuevos);
         this.actualizarPrecioEdicion();
         this.actualizarHorasEdicion();
