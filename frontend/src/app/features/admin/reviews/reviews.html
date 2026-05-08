@@ -55,9 +55,12 @@
               <div class="flex items-center gap-3 mb-3 flex-wrap">
                 <div class="flex gap-0.5">
                   @for (star of [1,2,3,4,5]; track star) {
-                    <ng-icon name="lucideStar"
-                             [class]="star <= review.puntuacion ? 'text-gold' : 'text-foreground/10'"
-                             style="font-size:0.9rem" />
+                    <svg viewBox="0 0 24 24" style="width:0.9rem;height:0.9rem"
+                         [class]="star <= review.puntuacion ? 'text-gold' : 'text-foreground/20'"
+                         [attr.fill]="star <= review.puntuacion ? 'currentColor' : 'none'"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
                   }
                 </div>
                 <span class="badge" [class]="review.visible ? 'badge-confirmada' : 'badge-cancelada'">

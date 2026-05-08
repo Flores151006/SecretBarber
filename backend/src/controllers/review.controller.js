@@ -1,5 +1,6 @@
 import { Review }   from '../models/review.model.js';
 import { Booking }  from '../models/booking.model.js';
+import { contienePalabraMalsonante } from '../helpers/profanity.helper.js';
 
 // ─── GET reseñas visibles (público — las ve cualquiera en la web) ──────────────
 export const getReviews = async (req, res) => {
@@ -52,6 +53,13 @@ export const crearReview = async (req, res) => {
         const yaReseñada = await Review.findOne({ reserva });
         if (yaReseñada) {
             return res.status(409).json({ message: 'Ya has enviado una reseña de esta reserva' });
+        }
+
+        // Filtro de lenguaje inapropiado
+        if (contienePalabraMalsonante(comentario)) {
+            return res.status(400).json({
+                message: 'Tu reseña contiene lenguaje inapropiado. Por favor, revísala antes de enviarla.'
+            });
         }
 
         const nuevaReview = await Review.create({

@@ -270,8 +270,12 @@
                           @for (star of [1,2,3,4,5]; track star) {
                             <button type="button" (click)="setPuntuacion(star)"
                                     class="transition-transform hover:scale-110 p-0.5"
-                                    [class]="star <= formResena.get('puntuacion')?.value ? 'text-gold' : 'text-foreground/20'">
-                              <ng-icon name="lucideStar" style="font-size:1.4rem" />
+                                    [class]="star <= formResena.get('puntuacion')?.value ? 'text-gold' : 'text-foreground/25'">
+                              <svg viewBox="0 0 24 24" style="width:1.4rem;height:1.4rem"
+                                   [attr.fill]="star <= formResena.get('puntuacion')?.value ? 'currentColor' : 'none'"
+                                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                              </svg>
                             </button>
                           }
                         </div>
