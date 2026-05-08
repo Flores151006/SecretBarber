@@ -291,65 +291,135 @@ export const modificarBooking = async (req, res) => {
 // ── GET /estadisticas — Estadísticas económicas (Admin) ──────────────────────
 export const getEstadisticas = async (req, res) => {
     try {
-        const ahora   = new Date();
-        const hoy     = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
-        const semana  = new Date(hoy); semana.setDate(semana.getDate() - 7);
-        const mes     = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
-        const anio    = new Date(ahora.getFullYear(), 0, 1);
+        const { filtro = 'mes', fechaInicio, fechaFin } = req.query;
 
-        // Reservas pagadas
-        const pagadas = await Booking.find({ estadoPago: 'pagado' })
-            .populate('servicios', 'nombre precio');
+        const ahora     = new Date();
+        const hoyInicio = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
 
-        // Ingresos totales por periodos predefinidos
-        const totalAnio  = pagadas.filter(b => new Date(b.fecha) >= anio).reduce((acc, b) => acc + b.precio, 0);
-        const totalMes   = pagadas.filter(b => new Date(b.fecha) >= mes).reduce((acc, b) => acc + b.precio, 0);
-        const totalSemana= pagadas.filter(b => new Date(b.fecha) >= semana).reduce((acc, b) => acc + b.precio, 0);
-        const totalHoy   = pagadas.filter(b => new Date(b.fecha) >= hoy).reduce((acc, b) => acc + b.precio, 0);
+        let inicio, fin;
 
-        // Número de reservas por periodos predefinidos
-        const reservasAnio  = pagadas.filter(b => new Date(b.fecha) >= anio).length;
-        const reservasMes   = pagadas.filter(b => new Date(b.fecha) >= mes).length;
-        const reservasSemana= pagadas.filter(b => new Date(b.fecha) >= semana).length;
-        const reservasHoy   = pagadas.filter(b => new Date(b.fecha) >= hoy).length;
+        switch (filtro) {
+            case 'hoy':
+                inicio = new Date(hoyInicio);
+                fin    = new Date(hoyInicio); fin.setHours(23, 59, 59, 999);
+                break;
+            case 'semana':
+                inicio = new Date(hoyInicio); inicio.setDate(inicio.getDate() - 6);
+                fin    = new Date(hoyInicio); fin.setHours(23, 59, 59, 999);
+                break;
+            case 'anio':
+                inicio = new Date(ahora.getFullYear(), 0, 1);
+                fin    = new Date(ahora.getFullYear(), 11, 31, 23, 59, 59, 999);
+                break;
+            case 'rango':
+                if (!fechaInicio || !fechaFin)
+                    return res.status(400).json({ message: 'Faltan fechaInicio y fechaFin' });
+                inicio = new Date(fechaInicio);
+                fin    = new Date(fechaFin); fin.setHours(23, 59, 59, 999);
+                if (isNaN(inicio.getTime()) || isNaN(fin.getTime()) || inicio > fin)
+                    return res.status(400).json({ message: 'Rango de fechas inválido' });
+                break;
+            default: // 'mes'
+                inicio = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
+                fin    = new Date(ahora.getFullYear(), ahora.getMonth() + 1, 0, 23, 59, 59, 999);
+        }
 
-        // ── Rango personalizado ───────────────────────────────────────────────
-        let totalRango    = null;
-        let reservasRango = null;
+        // Solo reservas pagadas en el período
+        const pagadas = await Booking.find({
+            estadoPago: 'pagado',
+            fecha: { $gte: inicio, $lte: fin }
+        }).populate('servicios', 'nombre precio');
 
-        const { fechaInicio, fechaFin } = req.query;
-        if (fechaInicio && fechaFin) {
-            const inicio = new Date(fechaInicio);
-            const fin    = new Date(fechaFin);
-            fin.setHours(23, 59, 59, 999); // incluir todo el día final
+        // KPIs del período
+        const total       = Math.round(pagadas.reduce((acc, b) => acc + b.precio, 0) * 100) / 100;
+        const reservas    = pagadas.length;
+        const ticketMedio = reservas > 0 ? Math.round((total / reservas) * 100) / 100 : 0;
 
-            if (!isNaN(inicio.getTime()) && !isNaN(fin.getTime()) && inicio <= fin) {
-                const enRango = pagadas.filter(b => {
-                    const f = new Date(b.fecha);
-                    return f >= inicio && f <= fin;
+        // Gráfico de barras — granularidad según filtro
+        let ingresosPorPeriodo = [];
+
+        if (filtro === 'hoy') {
+            ingresosPorPeriodo = Array.from({ length: 13 }, (_, i) => {
+                const h     = 8 + i;
+                const t     = pagadas
+                    .filter(b => parseInt(b.hora.split(':')[0]) === h)
+                    .reduce((acc, b) => acc + b.precio, 0);
+                return { label: `${String(h).padStart(2, '0')}h`, total: Math.round(t * 100) / 100 };
+            });
+
+        } else if (filtro === 'semana') {
+            ingresosPorPeriodo = Array.from({ length: 7 }, (_, i) => {
+                const dia    = new Date(hoyInicio); dia.setDate(dia.getDate() - 6 + i);
+                const diaFin = new Date(dia); diaFin.setHours(23, 59, 59, 999);
+                const t      = pagadas
+                    .filter(b => { const f = new Date(b.fecha); return f >= dia && f <= diaFin; })
+                    .reduce((acc, b) => acc + b.precio, 0);
+                return {
+                    label: dia.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric' }),
+                    total: Math.round(t * 100) / 100
+                };
+            });
+
+        } else if (filtro === 'mes') {
+            const diasEnMes = new Date(ahora.getFullYear(), ahora.getMonth() + 1, 0).getDate();
+            ingresosPorPeriodo = Array.from({ length: diasEnMes }, (_, i) => {
+                const dia    = new Date(ahora.getFullYear(), ahora.getMonth(), i + 1);
+                const diaFin = new Date(ahora.getFullYear(), ahora.getMonth(), i + 1, 23, 59, 59, 999);
+                const t      = pagadas
+                    .filter(b => { const f = new Date(b.fecha); return f >= dia && f <= diaFin; })
+                    .reduce((acc, b) => acc + b.precio, 0);
+                return { label: `${i + 1}`, total: Math.round(t * 100) / 100 };
+            });
+
+        } else if (filtro === 'anio') {
+            ingresosPorPeriodo = Array.from({ length: 12 }, (_, i) => {
+                const mesInicio = new Date(ahora.getFullYear(), i, 1);
+                const mesFin    = new Date(ahora.getFullYear(), i + 1, 0, 23, 59, 59, 999);
+                const t         = pagadas
+                    .filter(b => { const f = new Date(b.fecha); return f >= mesInicio && f <= mesFin; })
+                    .reduce((acc, b) => acc + b.precio, 0);
+                return {
+                    label: mesInicio.toLocaleDateString('es-ES', { month: 'short' }),
+                    total: Math.round(t * 100) / 100
+                };
+            });
+
+        } else { // rango
+            const diffDays = Math.ceil((fin.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24));
+
+            if (diffDays <= 31) {
+                ingresosPorPeriodo = Array.from({ length: diffDays }, (_, i) => {
+                    const dia    = new Date(inicio); dia.setDate(dia.getDate() + i); dia.setHours(0, 0, 0, 0);
+                    const diaFin = new Date(dia); diaFin.setHours(23, 59, 59, 999);
+                    const t      = pagadas
+                        .filter(b => { const f = new Date(b.fecha); return f >= dia && f <= diaFin; })
+                        .reduce((acc, b) => acc + b.precio, 0);
+                    return {
+                        label: dia.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
+                        total: Math.round(t * 100) / 100
+                    };
                 });
-                totalRango    = Math.round(enRango.reduce((acc, b) => acc + b.precio, 0) * 100) / 100;
-                reservasRango = enRango.length;
+            } else {
+                const meses  = [];
+                const cursor = new Date(inicio.getFullYear(), inicio.getMonth(), 1);
+                while (cursor <= fin) { meses.push(new Date(cursor)); cursor.setMonth(cursor.getMonth() + 1); }
+                ingresosPorPeriodo = meses.map(mesInicio => {
+                    const mesFin = new Date(mesInicio.getFullYear(), mesInicio.getMonth() + 1, 0, 23, 59, 59, 999);
+                    const t      = pagadas
+                        .filter(b => { const f = new Date(b.fecha); return f >= mesInicio && f <= mesFin; })
+                        .reduce((acc, b) => acc + b.precio, 0);
+                    return {
+                        label: mesInicio.toLocaleDateString('es-ES', { month: 'short', year: '2-digit' }),
+                        total: Math.round(t * 100) / 100
+                    };
+                });
             }
         }
 
-        // Ingresos por mes (últimos 12 meses) para el gráfico
-        const ingresosPorMes = Array.from({ length: 12 }, (_, i) => {
-            const fecha = new Date(ahora.getFullYear(), ahora.getMonth() - 11 + i, 1);
-            const fin   = new Date(ahora.getFullYear(), ahora.getMonth() - 11 + i + 1, 1);
-            const total = pagadas
-                .filter(b => new Date(b.fecha) >= fecha && new Date(b.fecha) < fin)
-                .reduce((acc, b) => acc + b.precio, 0);
-            return {
-                mes:   fecha.toLocaleDateString('es-ES', { month: 'short', year: '2-digit' }),
-                total: Math.round(total * 100) / 100
-            };
-        });
-
-        // Servicio más solicitado
+        // Ranking de servicios — filtrado por período
         const conteoServicios = {};
         pagadas.forEach(b => {
-            (b.servicios).forEach(s => {
+            (b.servicios || []).forEach(s => {
                 const nombre = s.nombre || 'Desconocido';
                 conteoServicios[nombre] = (conteoServicios[nombre] || 0) + 1;
             });
@@ -359,19 +429,10 @@ export const getEstadisticas = async (req, res) => {
             .slice(0, 5)
             .map(([nombre, count]) => ({ nombre, count }));
 
-        // Ticket medio (sobre el año completo)
-        const ticketMedio = reservasAnio > 0
-            ? Math.round((totalAnio / reservasAnio) * 100) / 100
-            : 0;
-
         res.json({
             data: {
-                resumen: {
-                    totalAnio, totalMes, totalSemana, totalHoy,
-                    reservasAnio, reservasMes, reservasSemana, reservasHoy,
-                    ticketMedio, totalRango, reservasRango
-                },
-                ingresosPorMes,
+                resumen: { total, reservas, ticketMedio },
+                ingresosPorPeriodo,
                 serviciosRanking
             }
         });

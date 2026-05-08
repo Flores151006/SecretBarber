@@ -347,10 +347,12 @@
       "KPI_INGRESOS": "Ingresos",
       "KPI_RESERVAS": "Reservas",
       "KPI_TICKET": "Ticket medio",
-      "KPI_TICKET_DESC": "Sobre el año completo",
-      "GRAFICO_BARRAS": "Ingresos por mes",
+      "KPI_TICKET_DESC": "Sobre el período seleccionado",
+      "GRAFICO_BARRAS": "Ingresos del período",
       "GRAFICO_DONUT": "Servicios más populares",
-      "GRAFICO_ANIO": "en el año"
+      "GRAFICO_ANIO": "en el año",
+      "ACTUALIZANDO": "Actualizando...",
+      "SIN_DATOS": "Sin datos para este período"
     }
   }
 }

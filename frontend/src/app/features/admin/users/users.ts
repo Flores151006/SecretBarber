@@ -23,18 +23,18 @@ export class UsersComponent implements OnInit {
     usuarios  = signal<User[]>([]);
     cargando  = true;
     error     = '';
-    busqueda  = '';
-    filtroRol = 'todos';
+    busqueda  = signal('');
+    filtroRol = signal('todos');
 
     usuariosFiltrados = computed(() => {
         let resultado = this.usuarios();
 
-        if (this.filtroRol !== 'todos') {
-            resultado = resultado.filter(u => u.role === this.filtroRol);
+        if (this.filtroRol() !== 'todos') {
+            resultado = resultado.filter(u => u.role === this.filtroRol());
         }
 
-        if (this.busqueda.trim()) {
-            const termino = this.busqueda.toLowerCase().trim();
+        const termino = this.busqueda().trim().toLowerCase();
+        if (termino) {
             resultado = resultado.filter(u =>
                 u.name.toLowerCase().includes(termino) ||
                 u.email.toLowerCase().includes(termino)

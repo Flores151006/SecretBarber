@@ -55,10 +55,10 @@ export class BookingService {
         return this.http.patch<{ message: string }>(`${this.API}/${id}/modificar`, data);
     }
 
-    getEstadisticas(fechaInicio?: string, fechaFin?: string): Observable<any> {
-        let url = `${this.API}/estadisticas`;
-        if (fechaInicio && fechaFin) {
-            url += `?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
+    getEstadisticas(filtro: string, fechaInicio?: string, fechaFin?: string): Observable<any> {
+        let url = `${this.API}/estadisticas?filtro=${filtro}`;
+        if (filtro === 'rango' && fechaInicio && fechaFin) {
+            url += `&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
         }
         return this.http.get<any>(url);
     }

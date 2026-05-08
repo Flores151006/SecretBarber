@@ -24,17 +24,18 @@
     <div class="flex gap-2 flex-wrap mb-4 items-center">
       @for (f of filtros; track f.id) {
         <button (click)="setFiltro(f.id)"
+                [disabled]="actualizando()"
                 [class]="filtro() === f.id && !rangoAplicado() ? 'bg-gold text-background shadow-gold' : 'border border-gold/20 text-foreground/55 hover:border-gold/50 hover:bg-gold/5'"
-                class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-200">
+                class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 disabled:opacity-50">
           {{ f.label | translate }}
         </button>
       }
 
-      <!-- Botón intervalo personalizado — muestra las fechas cuando hay rango activo -->
       <div class="flex items-center gap-1">
         <button (click)="toggleRango()"
+                [disabled]="actualizando()"
                 [class]="filtro() === 'rango' ? 'bg-gold text-background shadow-gold' : 'border border-gold/20 text-foreground/55 hover:border-gold/50 hover:bg-gold/5'"
-                class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2">
+                class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 disabled:opacity-50">
           <ng-icon name="lucideCalendarRange" style="font-size:0.85rem" />
           @if (labelBotonRango()) {
             <span class="font-semibold tabular-nums">{{ labelBotonRango() }}</span>
@@ -43,7 +44,6 @@
           }
         </button>
 
-        <!-- Botón × para limpiar el rango activo -->
         @if (rangoAplicado()) {
           <button (click)="limpiarRango()"
                   title="Limpiar rango"
@@ -52,9 +52,16 @@
           </button>
         }
       </div>
+
+      @if (actualizando()) {
+        <div class="flex items-center gap-2 text-foreground/30 text-xs ml-1">
+          <div class="spinner-sm"></div>
+          <span>{{ 'ADMIN.ESTADISTICAS.ACTUALIZANDO' | translate }}</span>
+        </div>
+      }
     </div>
 
-    <!-- Panel de rango de fechas (desplegable) -->
+    <!-- Panel de rango de fechas -->
     @if (mostrarRango()) {
       <div class="glass rounded-2xl p-5 mb-6 border border-gold/15" data-aos="fade-down">
         <p class="text-foreground/60 text-xs uppercase tracking-widest mb-4">{{ 'ADMIN.ESTADISTICAS.RANGO_TITULO' | translate }}</p>
@@ -71,16 +78,14 @@
             <input type="date" formControlName="fechaInicio" [max]="maxFecha"
                    class="bg-background/60 border border-gold/20 focus:border-gold text-foreground rounded-lg px-3 py-2 text-sm outline-none transition-all [color-scheme:dark]" />
           </div>
-
           <div class="flex flex-col gap-1.5 min-w-[160px]">
             <label class="text-foreground/50 text-xs font-medium">{{ 'ADMIN.ESTADISTICAS.RANGO_HASTA' | translate }}</label>
             <input type="date" formControlName="fechaFin" [max]="maxFecha"
                    class="bg-background/60 border border-gold/20 focus:border-gold text-foreground rounded-lg px-3 py-2 text-sm outline-none transition-all [color-scheme:dark]" />
           </div>
-
-          <button type="submit" [disabled]="rangoForm.invalid || cargandoRango()"
+          <button type="submit" [disabled]="rangoForm.invalid || actualizando()"
                   class="btn-shimmer bg-gold hover:bg-gold-light text-background font-semibold px-6 py-2 rounded-lg shadow-gold disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2 transition-all">
-            @if (cargandoRango()) {
+            @if (actualizando()) {
               <div class="spinner-sm"></div>
               {{ 'ADMIN.ESTADISTICAS.RANGO_APLICANDO' | translate }}
             } @else {
@@ -93,55 +98,54 @@
     }
 
     <!-- KPIs -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
+         [class.opacity-50]="actualizando()" [class.pointer-events-none]="actualizando()">
 
       <div class="relative glass rounded-2xl p-6 overflow-hidden group hover:shadow-gold transition-all duration-300">
         <div class="absolute -top-6 -right-6 w-24 h-24 bg-gold/5 rounded-full group-hover:bg-gold/10 transition-colors duration-300"></div>
         <p class="text-foreground/40 text-xs uppercase tracking-[0.15em] mb-3">{{ 'ADMIN.ESTADISTICAS.KPI_INGRESOS' | translate }}</p>
-        <p class="text-gradient font-bold font-serif" style="font-size: 2.5rem; line-height: 1;">{{ ingresoActual() }}€</p>
+        <p class="text-gradient font-bold font-serif" style="font-size: 2.5rem; line-height: 1;">{{ datos().resumen.total }}€</p>
         <p class="text-foreground/25 text-xs mt-2">
-          @if (filtro() === 'rango') {
-            {{ labelFiltro() }}
-          } @else {
-            {{ labelFiltro() | translate }}
-          }
+          @if (filtro() === 'rango') { {{ labelFiltro() }} } @else { {{ labelFiltro() | translate }} }
         </p>
       </div>
 
       <div class="relative glass rounded-2xl p-6 overflow-hidden group hover:shadow-gold transition-all duration-300">
         <div class="absolute -top-6 -right-6 w-24 h-24 bg-gold/5 rounded-full group-hover:bg-gold/10 transition-colors duration-300"></div>
         <p class="text-foreground/40 text-xs uppercase tracking-[0.15em] mb-3">{{ 'ADMIN.ESTADISTICAS.KPI_RESERVAS' | translate }}</p>
-        <p class="text-foreground font-bold font-serif" style="font-size: 2.5rem; line-height: 1;">{{ reservasActual() }}</p>
+        <p class="text-foreground font-bold font-serif" style="font-size: 2.5rem; line-height: 1;">{{ datos().resumen.reservas }}</p>
         <p class="text-foreground/25 text-xs mt-2">
-          @if (filtro() === 'rango') {
-            {{ labelFiltro() }}
-          } @else {
-            {{ labelFiltro() | translate }}
-          }
+          @if (filtro() === 'rango') { {{ labelFiltro() }} } @else { {{ labelFiltro() | translate }} }
         </p>
       </div>
 
       <div class="relative glass rounded-2xl p-6 overflow-hidden group hover:shadow-gold transition-all duration-300">
         <div class="absolute -top-6 -right-6 w-24 h-24 bg-gold/5 rounded-full group-hover:bg-gold/10 transition-colors duration-300"></div>
         <p class="text-foreground/40 text-xs uppercase tracking-[0.15em] mb-3">{{ 'ADMIN.ESTADISTICAS.KPI_TICKET' | translate }}</p>
-        <p class="text-foreground font-bold font-serif" style="font-size: 2.5rem; line-height: 1;">{{ ticketMedio() }}€</p>
+        <p class="text-foreground font-bold font-serif" style="font-size: 2.5rem; line-height: 1;">{{ datos().resumen.ticketMedio }}€</p>
         <p class="text-foreground/25 text-xs mt-2">{{ 'ADMIN.ESTADISTICAS.KPI_TICKET_DESC' | translate }}</p>
       </div>
 
     </div>
 
     <!-- Gráficos -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5"
+         [class.opacity-50]="actualizando()" [class.pointer-events-none]="actualizando()">
 
       <div class="lg:col-span-2 glass rounded-2xl p-6">
         <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
           <h2 class="text-foreground font-semibold">{{ 'ADMIN.ESTADISTICAS.GRAFICO_BARRAS' | translate }}</h2>
           <span class="text-gold text-xs border border-gold/20 bg-gold/5 px-3 py-1 rounded-full font-medium">
-            {{ datos().resumen.totalAnio }}€ {{ 'ADMIN.ESTADISTICAS.GRAFICO_ANIO' | translate }}
+            {{ datos().resumen.total }}€
+            @if (filtro() === 'rango') { {{ labelFiltro() }} } @else { {{ labelFiltro() | translate }} }
           </span>
         </div>
         @if (barChartData().datasets[0]?.data?.length) {
           <canvas baseChart [data]="barChartData()" [options]="barChartOptions" type="bar"></canvas>
+        } @else {
+          <div class="flex items-center justify-center h-40 text-foreground/25 text-sm">
+            {{ 'ADMIN.ESTADISTICAS.SIN_DATOS' | translate }}
+          </div>
         }
       </div>
 
@@ -152,31 +156,34 @@
           <div class="max-w-[160px] mx-auto mb-5">
             <canvas baseChart [data]="doughnutData()" [options]="doughnutOptions" type="doughnut"></canvas>
           </div>
-        }
-
-        <div class="flex flex-col gap-0.5">
-          @for (s of datos().serviciosRanking; track s.nombre; let i = $index) {
-            <div class="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
-              <div class="flex items-center gap-2 min-w-0">
-                <span class="w-2 h-2 rounded-full flex-shrink-0"
-                      [style.background]="['#6366F1','#EC4899','#14B8A6','#F59E0B','#8B5CF6'][i]"></span>
-                <span class="text-foreground/60 text-xs truncate">{{ s.nombre }}</span>
-              </div>
-              <div class="flex items-center gap-2 flex-shrink-0 ml-2">
-                <div class="h-1 bg-white/5 rounded-full w-12">
-                  <div class="h-1 rounded-full transition-all duration-700"
-                       [style.width]="(s.count / datos().serviciosRanking[0].count * 100) + '%'"
-                       [style.background]="['#6366F1','#EC4899','#14B8A6','#F59E0B','#8B5CF6'][i]">
-                  </div>
+          <div class="flex flex-col gap-0.5">
+            @for (s of datos().serviciosRanking; track s.nombre; let i = $index) {
+              <div class="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="w-2 h-2 rounded-full flex-shrink-0"
+                        [style.background]="['#6366F1','#EC4899','#14B8A6','#F59E0B','#8B5CF6'][i]"></span>
+                  <span class="text-foreground/60 text-xs truncate">{{ s.nombre }}</span>
                 </div>
-                <span class="font-bold text-xs w-4 text-right"
-                      [style.color]="['#6366F1','#EC4899','#14B8A6','#F59E0B','#8B5CF6'][i]">
-                  {{ s.count }}
-                </span>
+                <div class="flex items-center gap-2 flex-shrink-0 ml-2">
+                  <div class="h-1 bg-white/5 rounded-full w-12">
+                    <div class="h-1 rounded-full transition-all duration-700"
+                         [style.width]="(s.count / datos().serviciosRanking[0].count * 100) + '%'"
+                         [style.background]="['#6366F1','#EC4899','#14B8A6','#F59E0B','#8B5CF6'][i]">
+                    </div>
+                  </div>
+                  <span class="font-bold text-xs w-4 text-right"
+                        [style.color]="['#6366F1','#EC4899','#14B8A6','#F59E0B','#8B5CF6'][i]">
+                    {{ s.count }}
+                  </span>
+                </div>
               </div>
-            </div>
-          }
-        </div>
+            }
+          </div>
+        } @else {
+          <div class="flex items-center justify-center h-40 text-foreground/25 text-sm">
+            {{ 'ADMIN.ESTADISTICAS.SIN_DATOS' | translate }}
+          </div>
+        }
       </div>
 
     </div>

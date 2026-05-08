@@ -21,7 +21,7 @@ export class EstadisticasComponent implements OnInit {
     private fb             = inject(FormBuilder);
 
     cargando        = signal(true);
-    cargandoRango   = signal(false);
+    actualizando    = signal(false);
     error           = signal('');
     errorRango      = signal('');
     datos           = signal<any>(null);
@@ -42,40 +42,11 @@ export class EstadisticasComponent implements OnInit {
         { id: 'anio'   as Filtro, label: 'ADMIN.ESTADISTICAS.FILTRO_ANIO'   },
     ];
 
-    // Texto dinámico del botón de rango — muestra las fechas cuando está activo
     labelBotonRango = computed(() => {
         const fa = this.fechasAplicadas();
         if (fa) return `${this.formatearFechaCorta(fa.inicio)} — ${this.formatearFechaCorta(fa.fin)}`;
-        return null; // null = mostrar texto i18n por defecto
+        return null;
     });
-
-    ingresoActual = computed(() => {
-        const d = this.datos();
-        if (!d) return 0;
-        const map: Record<Filtro, number> = {
-            hoy:    d.resumen.totalHoy,
-            semana: d.resumen.totalSemana,
-            mes:    d.resumen.totalMes,
-            anio:   d.resumen.totalAnio,
-            rango:  d.resumen.totalRango ?? 0
-        };
-        return map[this.filtro()];
-    });
-
-    reservasActual = computed(() => {
-        const d = this.datos();
-        if (!d) return 0;
-        const map: Record<Filtro, number> = {
-            hoy:    d.resumen.reservasHoy,
-            semana: d.resumen.reservasSemana,
-            mes:    d.resumen.reservasMes,
-            anio:   d.resumen.reservasAnio,
-            rango:  d.resumen.reservasRango ?? 0
-        };
-        return map[this.filtro()];
-    });
-
-    ticketMedio = computed(() => this.datos()?.resumen.ticketMedio ?? 0);
 
     labelFiltro = computed(() => {
         if (this.filtro() === 'rango') {
@@ -99,7 +70,7 @@ export class EstadisticasComponent implements OnInit {
 
     barChartOptions: ChartConfiguration<'bar'>['options'] = {
         responsive: true,
-        animation: { duration: 800, easing: 'easeInOutQuart' },
+        animation: { duration: 600, easing: 'easeInOutQuart' },
         plugins: {
             legend: { display: false },
             tooltip: { callbacks: { label: (ctx) => ` ${ctx.parsed.y}€` } }
@@ -112,7 +83,7 @@ export class EstadisticasComponent implements OnInit {
 
     doughnutOptions: ChartConfiguration<'doughnut'>['options'] = {
         responsive: true,
-        animation: { duration: 800 },
+        animation: { duration: 600 },
         cutout: '70%',
         plugins: {
             legend: {
@@ -124,26 +95,26 @@ export class EstadisticasComponent implements OnInit {
     };
 
     ngOnInit(): void {
-        this.cargarDatos();
+        this.cargarDatos('mes');
     }
 
-    private cargarDatos(fechaInicio?: string, fechaFin?: string): void {
-        this.bookingService.getEstadisticas(fechaInicio, fechaFin).subscribe({
+    private cargarDatos(filtro: string, fechaInicio?: string, fechaFin?: string): void {
+        this.bookingService.getEstadisticas(filtro, fechaInicio, fechaFin).subscribe({
             next: (res) => {
                 this.datos.set(res.data);
                 this.construirGraficos(res.data);
                 this.cargando.set(false);
-                this.cargandoRango.set(false);
+                this.actualizando.set(false);
                 this.cdr.detectChanges();
             },
             error: (err) => {
                 const msg = err.error?.message || 'Error al cargar estadísticas';
-                if (fechaInicio) {
-                    this.errorRango.set(msg);
-                    this.cargandoRango.set(false);
-                } else {
+                if (this.cargando()) {
                     this.error.set(msg);
                     this.cargando.set(false);
+                } else {
+                    this.errorRango.set(msg);
+                    this.actualizando.set(false);
                 }
             }
         });
@@ -153,17 +124,13 @@ export class EstadisticasComponent implements OnInit {
         this.filtro.set(f);
         this.mostrarRango.set(false);
         this.errorRango.set('');
+        this.actualizando.set(true);
+        this.cargarDatos(f);
     }
 
     toggleRango(): void {
-        if (this.rangoAplicado()) {
-            // Si ya hay un rango activo, simplemente volver a mostrarlo para editar
-            this.mostrarRango.update(v => !v);
-            this.filtro.set('rango');
-        } else {
-            this.mostrarRango.update(v => !v);
-            if (this.mostrarRango()) this.filtro.set('rango');
-        }
+        this.mostrarRango.update(v => !v);
+        if (this.mostrarRango()) this.filtro.set('rango');
     }
 
     limpiarRango(): void {
@@ -172,7 +139,7 @@ export class EstadisticasComponent implements OnInit {
         this.mostrarRango.set(false);
         this.errorRango.set('');
         this.rangoForm.reset();
-        this.filtro.set('mes');
+        this.setFiltro('mes');
     }
 
     aplicarRango(): void {
@@ -183,12 +150,12 @@ export class EstadisticasComponent implements OnInit {
             return;
         }
         this.errorRango.set('');
-        this.cargandoRango.set(true);
+        this.actualizando.set(true);
         this.filtro.set('rango');
         this.rangoAplicado.set(true);
         this.fechasAplicadas.set({ inicio: fechaInicio, fin: fechaFin });
         this.mostrarRango.set(false);
-        this.cargarDatos(fechaInicio, fechaFin);
+        this.cargarDatos('rango', fechaInicio, fechaFin);
     }
 
     get maxFecha(): string {
@@ -202,9 +169,9 @@ export class EstadisticasComponent implements OnInit {
 
     private construirGraficos(data: any): void {
         this.barChartData.set({
-            labels: data.ingresosPorMes.map((m: any) => m.mes),
+            labels: data.ingresosPorPeriodo.map((m: any) => m.label),
             datasets: [{
-                data:                data.ingresosPorMes.map((m: any) => m.total),
+                data:                data.ingresosPorPeriodo.map((m: any) => m.total),
                 backgroundColor:     'rgba(201, 168, 76, 0.15)',
                 borderColor:         '#C9A84C',
                 borderWidth:         2,

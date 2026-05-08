@@ -347,10 +347,12 @@
       "KPI_INGRESOS": "Revenue",
       "KPI_RESERVAS": "Bookings",
       "KPI_TICKET": "Average ticket",
-      "KPI_TICKET_DESC": "Over the full year",
-      "GRAFICO_BARRAS": "Monthly revenue",
+      "KPI_TICKET_DESC": "For the selected period",
+      "GRAFICO_BARRAS": "Period revenue",
       "GRAFICO_DONUT": "Most popular services",
-      "GRAFICO_ANIO": "this year"
+      "GRAFICO_ANIO": "this year",
+      "ACTUALIZANDO": "Updating...",
+      "SIN_DATOS": "No data for this period"
     }
   }
 }
