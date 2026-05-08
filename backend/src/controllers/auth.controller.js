@@ -37,18 +37,12 @@ export const register = async (req, res) => {
             verificationTokenExpires: tokenExpires
         });
 
-        let emailEnviado = true;
-        try {
-            await enviarEmailVerificacion({ name, email }, verificationToken);
-        } catch (emailError) {
-            emailEnviado = false;
-            console.error('[REGISTRO] Error al enviar email de verificación:', emailError.message);
-        }
+        // Enviar email en segundo plano para no bloquear la respuesta
+        enviarEmailVerificacion({ name, email }, verificationToken)
+            .catch(e => console.error('[REGISTRO] Error al enviar email de verificación:', e.message));
 
         res.status(201).json({
-            message: emailEnviado
-                ? 'Cuenta creada. Revisa tu correo para verificar la cuenta.'
-                : 'Cuenta creada. Hubo un problema al enviar el correo. Puedes solicitar el reenvío desde la pantalla de verificación.'
+            message: 'Cuenta creada. Revisa tu correo para verificar la cuenta.'
         });
 
     } catch (error) {
