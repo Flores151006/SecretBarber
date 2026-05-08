@@ -1,4 +1,4 @@
-import { transporter } from '../config/mailer.js';
+import { sendMail } from '../config/mailer.js';
 
 // ── Estilos base compartidos ──────────────────────────────────────────────────
 const BASE = {
@@ -95,12 +95,7 @@ export const enviarEmailVerificacion = async (usuario, token) => {
       </tr>`;
 
     console.log('[EMAIL] Enviando verificación a', usuario.email);
-    await transporter.sendMail({
-        from:    `"Secret Barber" <${process.env.EMAIL_USER}>`,
-        to:      usuario.email,
-        subject: 'Activa tu cuenta en Secret Barber',
-        html:    shell(content)
-    });
+    await sendMail({ to: usuario.email, subject: 'Activa tu cuenta en Secret Barber', html: shell(content) });
     console.log('[EMAIL] Verificación enviada correctamente');
 };
 
@@ -171,11 +166,6 @@ export const enviarConfirmacionReserva = async (usuario, booking) => {
       </tr>`;
 
     console.log('[EMAIL] Enviando confirmación de reserva a', usuario.email);
-    await transporter.sendMail({
-        from:    `"Secret Barber" <${process.env.EMAIL_USER}>`,
-        to:      usuario.email,
-        subject: `Tu cita del ${fecha} está confirmada — Secret Barber`,
-        html:    shell(content)
-    });
+    await sendMail({ to: usuario.email, subject: `Tu cita del ${fecha} está confirmada — Secret Barber`, html: shell(content) });
     console.log('[EMAIL] Confirmación de reserva enviada correctamente');
 };

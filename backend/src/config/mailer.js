@@ -1,21 +1,14 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-export const transporter = nodemailer.createTransport({
-    host:   'smtp.gmail.com',
-    port:   587,
-    secure: false,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-transporter.verify((error) => {
-    if (error) {
-        console.error('[MAILER] ❌ Error de conexión SMTP:', error.message);
-        console.error('[MAILER] Usuario:', process.env.EMAIL_USER);
-        console.error('[MAILER] Pass configurado:', !!process.env.EMAIL_PASS);
-    } else {
-        console.log('[MAILER] ✅ Conexión SMTP verificada correctamente');
-    }
-});
+export const sendMail = async ({ to, subject, html }) => {
+    const { data, error } = await resend.emails.send({
+        from:    'Secret Barber <onboarding@resend.dev>',
+        to,
+        subject,
+        html
+    });
+    if (error) throw new Error(error.message);
+    console.log('[MAILER] ✅ Email enviado, id:', data.id);
+};
