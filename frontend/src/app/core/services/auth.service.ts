@@ -14,6 +14,7 @@ export class AuthService {
     private readonly API = `${environment.apiUrl}/auth`;
 
     currentUser = signal<AuthResponse['user'] | null>(null);
+    readonly avatarUrl = signal<string | null>(null);
 
     constructor() {
         this.cargarUsuarioDesdeToken();
@@ -45,6 +46,7 @@ export class AuthService {
     logout(): void {
         this.http.post(`${this.API}/logout`, {}, { withCredentials: true }).subscribe();
         localStorage.removeItem('accessToken');
+        this.avatarUrl.set(null);
         this.currentUser.set(null);
         this.router.navigate(['/login']);
     }
@@ -104,5 +106,9 @@ export class AuthService {
     actualizarNombreLocal(name: string): void {
         const user = this.currentUser();
         if (user) this.currentUser.set({ ...user, name });
+    }
+
+    actualizarAvatarLocal(avatar: string | null): void {
+        this.avatarUrl.set(avatar);
     }
 }

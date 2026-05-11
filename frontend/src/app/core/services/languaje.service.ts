@@ -183,6 +183,8 @@ const ES = {
         BTN_CAMBIAR_PASS: 'Cambiar contraseña', EXITO_PASS: 'Contraseña cambiada correctamente',
         TEMA_LABEL: 'Tema de la interfaz', TEMA_OSCURO: 'Modo oscuro', TEMA_CLARO: 'Modo claro',
         IDIOMA_LABEL: 'Idioma', IDIOMA_ES: 'Español', IDIOMA_EN: 'English',
+        GUARDAR_FOTO: 'Guardar foto',
+        EXITO_AVATAR: 'Foto actualizada correctamente',
         ELIMINAR_TITULO: 'Eliminar cuenta',
         ELIMINAR_DESC: 'Esta acción eliminará permanentemente tu cuenta y todos tus datos. No se puede deshacer.',
         BTN_ELIMINAR: 'Eliminar mi cuenta'
@@ -462,6 +464,8 @@ const EN = {
         BTN_CAMBIAR_PASS: 'Change password', EXITO_PASS: 'Password changed successfully',
         TEMA_LABEL: 'Interface theme', TEMA_OSCURO: 'Dark mode', TEMA_CLARO: 'Light mode',
         IDIOMA_LABEL: 'Language', IDIOMA_ES: 'Español', IDIOMA_EN: 'English',
+        GUARDAR_FOTO: 'Save photo',
+        EXITO_AVATAR: 'Photo updated successfully',
         ELIMINAR_TITULO: 'Delete account',
         ELIMINAR_DESC: 'This will permanently delete your account and all your data. This cannot be undone.',
         BTN_ELIMINAR: 'Delete my account'

@@ -8,7 +8,8 @@ import {
     getPerfil,
     updatePerfil,
     cambiarPassword,
-    eliminarCuenta
+    eliminarCuenta,
+    updateAvatar
 } from '../controllers/user.controller.js';
 import { validarId, validarUsuario, validarActualizacion } from '../validators/user.validator.js';
 import { autenticarToken, autorizarRol } from '../middlewares/auth.middleware.js';
@@ -19,6 +20,7 @@ const router = Router();
 router.get('/perfil',               autenticarToken, getPerfil);
 router.patch('/perfil',             autenticarToken, updatePerfil);
 router.patch('/perfil/password',    autenticarToken, cambiarPassword);
+router.patch('/perfil/avatar',      autenticarToken, updateAvatar);
 router.delete('/perfil',            autenticarToken, eliminarCuenta);
 
 // Todas las rutas de usuarios requieren estar autenticado y ser Admin

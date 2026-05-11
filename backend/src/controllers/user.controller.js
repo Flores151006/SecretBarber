@@ -185,3 +185,29 @@ export const eliminarCuenta = async (req, res) => {
         res.status(500).json({ message: 'Error al eliminar la cuenta', error: error.message });
     }
 };
+
+// ─── PATCH actualizar avatar propio ──────────────────────────────────────────
+export const updateAvatar = async (req, res) => {
+    try {
+        const { avatar } = req.body;
+
+        if (avatar !== null && avatar !== undefined) {
+            if (typeof avatar !== 'string' || !avatar.startsWith('data:image/')) {
+                return res.status(400).json({ message: 'Formato de imagen no válido' });
+            }
+            if (avatar.length > 2_000_000) {
+                return res.status(400).json({ message: 'La imagen es demasiado grande. Máximo ~1.5 MB.' });
+            }
+        }
+
+        const actualizado = await User.findByIdAndUpdate(
+            req.user.id,
+            { avatar: avatar ?? null },
+            { new: true }
+        ).select('-password -googleId -verificationToken -verificationTokenExpires -passwordResetToken -passwordResetExpires');
+
+        res.status(200).json({ message: 'Avatar actualizado', data: actualizado });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar el avatar', error: error.message });
+    }
+};

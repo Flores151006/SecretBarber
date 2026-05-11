@@ -45,4 +45,8 @@ export class UserService {
     eliminarCuenta(): Observable<{ message: string }> {
         return this.http.delete<{ message: string }>(`${this.API}/perfil`);
     }
+
+    updateAvatar(avatar: string | null): Observable<{ message: string; data: User }> {
+        return this.http.patch<{ message: string; data: User }>(`${this.API}/perfil/avatar`, { avatar });
+    }
 }

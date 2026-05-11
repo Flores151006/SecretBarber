@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule }  from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { NgIconComponent }  from '@ng-icons/core';
@@ -18,12 +18,14 @@ import Swal              from 'sweetalert2';
 })
 export class SettingsComponent implements OnInit {
     private userService = inject(UserService);
-    private authService = inject(AuthService);
+    authService         = inject(AuthService);
     private translate   = inject(TranslateService);
     private fb          = inject(FormBuilder);
 
     themeService    = inject(ThemeService);
     languageService = inject(LanguageService);
+
+    @ViewChild('avatarInput') avatarInput!: ElementRef<HTMLInputElement>;
 
     usuario       = signal<User | null>(null);
     seccionActiva = signal<'perfil' | 'seguridad' | 'apariencia' | 'cuenta'>('perfil');
@@ -34,6 +36,11 @@ export class SettingsComponent implements OnInit {
     errorPass       = signal('');
     exitoPerfil     = signal('');
     exitoPass       = signal('');
+
+    avatarPreview   = signal<string | null>(null);
+    guardandoAvatar = signal(false);
+    exitoAvatar     = signal('');
+    errorAvatar     = signal('');
 
     verPassActual = false;
     verPassNueva  = false;
@@ -54,6 +61,7 @@ export class SettingsComponent implements OnInit {
             next: (res) => {
                 this.usuario.set(res.data);
                 this.perfilForm.patchValue({ name: res.data.name });
+                this.authService.actualizarAvatarLocal(res.data.avatar ?? null);
             },
             error: () => {}
         });
@@ -130,6 +138,58 @@ export class SettingsComponent implements OnInit {
                 })
             });
         });
+    }
+
+    triggerAvatarInput(): void {
+        this.avatarInput.nativeElement.click();
+    }
+
+    onAvatarSelected(event: Event): void {
+        const file = (event.target as HTMLInputElement).files?.[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) { this.errorAvatar.set('Solo se permiten imágenes'); return; }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 200; canvas.height = 200;
+                const ctx = canvas.getContext('2d')!;
+                const minDim = Math.min(img.width, img.height);
+                const sx = (img.width - minDim) / 2;
+                const sy = (img.height - minDim) / 2;
+                ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, 200, 200);
+                this.avatarPreview.set(canvas.toDataURL('image/jpeg', 0.85));
+            };
+            img.src = e.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    guardarAvatar(): void {
+        const avatar = this.avatarPreview();
+        if (!avatar) return;
+        this.guardandoAvatar.set(true);
+        this.errorAvatar.set('');
+        this.userService.updateAvatar(avatar).subscribe({
+            next: (res) => {
+                this.usuario.update(u => u ? { ...u, avatar: res.data.avatar } : u);
+                this.authService.actualizarAvatarLocal(res.data.avatar ?? null);
+                this.avatarPreview.set(null);
+                this.exitoAvatar.set(this.translate.instant('SETTINGS.EXITO_AVATAR'));
+                this.guardandoAvatar.set(false);
+                setTimeout(() => this.exitoAvatar.set(''), 3000);
+            },
+            error: (err) => {
+                this.errorAvatar.set(err.error?.message || 'Error al subir la imagen');
+                this.guardandoAvatar.set(false);
+            }
+        });
+    }
+
+    cancelarAvatar(): void {
+        this.avatarPreview.set(null);
+        this.errorAvatar.set('');
     }
 
     esGoogleUser(): boolean {
