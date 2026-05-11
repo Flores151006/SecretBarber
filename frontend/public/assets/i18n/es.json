@@ -409,6 +409,8 @@
     "BTN_ELIMINAR": "Eliminar mi cuenta",
     "EXITO_PERFIL": "Perfil actualizado correctamente",
     "EXITO_PASS": "Contraseña cambiada correctamente",
+    "GUARDAR_FOTO": "Guardar foto",
+    "EXITO_AVATAR": "Foto actualizada correctamente",
     "ERROR_PASS_ACTUAL": "La contraseña actual no es correcta",
     "ERROR_PASS_CORTA": "La contraseña debe tener al menos 8 caracteres",
     "ERROR_PASS_MATCH": "Las contraseñas no coinciden"
