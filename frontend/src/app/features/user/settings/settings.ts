@@ -37,10 +37,7 @@ export class SettingsComponent implements OnInit {
     exitoPerfil     = signal('');
     exitoPass       = signal('');
 
-    avatarPreview   = signal<string | null>(null);
-    guardandoAvatar = signal(false);
-    exitoAvatar     = signal('');
-    errorAvatar     = signal('');
+    avatarPreview = signal<string | null>(null);
 
     verPassActual = false;
     verPassNueva  = false;
@@ -84,9 +81,28 @@ export class SettingsComponent implements OnInit {
                 this.usuario.update(u => u ? { ...u, name: res.data.name } : u);
                 this.authService.actualizarNombreLocal(res.data.name);
                 this.perfilForm.markAsPristine();
-                this.exitoPerfil.set(this.translate.instant('SETTINGS.EXITO_PERFIL'));
-                this.guardandoPerfil.set(false);
-                setTimeout(() => this.exitoPerfil.set(''), 3000);
+
+                const preview = this.avatarPreview();
+                if (preview) {
+                    this.userService.updateAvatar(preview).subscribe({
+                        next: (avatarRes) => {
+                            this.usuario.update(u => u ? { ...u, avatar: avatarRes.data.avatar } : u);
+                            this.authService.actualizarAvatarLocal(avatarRes.data.avatar ?? null);
+                            this.avatarPreview.set(null);
+                            this.exitoPerfil.set(this.translate.instant('SETTINGS.EXITO_PERFIL'));
+                            this.guardandoPerfil.set(false);
+                            setTimeout(() => this.exitoPerfil.set(''), 3000);
+                        },
+                        error: (err) => {
+                            this.errorPerfil.set(this.errorMsg(err));
+                            this.guardandoPerfil.set(false);
+                        }
+                    });
+                } else {
+                    this.exitoPerfil.set(this.translate.instant('SETTINGS.EXITO_PERFIL'));
+                    this.guardandoPerfil.set(false);
+                    setTimeout(() => this.exitoPerfil.set(''), 3000);
+                }
             },
             error: (err) => {
                 this.errorPerfil.set(this.errorMsg(err));
@@ -144,33 +160,8 @@ export class SettingsComponent implements OnInit {
     cancelarCambios(): void {
         this.perfilForm.patchValue({ name: this.usuario()?.name ?? '' });
         this.perfilForm.markAsPristine();
-        this.errorPerfil.set('');
-    }
-
-    guardarAvatar(): void {
-        const avatar = this.avatarPreview();
-        if (!avatar) return;
-        this.guardandoAvatar.set(true);
-        this.errorAvatar.set('');
-        this.userService.updateAvatar(avatar).subscribe({
-            next: (res) => {
-                this.usuario.update(u => u ? { ...u, avatar: res.data.avatar } : u);
-                this.authService.actualizarAvatarLocal(res.data.avatar ?? null);
-                this.avatarPreview.set(null);
-                this.exitoAvatar.set(this.translate.instant('SETTINGS.EXITO_AVATAR'));
-                this.guardandoAvatar.set(false);
-                setTimeout(() => this.exitoAvatar.set(''), 3000);
-            },
-            error: (err) => {
-                this.errorAvatar.set(this.errorMsg(err));
-                this.guardandoAvatar.set(false);
-            }
-        });
-    }
-
-    cancelarAvatar(): void {
         this.avatarPreview.set(null);
-        this.errorAvatar.set('');
+        this.errorPerfil.set('');
     }
 
     triggerAvatarInput(): void {
