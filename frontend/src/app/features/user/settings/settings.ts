@@ -88,7 +88,7 @@ export class SettingsComponent implements OnInit {
                 setTimeout(() => this.exitoPerfil.set(''), 3000);
             },
             error: (err) => {
-                this.errorPerfil.set(err.error?.message || this.translate.instant('COMUN.ERROR'));
+                this.errorPerfil.set(this.errorMsg(err));
                 this.guardandoPerfil.set(false);
             }
         });
@@ -109,7 +109,7 @@ export class SettingsComponent implements OnInit {
                 setTimeout(() => this.exitoPass.set(''), 3000);
             },
             error: (err) => {
-                this.errorPass.set(err.error?.message || this.translate.instant('COMUN.ERROR'));
+                this.errorPass.set(this.errorMsg(err));
                 this.guardandoPass.set(false);
             }
         });
@@ -181,7 +181,7 @@ export class SettingsComponent implements OnInit {
                 setTimeout(() => this.exitoAvatar.set(''), 3000);
             },
             error: (err) => {
-                this.errorAvatar.set(err.error?.message || this.translate.instant('COMUN.ERROR'));
+                this.errorAvatar.set(this.errorMsg(err));
                 this.guardandoAvatar.set(false);
             }
         });
@@ -204,5 +204,10 @@ export class SettingsComponent implements OnInit {
 
     iniciales(): string {
         return this.usuario()?.name?.charAt(0)?.toUpperCase() ?? '?';
+    }
+
+    private errorMsg(err: any): string {
+        if (err?.status === 0) return this.translate.instant('COMUN.ERROR_RED');
+        return err?.error?.message || this.translate.instant('COMUN.ERROR');
     }
 }

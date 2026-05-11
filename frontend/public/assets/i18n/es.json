@@ -194,7 +194,8 @@
   },
   "COMUN": {
     "CANCELAR": "Cancelar",
-    "ERROR": "Ha ocurrido un error"
+    "ERROR": "Ha ocurrido un error",
+    "ERROR_RED": "No hay conexión con el servidor"
   },
   "FOOTER": {
     "DESC":     "Tu barbería de confianza. Cortes modernos y clásicos con la mejor atención personalizada.",

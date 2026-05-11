@@ -194,7 +194,8 @@
   },
   "COMUN": {
     "CANCELAR": "Cancel",
-    "ERROR": "An error occurred"
+    "ERROR": "An error occurred",
+    "ERROR_RED": "No connection to server"
   },
   "FOOTER": {
     "DESC":     "Your trusted barbershop. Modern and classic cuts with the best personalised service.",
