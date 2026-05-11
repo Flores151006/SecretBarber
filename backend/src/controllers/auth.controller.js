@@ -6,7 +6,7 @@ import {
     generarRefreshToken,
     verificarRefreshToken
 } from '../middlewares/auth.middleware.js';
-import { enviarEmailVerificacion } from '../helpers/email.helper.js';
+import { enviarEmailVerificacion, enviarEmailResetPassword } from '../helpers/email.helper.js';
 import { verificarCaptcha }        from '../helpers/captcha.helper.js';
 
 // ─── Registro ─────────────────────────────────────────────────────────────────
@@ -199,4 +199,60 @@ export const logout = (req, res) => {
         sameSite: 'Lax'
     });
     res.status(200).json({ message: 'Sesión cerrada correctamente' });
+};
+
+// ─── Forgot Password ──────────────────────────────────────────────────────────
+export const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ message: 'El email es requerido' });
+
+        const usuario = await User.findOne({ email: email.toLowerCase() });
+
+        // Respuesta genérica: no revelar si el email existe
+        if (!usuario || usuario.googleId) {
+            return res.status(200).json({ message: 'Si el correo existe, recibirás un enlace en breve.' });
+        }
+
+        const token   = crypto.randomBytes(32).toString('hex');
+        const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
+
+        usuario.passwordResetToken   = token;
+        usuario.passwordResetExpires = expires;
+        await usuario.save();
+
+        enviarEmailResetPassword(usuario, token)
+            .catch(e => console.error('[RESET] Error al enviar email:', e.message));
+
+        res.status(200).json({ message: 'Si el correo existe, recibirás un enlace en breve.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al procesar la solicitud', error: error.message });
+    }
+};
+
+// ─── Reset Password ───────────────────────────────────────────────────────────
+export const resetPassword = async (req, res) => {
+    try {
+        const { token, password } = req.body;
+        if (!token || !password) return res.status(400).json({ message: 'Token y contraseña son requeridos' });
+        if (password.length < 8) return res.status(400).json({ message: 'La contraseña debe tener al menos 8 caracteres' });
+
+        const usuario = await User.findOne({
+            passwordResetToken:   token,
+            passwordResetExpires: { $gt: new Date() }
+        });
+
+        if (!usuario) {
+            return res.status(400).json({ message: 'El enlace no es válido o ha expirado' });
+        }
+
+        usuario.password             = await bcrypt.hash(password, 10);
+        usuario.passwordResetToken   = null;
+        usuario.passwordResetExpires = null;
+        await usuario.save();
+
+        res.status(200).json({ message: 'Contraseña restablecida correctamente. Ya puedes iniciar sesión.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al restablecer la contraseña', error: error.message });
+    }
 };

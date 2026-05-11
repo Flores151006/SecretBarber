@@ -4,16 +4,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background:   '#0C0C0C',
-        surface:      '#141414',
-        'surface-2':  '#1A1A1A',
-        'surface-3':  '#212121',
-        gold:         '#C4943A',
-        'gold-light': '#D4A84E',
-        'gold-dim':   '#C4943A1A',
-        foreground:   '#F0EBE3',
-        muted:        '#6B6460',
-        border:       '#252525',
+        background:   'rgb(var(--color-background) / <alpha-value>)',
+        surface:      'rgb(var(--color-surface) / <alpha-value>)',
+        'surface-2':  'rgb(var(--color-surface-2) / <alpha-value>)',
+        'surface-3':  'rgb(var(--color-surface-3) / <alpha-value>)',
+        gold:         'rgb(var(--color-gold) / <alpha-value>)',
+        'gold-light': 'rgb(var(--color-gold-light) / <alpha-value>)',
+        'gold-dim':   'rgb(var(--color-gold) / 0.1)',
+        foreground:   'rgb(var(--color-foreground) / <alpha-value>)',
+        muted:        'rgb(var(--color-muted) / <alpha-value>)',
+        border:       'rgb(var(--color-border) / <alpha-value>)',
       },
       fontFamily: {
         sans:  ['Inter', 'system-ui', 'sans-serif'],

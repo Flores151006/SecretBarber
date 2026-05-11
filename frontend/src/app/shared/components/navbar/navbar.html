@@ -73,6 +73,11 @@
           <span class="text-foreground/50 text-sm">
             {{ authService.currentUser()?.name }}
           </span>
+          <a routerLink="/settings"
+             [title]="'NAV.CONFIGURACION' | translate"
+             class="text-foreground/40 hover:text-gold transition-colors p-1.5 rounded-full hover:bg-gold/10">
+            <ng-icon name="lucideSettings" style="font-size:1.15rem" />
+          </a>
           <button (click)="logout()"
                   class="border border-gold/50 text-gold hover:bg-gold hover:text-background px-4 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5">
             <ng-icon name="lucideLogOut" />
@@ -161,6 +166,11 @@
       <div class="border-t border-gold/10 pt-4 flex flex-col gap-3">
         @if (authService.isLoggedIn()) {
           <span class="text-foreground/50 text-sm">{{ authService.currentUser()?.name }}</span>
+          <a routerLink="/settings" (click)="toggleMenu()"
+             class="text-foreground/70 hover:text-gold transition-colors text-sm font-medium flex items-center gap-2">
+            <ng-icon name="lucideSettings" />
+            {{ 'NAV.CONFIGURACION' | translate }}
+          </a>
           <button (click)="logout(); toggleMenu()"
                   class="border border-gold/50 text-gold px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 w-fit">
             <ng-icon name="lucideLogOut" />

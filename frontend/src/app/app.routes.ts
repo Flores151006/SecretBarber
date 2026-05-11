@@ -36,6 +36,16 @@ export const routes: Routes = [
             .then(m => m.ConfirmarEmailComponent)
     },
     {
+        path: 'forgot-password',
+        loadComponent: () => import('./features/auth/forgot-password/forgot-password')
+            .then(m => m.ForgotPasswordComponent)
+    },
+    {
+        path: 'reset-password',
+        loadComponent: () => import('./features/auth/reset-password/reset-password')
+            .then(m => m.ResetPasswordComponent)
+    },
+    {
         path: 'reviews',
         loadComponent: () => import('./features/reviews/reviews')
             .then(m => m.ReviewsComponent)
@@ -57,6 +67,12 @@ export const routes: Routes = [
 },
 
     // ─── Rutas privadas (requieren login) ─────────────────────────────────────
+    {
+        path: 'settings',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/user/settings/settings')
+            .then(m => m.SettingsComponent)
+    },
     {
         path: 'reservas',
         canActivate: [authGuard],

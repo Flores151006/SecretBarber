@@ -29,4 +29,20 @@ export class UserService {
     eliminarUsuario(id: string): Observable<{ message: string }> {
         return this.http.delete<{ message: string }>(`${this.API}/${id}`);
     }
+
+    getPerfil(): Observable<{ data: User }> {
+        return this.http.get<{ data: User }>(`${this.API}/perfil`);
+    }
+
+    updatePerfil(data: { name: string }): Observable<{ message: string; data: User }> {
+        return this.http.patch<{ message: string; data: User }>(`${this.API}/perfil`, data);
+    }
+
+    cambiarPassword(passwordActual: string, passwordNueva: string): Observable<{ message: string }> {
+        return this.http.patch<{ message: string }>(`${this.API}/perfil/password`, { passwordActual, passwordNueva });
+    }
+
+    eliminarCuenta(): Observable<{ message: string }> {
+        return this.http.delete<{ message: string }>(`${this.API}/perfil`);
+    }
 }

@@ -59,6 +59,14 @@ export const User = mongoose.model('User', new mongoose.Schema({
     verificationTokenExpires: {
         type: Date,
         default: null
+    },
+    passwordResetToken: {
+        type: String,
+        default: null
+    },
+    passwordResetExpires: {
+        type: Date,
+        default: null
     }
 
 }, {

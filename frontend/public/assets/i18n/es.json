@@ -9,7 +9,8 @@
     "AYUDA": "Ayuda",
     "INICIAR_SESION": "Iniciar sesión",
     "REGISTRARSE": "Registrarse",
-    "CERRAR_SESION": "Cerrar sesión"
+    "CERRAR_SESION": "Cerrar sesión",
+    "CONFIGURACION": "Configuración"
   },
   "HOME": {
     "BADGE": "Barbería Premium",
@@ -58,7 +59,8 @@
     "NO_CUENTA": "¿No tienes cuenta?",
     "REGISTRATE": "Regístrate",
     "O_CONTINUA": "o continúa con",
-    "GOOGLE": "Continuar con Google"
+    "GOOGLE": "Continuar con Google",
+    "OLVIDASTE_PASS": "¿Olvidaste tu contraseña?"
   },
   "RESERVAS": {
     "TITULO": "Reservar cita",
@@ -354,5 +356,61 @@
       "ACTUALIZANDO": "Actualizando...",
       "SIN_DATOS": "Sin datos para este período"
     }
+  },
+  "FORGOT_PASSWORD": {
+    "TITULO": "¿Olvidaste tu contraseña?",
+    "SUBTITULO": "Introduce tu email y te enviaremos un enlace para restablecerla",
+    "BTN": "Enviar enlace de recuperación",
+    "BTN_CARGANDO": "Enviando...",
+    "VOLVER": "Volver al inicio de sesión",
+    "EXITO_TITULO": "¡Correo enviado!",
+    "EXITO_DESC": "Si el correo está registrado, recibirás el enlace en breve. Revisa también la carpeta de spam.",
+    "ERROR_EMAIL": "Introduce un email válido"
+  },
+  "RESET_PASSWORD": {
+    "TITULO": "Nueva contraseña",
+    "SUBTITULO": "Crea una contraseña segura para tu cuenta",
+    "PASS_LABEL": "Nueva contraseña",
+    "PASS_CONFIRM_LABEL": "Confirmar contraseña",
+    "BTN": "Restablecer contraseña",
+    "BTN_CARGANDO": "Guardando...",
+    "ERROR_PASS": "La contraseña debe tener al menos 8 caracteres",
+    "ERROR_CONFIRM": "Las contraseñas no coinciden",
+    "EXITO": "Contraseña restablecida. Ya puedes iniciar sesión.",
+    "TOKEN_INVALIDO": "El enlace no es válido o ha expirado. Solicita uno nuevo."
+  },
+  "SETTINGS": {
+    "TITULO": "Configuración",
+    "SUBTITULO": "Gestiona tu cuenta y preferencias",
+    "SECCION_PERFIL": "Mi perfil",
+    "SECCION_SEGURIDAD": "Seguridad",
+    "SECCION_APARIENCIA": "Apariencia",
+    "SECCION_CUENTA": "Cuenta",
+    "NOMBRE_LABEL": "Nombre completo",
+    "NOMBRE_PH": "Tu nombre",
+    "EMAIL_LABEL": "Correo electrónico",
+    "EMAIL_DESC": "El email no se puede modificar",
+    "MIEMBRO_DESDE": "Miembro desde",
+    "BTN_GUARDAR": "Guardar cambios",
+    "BTN_GUARDANDO": "Guardando...",
+    "PASS_ACTUAL": "Contraseña actual",
+    "PASS_NUEVA": "Nueva contraseña",
+    "PASS_CONFIRMAR": "Confirmar nueva contraseña",
+    "BTN_CAMBIAR_PASS": "Cambiar contraseña",
+    "GOOGLE_PASS_DESC": "Tu cuenta está vinculada con Google. Gestiona tu contraseña desde Google.",
+    "TEMA_LABEL": "Tema de la interfaz",
+    "TEMA_OSCURO": "Oscuro",
+    "TEMA_CLARO": "Claro",
+    "IDIOMA_LABEL": "Idioma",
+    "IDIOMA_ES": "Español",
+    "IDIOMA_EN": "English",
+    "ELIMINAR_TITULO": "Eliminar cuenta",
+    "ELIMINAR_DESC": "Esta acción es permanente e irreversible. Se eliminarán todos tus datos y reservas.",
+    "BTN_ELIMINAR": "Eliminar mi cuenta",
+    "EXITO_PERFIL": "Perfil actualizado correctamente",
+    "EXITO_PASS": "Contraseña cambiada correctamente",
+    "ERROR_PASS_ACTUAL": "La contraseña actual no es correcta",
+    "ERROR_PASS_CORTA": "La contraseña debe tener al menos 8 caracteres",
+    "ERROR_PASS_MATCH": "Las contraseñas no coinciden"
   }
 }

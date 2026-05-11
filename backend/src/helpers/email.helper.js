@@ -169,3 +169,35 @@ export const enviarConfirmacionReserva = async (usuario, booking) => {
     await sendMail({ to: usuario.email, subject: `Tu cita del ${fecha} está confirmada — Secret Barber`, html: shell(content) });
     console.log('[EMAIL] Confirmación de reserva enviada correctamente');
 };
+
+// ── Email reset de contraseña ─────────────────────────────────────────────────
+export const enviarEmailResetPassword = async (usuario, token) => {
+    const url = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+
+    const content = `
+      <tr>
+        <td style="padding:40px 40px 32px;">
+          <h2 style="margin:0 0 8px;color:${BASE.text};font-size:22px;font-weight:700;">Restablecer contraseña</h2>
+          <p style="margin:0 0 24px;color:${BASE.muted};font-size:14px;line-height:1.6;">
+            Hola <strong style="color:${BASE.text};">${usuario.name}</strong>, hemos recibido una solicitud para restablecer la contraseña de tu cuenta.<br/>
+            Si no fuiste tú, puedes ignorar este correo.
+          </p>
+
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin:32px 0;">
+            <tr><td align="center">
+              <a href="${url}"
+                 style="display:inline-block;background:${BASE.gold};color:#000000;font-weight:700;font-size:15px;padding:16px 40px;border-radius:8px;text-decoration:none;letter-spacing:0.5px;">
+                Restablecer contraseña →
+              </a>
+            </td></tr>
+          </table>
+
+          <div style="background:${BASE.card};border:1px solid ${BASE.border};border-radius:8px;padding:16px 20px;">
+            <p style="margin:0;color:#555;font-size:12px;">⏱ Este enlace caduca en <strong style="color:${BASE.muted};">1 hora</strong></p>
+            <p style="margin:8px 0 0;color:#555;font-size:12px;">Si no solicitaste esto, tu contraseña no ha cambiado.</p>
+          </div>
+        </td>
+      </tr>`;
+
+    await sendMail({ to: usuario.email, subject: 'Restablece tu contraseña — Secret Barber', html: shell(content) });
+};

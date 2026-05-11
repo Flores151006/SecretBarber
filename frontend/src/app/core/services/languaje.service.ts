@@ -5,7 +5,8 @@ const ES = {
     NAV: {
         INICIO: 'Inicio', RESERVAR: 'Reservar', MIS_RESERVAS: 'Mis reservas',
         RESENAS: 'Reseñas', CORTES: 'Cortes', ADMIN: 'Admin', AYUDA: 'Ayuda',
-        INICIAR_SESION: 'Iniciar sesión', REGISTRARSE: 'Registrarse', CERRAR_SESION: 'Cerrar sesión'
+        INICIAR_SESION: 'Iniciar sesión', REGISTRARSE: 'Registrarse', CERRAR_SESION: 'Cerrar sesión',
+        CONFIGURACION: 'Configuración'
     },
     HOME: {
         BADGE: 'Barbería Premium', SUBTITULO: 'Donde la tradición se encuentra con el estilo moderno. Reserva tu cita y vive la experiencia.',
@@ -66,7 +67,8 @@ const ES = {
         ERROR_EMAIL: 'Email no válido', ERROR_PASSWORD: 'La contraseña es requerida',
         BTN: 'Iniciar sesión', BTN_CARGANDO: 'Iniciando sesión...',
         NO_CUENTA: '¿No tienes cuenta?', REGISTRATE: 'Regístrate',
-        O_CONTINUA: 'o continúa con', GOOGLE: 'Continuar con Google'
+        O_CONTINUA: 'o continúa con', GOOGLE: 'Continuar con Google',
+        OLVIDASTE_PASS: '¿Olvidaste tu contraseña?'
     },
     REGISTER: {
         TITULO: 'Crea tu cuenta', BADGE: 'Bienvenido',
@@ -148,6 +150,42 @@ const ES = {
         APP_DESC: 'Aplicación web completa para la gestión de una barbería profesional.',
         AUTOR: 'Alumno', CICLO: 'Ciclo', CENTRO: 'Centro', VERSION: 'Versión', CURSO: 'Curso',
         PROYECTO: 'Proyecto Final de Grado'
+    },
+    FORGOT_PASSWORD: {
+        TITULO: 'Recuperar contraseña',
+        SUBTITULO: 'Introduce tu email y te enviaremos un enlace para restablecer tu contraseña.',
+        EMAIL_LABEL: 'Email', ERROR_EMAIL: 'Introduce un email válido',
+        BTN: 'Enviar enlace', BTN_CARGANDO: 'Enviando...',
+        EXITO_TITULO: '¡Correo enviado!',
+        EXITO_DESC: 'Si existe una cuenta con ese email, recibirás un enlace en breve. Revisa también tu carpeta de spam.',
+        VOLVER: 'Volver al inicio de sesión'
+    },
+    RESET_PASSWORD: {
+        TITULO: 'Nueva contraseña',
+        SUBTITULO: 'Elige una contraseña segura para tu cuenta.',
+        PASS_LABEL: 'Nueva contraseña', ERROR_PASS: 'Mínimo 8 caracteres',
+        PASS_CONFIRM_LABEL: 'Confirmar contraseña', ERROR_CONFIRM: 'Las contraseñas no coinciden',
+        BTN: 'Restablecer contraseña', BTN_CARGANDO: 'Guardando...',
+        EXITO: '¡Contraseña actualizada!'
+    },
+    SETTINGS: {
+        TITULO: 'Configuración', SUBTITULO: 'Gestiona tu perfil y preferencias',
+        SECCION_PERFIL: 'Perfil', SECCION_SEGURIDAD: 'Seguridad',
+        SECCION_APARIENCIA: 'Apariencia', SECCION_CUENTA: 'Cuenta',
+        MIEMBRO_DESDE: 'Miembro desde',
+        NOMBRE_LABEL: 'Nombre', NOMBRE_PH: 'Tu nombre completo',
+        EMAIL_LABEL: 'Email', EMAIL_DESC: 'El email no se puede cambiar',
+        BTN_GUARDAR: 'Guardar cambios', BTN_GUARDANDO: 'Guardando...',
+        EXITO_PERFIL: 'Perfil actualizado correctamente',
+        PASS_ACTUAL: 'Contraseña actual', PASS_NUEVA: 'Nueva contraseña', PASS_CONFIRMAR: 'Confirmar nueva contraseña',
+        ERROR_PASS_CORTA: 'La contraseña debe tener al menos 8 caracteres',
+        ERROR_PASS_MATCH: 'Las contraseñas no coinciden',
+        BTN_CAMBIAR_PASS: 'Cambiar contraseña', EXITO_PASS: 'Contraseña cambiada correctamente',
+        TEMA_LABEL: 'Tema de la interfaz', TEMA_OSCURO: 'Modo oscuro', TEMA_CLARO: 'Modo claro',
+        IDIOMA_LABEL: 'Idioma', IDIOMA_ES: 'Español', IDIOMA_EN: 'English',
+        ELIMINAR_TITULO: 'Eliminar cuenta',
+        ELIMINAR_DESC: 'Esta acción eliminará permanentemente tu cuenta y todos tus datos. No se puede deshacer.',
+        BTN_ELIMINAR: 'Eliminar mi cuenta'
     },
     SERVICIOS_LISTA: {
         CORTE:             { nombre: 'Corte',                       descripcion: 'Corte clásico o moderno a tu estilo' },
@@ -246,7 +284,8 @@ const EN = {
     NAV: {
         INICIO: 'Home', RESERVAR: 'Book', MIS_RESERVAS: 'My bookings',
         RESENAS: 'Reviews', CORTES: 'Haircuts', ADMIN: 'Admin', AYUDA: 'Help',
-        INICIAR_SESION: 'Log in', REGISTRARSE: 'Sign up', CERRAR_SESION: 'Log out'
+        INICIAR_SESION: 'Log in', REGISTRARSE: 'Sign up', CERRAR_SESION: 'Log out',
+        CONFIGURACION: 'Settings'
     },
     HOME: {
         BADGE: 'Premium Barbershop', SUBTITULO: 'Where tradition meets modern style. Book your appointment and live the experience.',
@@ -307,7 +346,8 @@ const EN = {
         ERROR_EMAIL: 'Invalid email', ERROR_PASSWORD: 'Password is required',
         BTN: 'Sign in', BTN_CARGANDO: 'Signing in...',
         NO_CUENTA: "Don't have an account?", REGISTRATE: 'Sign up',
-        O_CONTINUA: 'or continue with', GOOGLE: 'Continue with Google'
+        O_CONTINUA: 'or continue with', GOOGLE: 'Continue with Google',
+        OLVIDASTE_PASS: 'Forgot your password?'
     },
     REGISTER: {
         TITULO: 'Create your account', BADGE: 'Welcome',
@@ -389,6 +429,42 @@ const EN = {
         APP_DESC: 'Complete web application for professional barbershop management.',
         AUTOR: 'Student', CICLO: 'Programme', CENTRO: 'School', VERSION: 'Version', CURSO: 'Year',
         PROYECTO: 'Final Degree Project'
+    },
+    FORGOT_PASSWORD: {
+        TITULO: 'Reset password',
+        SUBTITULO: 'Enter your email and we will send you a link to reset your password.',
+        EMAIL_LABEL: 'Email', ERROR_EMAIL: 'Enter a valid email',
+        BTN: 'Send link', BTN_CARGANDO: 'Sending...',
+        EXITO_TITULO: 'Email sent!',
+        EXITO_DESC: 'If an account exists with that email, you will receive a link shortly. Check your spam folder too.',
+        VOLVER: 'Back to sign in'
+    },
+    RESET_PASSWORD: {
+        TITULO: 'New password',
+        SUBTITULO: 'Choose a strong password for your account.',
+        PASS_LABEL: 'New password', ERROR_PASS: 'Minimum 8 characters',
+        PASS_CONFIRM_LABEL: 'Confirm password', ERROR_CONFIRM: 'Passwords do not match',
+        BTN: 'Reset password', BTN_CARGANDO: 'Saving...',
+        EXITO: 'Password updated!'
+    },
+    SETTINGS: {
+        TITULO: 'Settings', SUBTITULO: 'Manage your profile and preferences',
+        SECCION_PERFIL: 'Profile', SECCION_SEGURIDAD: 'Security',
+        SECCION_APARIENCIA: 'Appearance', SECCION_CUENTA: 'Account',
+        MIEMBRO_DESDE: 'Member since',
+        NOMBRE_LABEL: 'Name', NOMBRE_PH: 'Your full name',
+        EMAIL_LABEL: 'Email', EMAIL_DESC: 'Email cannot be changed',
+        BTN_GUARDAR: 'Save changes', BTN_GUARDANDO: 'Saving...',
+        EXITO_PERFIL: 'Profile updated successfully',
+        PASS_ACTUAL: 'Current password', PASS_NUEVA: 'New password', PASS_CONFIRMAR: 'Confirm new password',
+        ERROR_PASS_CORTA: 'Password must be at least 8 characters',
+        ERROR_PASS_MATCH: 'Passwords do not match',
+        BTN_CAMBIAR_PASS: 'Change password', EXITO_PASS: 'Password changed successfully',
+        TEMA_LABEL: 'Interface theme', TEMA_OSCURO: 'Dark mode', TEMA_CLARO: 'Light mode',
+        IDIOMA_LABEL: 'Language', IDIOMA_ES: 'Español', IDIOMA_EN: 'English',
+        ELIMINAR_TITULO: 'Delete account',
+        ELIMINAR_DESC: 'This will permanently delete your account and all your data. This cannot be undone.',
+        BTN_ELIMINAR: 'Delete my account'
     },
     SERVICIOS_LISTA: {
         CORTE:             { nombre: 'Haircut',             descripcion: 'Classic or modern cut to your style' },
@@ -505,5 +581,11 @@ export class LanguageService {
         this.translate.use(nuevo);
         this.idioma.set(nuevo);
         localStorage.setItem('idioma', nuevo);
+    }
+
+    setIdioma(idioma: 'es' | 'en'): void {
+        this.translate.use(idioma);
+        this.idioma.set(idioma);
+        localStorage.setItem('idioma', idioma);
     }
 }

@@ -9,7 +9,8 @@
     "AYUDA": "Help",
     "INICIAR_SESION": "Sign in",
     "REGISTRARSE": "Sign up",
-    "CERRAR_SESION": "Sign out"
+    "CERRAR_SESION": "Sign out",
+    "CONFIGURACION": "Settings"
   },
   "HOME": {
     "BADGE": "Premium Barbershop",
@@ -58,7 +59,8 @@
     "NO_CUENTA": "Don't have an account?",
     "REGISTRATE": "Sign up",
     "O_CONTINUA": "or continue with",
-    "GOOGLE": "Continue with Google"
+    "GOOGLE": "Continue with Google",
+    "OLVIDASTE_PASS": "Forgot your password?"
   },
   "RESERVAS": {
     "TITULO": "Book appointment",
@@ -354,5 +356,61 @@
       "ACTUALIZANDO": "Updating...",
       "SIN_DATOS": "No data for this period"
     }
+  },
+  "FORGOT_PASSWORD": {
+    "TITULO": "Forgot your password?",
+    "SUBTITULO": "Enter your email and we'll send you a reset link",
+    "BTN": "Send reset link",
+    "BTN_CARGANDO": "Sending...",
+    "VOLVER": "Back to login",
+    "EXITO_TITULO": "Email sent!",
+    "EXITO_DESC": "If the email is registered, you'll receive the link shortly. Check your spam folder too.",
+    "ERROR_EMAIL": "Enter a valid email"
+  },
+  "RESET_PASSWORD": {
+    "TITULO": "New password",
+    "SUBTITULO": "Create a secure password for your account",
+    "PASS_LABEL": "New password",
+    "PASS_CONFIRM_LABEL": "Confirm password",
+    "BTN": "Reset password",
+    "BTN_CARGANDO": "Saving...",
+    "ERROR_PASS": "Password must be at least 8 characters",
+    "ERROR_CONFIRM": "Passwords do not match",
+    "EXITO": "Password reset successfully. You can now log in.",
+    "TOKEN_INVALIDO": "The link is invalid or has expired. Please request a new one."
+  },
+  "SETTINGS": {
+    "TITULO": "Settings",
+    "SUBTITULO": "Manage your account and preferences",
+    "SECCION_PERFIL": "My profile",
+    "SECCION_SEGURIDAD": "Security",
+    "SECCION_APARIENCIA": "Appearance",
+    "SECCION_CUENTA": "Account",
+    "NOMBRE_LABEL": "Full name",
+    "NOMBRE_PH": "Your name",
+    "EMAIL_LABEL": "Email address",
+    "EMAIL_DESC": "Email cannot be changed",
+    "MIEMBRO_DESDE": "Member since",
+    "BTN_GUARDAR": "Save changes",
+    "BTN_GUARDANDO": "Saving...",
+    "PASS_ACTUAL": "Current password",
+    "PASS_NUEVA": "New password",
+    "PASS_CONFIRMAR": "Confirm new password",
+    "BTN_CAMBIAR_PASS": "Change password",
+    "GOOGLE_PASS_DESC": "Your account is linked with Google. Manage your password through Google.",
+    "TEMA_LABEL": "Interface theme",
+    "TEMA_OSCURO": "Dark",
+    "TEMA_CLARO": "Light",
+    "IDIOMA_LABEL": "Language",
+    "IDIOMA_ES": "Spanish",
+    "IDIOMA_EN": "English",
+    "ELIMINAR_TITULO": "Delete account",
+    "ELIMINAR_DESC": "This action is permanent and irreversible. All your data and bookings will be deleted.",
+    "BTN_ELIMINAR": "Delete my account",
+    "EXITO_PERFIL": "Profile updated successfully",
+    "EXITO_PASS": "Password changed successfully",
+    "ERROR_PASS_ACTUAL": "Current password is incorrect",
+    "ERROR_PASS_CORTA": "Password must be at least 8 characters",
+    "ERROR_PASS_MATCH": "Passwords do not match"
   }
 }

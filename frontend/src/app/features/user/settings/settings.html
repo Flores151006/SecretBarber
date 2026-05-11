@@ -1,0 +1,263 @@
+<div class="min-h-screen bg-background py-10 px-4">
+  <div class="max-w-3xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-10" data-aos="fade-up">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="h-px flex-1 bg-gradient-to-r from-transparent to-gold/30"></div>
+        <span class="label-overline">{{ 'SETTINGS.TITULO' | translate }}</span>
+        <div class="h-px flex-1 bg-gradient-to-l from-transparent to-gold/30"></div>
+      </div>
+      <h1 class="font-serif text-4xl font-bold text-foreground text-center">{{ 'SETTINGS.TITULO' | translate }}</h1>
+      <p class="text-foreground/40 text-sm text-center mt-2">{{ 'SETTINGS.SUBTITULO' | translate }}</p>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-6">
+
+      <!-- Sidebar de navegación -->
+      <aside class="md:w-52 flex-shrink-0" data-aos="fade-right">
+        <nav class="glass rounded-2xl p-2 flex md:flex-col gap-1">
+          @for (item of [
+            { id: 'perfil',     icon: 'lucideUser',        label: 'SETTINGS.SECCION_PERFIL'    },
+            { id: 'seguridad',  icon: 'lucideLock',        label: 'SETTINGS.SECCION_SEGURIDAD' },
+            { id: 'apariencia', icon: 'lucidePalette',     label: 'SETTINGS.SECCION_APARIENCIA'},
+            { id: 'cuenta',     icon: 'lucideShieldAlert', label: 'SETTINGS.SECCION_CUENTA'    }
+          ]; track item.id) {
+            <button (click)="seccionActiva.set($any(item.id))"
+                    [class]="seccionActiva() === item.id
+                      ? 'bg-gold/15 text-gold border-gold/30'
+                      : 'text-foreground/50 border-transparent hover:text-foreground/80 hover:bg-foreground/5'"
+                    class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border text-left w-full">
+              <ng-icon [name]="item.icon" style="font-size:1rem;flex-shrink:0" />
+              {{ item.label | translate }}
+            </button>
+          }
+        </nav>
+      </aside>
+
+      <!-- Contenido principal -->
+      <main class="flex-1 min-w-0" data-aos="fade-up">
+
+        <!-- ── PERFIL ── -->
+        @if (seccionActiva() === 'perfil') {
+          <div class="glass rounded-2xl p-7">
+            <h2 class="font-serif text-xl font-bold text-foreground mb-6 flex items-center gap-2">
+              <ng-icon name="lucideUser" class="text-gold" />
+              {{ 'SETTINGS.SECCION_PERFIL' | translate }}
+            </h2>
+
+            <!-- Avatar -->
+            <div class="flex items-center gap-4 mb-7 pb-6 border-b border-foreground/5">
+              <div class="w-16 h-16 bg-gold/10 border-2 border-gold/30 rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-gold font-bold text-2xl font-serif">{{ iniciales() }}</span>
+              </div>
+              <div>
+                <p class="text-foreground font-semibold">{{ usuario()?.name }}</p>
+                <p class="text-foreground/40 text-sm">{{ usuario()?.email }}</p>
+                @if (usuario()?.createdAt) {
+                  <p class="text-foreground/25 text-xs mt-1">
+                    {{ 'SETTINGS.MIEMBRO_DESDE' | translate }} {{ formatFecha(usuario()!.createdAt) }}
+                  </p>
+                }
+              </div>
+            </div>
+
+            @if (exitoPerfil()) {
+              <div class="bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-3 rounded-xl mb-5 text-sm flex items-center gap-2">
+                <ng-icon name="lucideCheckCircle" class="flex-shrink-0" /> {{ exitoPerfil() }}
+              </div>
+            }
+            @if (errorPerfil()) {
+              <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl mb-5 text-sm flex items-center gap-2">
+                <ng-icon name="lucideAlertTriangle" class="flex-shrink-0" /> {{ errorPerfil() }}
+              </div>
+            }
+
+            <form [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()" class="flex flex-col gap-5">
+              <div>
+                <label class="block text-foreground/70 text-sm font-medium mb-1.5">{{ 'SETTINGS.NOMBRE_LABEL' | translate }}</label>
+                <input formControlName="name" type="text" [placeholder]="'SETTINGS.NOMBRE_PH' | translate" class="input-field" />
+                @if (perfilForm.get('name')?.invalid && perfilForm.get('name')?.touched) {
+                  <span class="text-red-400 text-xs mt-1 block">Mínimo 3 caracteres</span>
+                }
+              </div>
+
+              <div>
+                <label class="block text-foreground/70 text-sm font-medium mb-1.5">{{ 'SETTINGS.EMAIL_LABEL' | translate }}</label>
+                <div class="relative">
+                  <input [value]="usuario()?.email ?? ''" type="email" readonly
+                         class="input-field opacity-50 cursor-not-allowed pr-10" />
+                  <ng-icon name="lucideLock" class="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/30" style="font-size:0.85rem" />
+                </div>
+                <p class="text-foreground/30 text-xs mt-1">{{ 'SETTINGS.EMAIL_DESC' | translate }}</p>
+              </div>
+
+              <button type="submit" [disabled]="guardandoPerfil()"
+                      class="btn-shimmer bg-gold hover:bg-gold-light text-background font-bold py-2.5 px-6 rounded-lg shadow-gold disabled:opacity-50 disabled:cursor-not-allowed w-fit text-sm self-end">
+                {{ guardandoPerfil() ? ('SETTINGS.BTN_GUARDANDO' | translate) : ('SETTINGS.BTN_GUARDAR' | translate) }}
+              </button>
+            </form>
+          </div>
+        }
+
+        <!-- ── SEGURIDAD ── -->
+        @if (seccionActiva() === 'seguridad') {
+          <div class="glass rounded-2xl p-7">
+            <h2 class="font-serif text-xl font-bold text-foreground mb-6 flex items-center gap-2">
+              <ng-icon name="lucideLock" class="text-gold" />
+              {{ 'SETTINGS.SECCION_SEGURIDAD' | translate }}
+            </h2>
+
+            @if (exitoPass()) {
+              <div class="bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-3 rounded-xl mb-5 text-sm flex items-center gap-2">
+                <ng-icon name="lucideCheckCircle" class="flex-shrink-0" /> {{ exitoPass() }}
+              </div>
+            }
+            @if (errorPass()) {
+              <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl mb-5 text-sm flex items-center gap-2">
+                <ng-icon name="lucideAlertTriangle" class="flex-shrink-0" /> {{ errorPass() }}
+              </div>
+            }
+
+            <form [formGroup]="passForm" (ngSubmit)="cambiarPassword()" class="flex flex-col gap-5">
+              <div>
+                <label class="block text-foreground/70 text-sm font-medium mb-1.5">{{ 'SETTINGS.PASS_ACTUAL' | translate }}</label>
+                <div class="relative">
+                  <input formControlName="passwordActual" [type]="verPassActual ? 'text' : 'password'"
+                         placeholder="••••••••" class="input-field pr-10" />
+                  <button type="button" (click)="verPassActual = !verPassActual"
+                          class="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-gold transition-colors">
+                    <ng-icon [name]="verPassActual ? 'lucideEyeOff' : 'lucideEye'" />
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-foreground/70 text-sm font-medium mb-1.5">{{ 'SETTINGS.PASS_NUEVA' | translate }}</label>
+                <div class="relative">
+                  <input formControlName="passwordNueva" [type]="verPassNueva ? 'text' : 'password'"
+                         placeholder="••••••••" class="input-field pr-10" />
+                  <button type="button" (click)="verPassNueva = !verPassNueva"
+                          class="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-gold transition-colors">
+                    <ng-icon [name]="verPassNueva ? 'lucideEyeOff' : 'lucideEye'" />
+                  </button>
+                </div>
+                @if (passForm.get('passwordNueva')?.invalid && passForm.get('passwordNueva')?.touched) {
+                  <span class="text-red-400 text-xs mt-1 block">{{ 'SETTINGS.ERROR_PASS_CORTA' | translate }}</span>
+                }
+              </div>
+
+              <div>
+                <label class="block text-foreground/70 text-sm font-medium mb-1.5">{{ 'SETTINGS.PASS_CONFIRMAR' | translate }}</label>
+                <div class="relative">
+                  <input formControlName="passwordConfirm" [type]="verPassConf ? 'text' : 'password'"
+                         placeholder="••••••••" class="input-field pr-10" />
+                  <button type="button" (click)="verPassConf = !verPassConf"
+                          class="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-gold transition-colors">
+                    <ng-icon [name]="verPassConf ? 'lucideEyeOff' : 'lucideEye'" />
+                  </button>
+                </div>
+                @if (passForm.errors?.['noMatch'] && passForm.get('passwordConfirm')?.touched) {
+                  <span class="text-red-400 text-xs mt-1 block">{{ 'SETTINGS.ERROR_PASS_MATCH' | translate }}</span>
+                }
+              </div>
+
+              <button type="submit" [disabled]="guardandoPass()"
+                      class="btn-shimmer bg-gold hover:bg-gold-light text-background font-bold py-2.5 px-6 rounded-lg shadow-gold disabled:opacity-50 disabled:cursor-not-allowed w-fit text-sm self-end">
+                {{ guardandoPass() ? ('SETTINGS.BTN_GUARDANDO' | translate) : ('SETTINGS.BTN_CAMBIAR_PASS' | translate) }}
+              </button>
+            </form>
+          </div>
+        }
+
+        <!-- ── APARIENCIA ── -->
+        @if (seccionActiva() === 'apariencia') {
+          <div class="glass rounded-2xl p-7">
+            <h2 class="font-serif text-xl font-bold text-foreground mb-6 flex items-center gap-2">
+              <ng-icon name="lucidePalette" class="text-gold" />
+              {{ 'SETTINGS.SECCION_APARIENCIA' | translate }}
+            </h2>
+
+            <!-- Dark / Light toggle -->
+            <div class="mb-6 pb-6 border-b border-foreground/5">
+              <p class="text-foreground/70 text-sm font-medium mb-4">{{ 'SETTINGS.TEMA_LABEL' | translate }}</p>
+              <div class="flex gap-3">
+                <button (click)="themeService.tema.set('dark')"
+                        [class]="themeService.tema() === 'dark'
+                          ? 'border-gold bg-gold/10 text-gold'
+                          : 'border-foreground/10 text-foreground/40 hover:border-foreground/25'"
+                        class="flex-1 border-2 rounded-xl p-4 flex flex-col items-center gap-2 transition-all duration-200">
+                  <ng-icon name="lucideMoon" style="font-size:1.4rem" />
+                  <span class="text-xs font-semibold">{{ 'SETTINGS.TEMA_OSCURO' | translate }}</span>
+                  @if (themeService.tema() === 'dark') {
+                    <span class="text-[10px] bg-gold/15 text-gold px-2 py-0.5 rounded-full font-bold">Activo</span>
+                  }
+                </button>
+                <button (click)="themeService.tema.set('light')"
+                        [class]="themeService.tema() === 'light'
+                          ? 'border-gold bg-gold/10 text-gold'
+                          : 'border-foreground/10 text-foreground/40 hover:border-foreground/25'"
+                        class="flex-1 border-2 rounded-xl p-4 flex flex-col items-center gap-2 transition-all duration-200">
+                  <ng-icon name="lucideSun" style="font-size:1.4rem" />
+                  <span class="text-xs font-semibold">{{ 'SETTINGS.TEMA_CLARO' | translate }}</span>
+                  @if (themeService.tema() === 'light') {
+                    <span class="text-[10px] bg-gold/15 text-gold px-2 py-0.5 rounded-full font-bold">Activo</span>
+                  }
+                </button>
+              </div>
+            </div>
+
+            <!-- Idioma -->
+            <div>
+              <p class="text-foreground/70 text-sm font-medium mb-4">{{ 'SETTINGS.IDIOMA_LABEL' | translate }}</p>
+              <div class="flex gap-3">
+                <button (click)="languageService.setIdioma('es')"
+                        [class]="languageService.idioma() === 'es'
+                          ? 'border-gold bg-gold/10 text-gold'
+                          : 'border-foreground/10 text-foreground/40 hover:border-foreground/25'"
+                        class="flex-1 border-2 rounded-xl p-4 flex items-center justify-center gap-2 transition-all duration-200">
+                  <span class="text-lg">🇪🇸</span>
+                  <span class="text-sm font-semibold">{{ 'SETTINGS.IDIOMA_ES' | translate }}</span>
+                </button>
+                <button (click)="languageService.setIdioma('en')"
+                        [class]="languageService.idioma() === 'en'
+                          ? 'border-gold bg-gold/10 text-gold'
+                          : 'border-foreground/10 text-foreground/40 hover:border-foreground/25'"
+                        class="flex-1 border-2 rounded-xl p-4 flex items-center justify-center gap-2 transition-all duration-200">
+                  <span class="text-lg">🇬🇧</span>
+                  <span class="text-sm font-semibold">{{ 'SETTINGS.IDIOMA_EN' | translate }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- ── CUENTA ── -->
+        @if (seccionActiva() === 'cuenta') {
+          <div class="glass rounded-2xl p-7">
+            <h2 class="font-serif text-xl font-bold text-foreground mb-6 flex items-center gap-2">
+              <ng-icon name="lucideShieldAlert" class="text-gold" />
+              {{ 'SETTINGS.SECCION_CUENTA' | translate }}
+            </h2>
+
+            <div class="bg-red-500/5 border border-red-500/15 rounded-xl p-5">
+              <div class="flex items-start gap-3 mb-4">
+                <ng-icon name="lucideTriangleAlert" class="text-red-400 flex-shrink-0 mt-0.5" style="font-size:1.1rem" />
+                <div>
+                  <h3 class="text-red-400 font-semibold text-sm mb-1">{{ 'SETTINGS.ELIMINAR_TITULO' | translate }}</h3>
+                  <p class="text-foreground/40 text-sm leading-relaxed">{{ 'SETTINGS.ELIMINAR_DESC' | translate }}</p>
+                </div>
+              </div>
+              <button (click)="eliminarCuenta()"
+                      class="bg-red-500/10 border border-red-500/25 text-red-400 hover:bg-red-500/20 px-5 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2">
+                <ng-icon name="lucideTrash2" style="font-size:0.9rem" />
+                {{ 'SETTINGS.BTN_ELIMINAR' | translate }}
+              </button>
+            </div>
+          </div>
+        }
+
+      </main>
+    </div>
+  </div>
+</div>

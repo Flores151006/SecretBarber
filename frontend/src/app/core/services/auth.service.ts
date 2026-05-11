@@ -92,4 +92,17 @@ export class AuthService {
     setToken(token: string): void {
         localStorage.setItem('accessToken', token);
     }
+
+    forgotPassword(email: string): Observable<{ message: string }> {
+        return this.http.post<{ message: string }>(`${this.API}/forgot-password`, { email });
+    }
+
+    resetPassword(token: string, password: string): Observable<{ message: string }> {
+        return this.http.post<{ message: string }>(`${this.API}/reset-password`, { token, password });
+    }
+
+    actualizarNombreLocal(name: string): void {
+        const user = this.currentUser();
+        if (user) this.currentUser.set({ ...user, name });
+    }
 }

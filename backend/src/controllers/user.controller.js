@@ -115,3 +115,73 @@ export const eliminarUsuario = async (req, res) => {
         res.status(500).json({ message: 'Error al eliminar el usuario', error: error.message });
     }
 };
+
+// ─── GET perfil propio (Cliente autenticado) ──────────────────────────────────
+export const getPerfil = async (req, res) => {
+    try {
+        const usuario = await User.findById(req.user.id).select('-password -googleId -verificationToken -verificationTokenExpires -passwordResetToken -passwordResetExpires');
+        if (!usuario) return res.status(404).json({ message: 'Usuario no encontrado' });
+        res.status(200).json({ data: usuario });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener el perfil', error: error.message });
+    }
+};
+
+// ─── PATCH actualizar perfil propio ──────────────────────────────────────────
+export const updatePerfil = async (req, res) => {
+    try {
+        const { name } = req.body;
+        if (!name || name.trim().length < 3) return res.status(400).json({ message: 'El nombre debe tener al menos 3 caracteres' });
+
+        const actualizado = await User.findByIdAndUpdate(
+            req.user.id,
+            { name: name.trim() },
+            { new: true, runValidators: true }
+        ).select('-password -googleId -verificationToken -verificationTokenExpires -passwordResetToken -passwordResetExpires');
+
+        res.status(200).json({ message: 'Perfil actualizado correctamente', data: actualizado });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar el perfil', error: error.message });
+    }
+};
+
+// ─── PATCH cambiar contraseña propia ─────────────────────────────────────────
+export const cambiarPassword = async (req, res) => {
+    try {
+        const { passwordActual, passwordNueva } = req.body;
+        if (!passwordActual || !passwordNueva) return res.status(400).json({ message: 'Todos los campos son requeridos' });
+        if (passwordNueva.length < 8) return res.status(400).json({ message: 'La nueva contraseña debe tener al menos 8 caracteres' });
+
+        const usuario = await User.findById(req.user.id);
+        if (!usuario) return res.status(404).json({ message: 'Usuario no encontrado' });
+        if (!usuario.password) return res.status(400).json({ message: 'Tu cuenta usa Google. No puedes cambiar la contraseña aquí.' });
+
+        const correcta = await bcrypt.compare(passwordActual, usuario.password);
+        if (!correcta) return res.status(401).json({ message: 'La contraseña actual no es correcta' });
+
+        usuario.password = await bcrypt.hash(passwordNueva, 10);
+        await usuario.save();
+
+        res.status(200).json({ message: 'Contraseña cambiada correctamente' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al cambiar la contraseña', error: error.message });
+    }
+};
+
+// ─── DELETE eliminar cuenta propia ───────────────────────────────────────────
+export const eliminarCuenta = async (req, res) => {
+    try {
+        const usuario = await User.findById(req.user.id);
+        if (!usuario) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+        if (usuario.role === 'Admin') {
+            const totalAdmins = await User.countDocuments({ role: 'Admin' });
+            if (totalAdmins <= 1) return res.status(400).json({ message: 'No puedes eliminar la única cuenta de administrador' });
+        }
+
+        await User.findByIdAndDelete(req.user.id);
+        res.status(200).json({ message: 'Cuenta eliminada correctamente' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al eliminar la cuenta', error: error.message });
+    }
+};

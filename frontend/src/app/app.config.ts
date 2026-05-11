@@ -20,7 +20,9 @@ import {
     lucideImage, lucideSend, lucideBell, lucideSettings, lucideFilter,
     lucideChevronUp, lucideExternalLink, lucideMail, lucideSparkles,
     lucideWand2, lucideTag, lucidePackage,
-    lucideCalendarRange, lucidePlay, lucidePause, lucideCheckCircle, lucideRefreshCcw
+    lucideCalendarRange, lucidePlay, lucidePause, lucideCheckCircle, lucideRefreshCcw,
+    lucideKeyRound, lucideMailCheck, lucidePalette, lucideShieldAlert, lucideTriangleAlert,
+    lucideMoon, lucideSun
 } from '@ng-icons/lucide';
 
 import { routes } from './app.routes';
@@ -50,7 +52,9 @@ export const appConfig: ApplicationConfig = {
             lucideImage, lucideSend, lucideBell, lucideSettings, lucideFilter,
             lucideChevronUp, lucideExternalLink, lucideMail, lucideSparkles,
             lucideWand2, lucideTag, lucidePackage,
-            lucideCalendarRange, lucidePlay, lucidePause, lucideCheckCircle, lucideRefreshCcw
+            lucideCalendarRange, lucidePlay, lucidePause, lucideCheckCircle, lucideRefreshCcw,
+            lucideKeyRound, lucideMailCheck, lucidePalette, lucideShieldAlert, lucideTriangleAlert,
+            lucideMoon, lucideSun
         }),
     ]
 };
