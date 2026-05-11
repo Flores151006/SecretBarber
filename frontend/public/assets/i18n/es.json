@@ -417,6 +417,7 @@
     "ERROR_PASS_CORTA": "La contraseña debe tener al menos 8 caracteres",
     "ERROR_PASS_MATCH": "Las contraseñas no coinciden",
     "ERROR_NOMBRE": "Mínimo 3 caracteres",
-    "ERROR_IMAGEN": "Solo se permiten imágenes"
+    "ERROR_IMAGEN": "Solo se permiten imágenes",
+    "FOTO_PENDIENTE": "Foto seleccionada · se guardará al pulsar \"Guardar cambios\""
   }
 }

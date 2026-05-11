@@ -74,27 +74,7 @@
               </div>
 
               @if (avatarPreview()) {
-                <div class="flex items-center gap-2">
-                  <button type="button" (click)="guardarAvatar()" [disabled]="guardandoAvatar()"
-                          class="btn-shimmer bg-gold text-background text-xs font-bold px-4 py-1.5 rounded-lg shadow-gold disabled:opacity-50 disabled:cursor-not-allowed">
-                    {{ guardandoAvatar() ? ('SETTINGS.BTN_GUARDANDO' | translate) : ('SETTINGS.GUARDAR_FOTO' | translate) }}
-                  </button>
-                  <button type="button" (click)="cancelarAvatar()"
-                          class="text-foreground/40 hover:text-foreground/70 text-xs px-3 py-1.5 rounded-lg border border-foreground/10 transition-colors">
-                    {{ 'COMUN.CANCELAR' | translate }}
-                  </button>
-                </div>
-              }
-
-              @if (exitoAvatar()) {
-                <p class="text-green-400 text-xs flex items-center gap-1">
-                  <ng-icon name="lucideCheckCircle" style="font-size:0.85rem" /> {{ exitoAvatar() }}
-                </p>
-              }
-              @if (errorAvatar()) {
-                <p class="text-red-400 text-xs flex items-center gap-1">
-                  <ng-icon name="lucideAlertTriangle" style="font-size:0.85rem" /> {{ errorAvatar() }}
-                </p>
+                <p class="text-foreground/40 text-xs">{{ 'SETTINGS.FOTO_PENDIENTE' | translate }}</p>
               }
             </div>
 
@@ -118,10 +98,18 @@
                 }
               </div>
 
-              <button type="submit" [disabled]="guardandoPerfil()"
-                      class="btn-shimmer bg-gold hover:bg-gold-light text-background font-bold py-2.5 px-6 rounded-lg shadow-gold disabled:opacity-50 disabled:cursor-not-allowed w-fit text-sm self-end">
-                {{ guardandoPerfil() ? ('SETTINGS.BTN_GUARDANDO' | translate) : ('SETTINGS.BTN_GUARDAR' | translate) }}
-              </button>
+              <div class="flex items-center gap-3 self-end">
+                @if (perfilForm.dirty || avatarPreview()) {
+                  <button type="button" (click)="cancelarCambios()" [disabled]="guardandoPerfil()"
+                          class="text-foreground/50 hover:text-foreground/80 border border-foreground/15 hover:border-foreground/30 font-medium py-2.5 px-5 rounded-lg text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    {{ 'COMUN.CANCELAR' | translate }}
+                  </button>
+                }
+                <button type="submit" [disabled]="guardandoPerfil()"
+                        class="btn-shimmer bg-gold hover:bg-gold-light text-background font-bold py-2.5 px-6 rounded-lg shadow-gold disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+                  {{ guardandoPerfil() ? ('SETTINGS.BTN_GUARDANDO' | translate) : ('SETTINGS.BTN_GUARDAR' | translate) }}
+                </button>
+              </div>
             </form>
           </div>
         }

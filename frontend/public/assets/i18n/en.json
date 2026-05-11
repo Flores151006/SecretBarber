@@ -417,6 +417,7 @@
     "ERROR_PASS_CORTA": "Password must be at least 8 characters",
     "ERROR_PASS_MATCH": "Passwords do not match",
     "ERROR_NOMBRE": "Minimum 3 characters",
-    "ERROR_IMAGEN": "Only image files are allowed"
+    "ERROR_IMAGEN": "Only image files are allowed",
+    "FOTO_PENDIENTE": "Photo selected · will be saved when you click \"Save changes\""
   }
 }
