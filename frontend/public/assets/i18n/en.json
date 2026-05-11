@@ -193,7 +193,8 @@
     "BTN": "Back to home"
   },
   "COMUN": {
-    "CANCELAR": "Cancel"
+    "CANCELAR": "Cancel",
+    "ERROR": "An error occurred"
   },
   "FOOTER": {
     "DESC":     "Your trusted barbershop. Modern and classic cuts with the best personalised service.",
@@ -413,6 +414,8 @@
     "EXITO_AVATAR": "Photo updated successfully",
     "ERROR_PASS_ACTUAL": "Current password is incorrect",
     "ERROR_PASS_CORTA": "Password must be at least 8 characters",
-    "ERROR_PASS_MATCH": "Passwords do not match"
+    "ERROR_PASS_MATCH": "Passwords do not match",
+    "ERROR_NOMBRE": "Minimum 3 characters",
+    "ERROR_IMAGEN": "Only image files are allowed"
   }
 }

@@ -193,7 +193,8 @@
     "BTN": "Volver al inicio"
   },
   "COMUN": {
-    "CANCELAR": "Cancelar"
+    "CANCELAR": "Cancelar",
+    "ERROR": "Ha ocurrido un error"
   },
   "FOOTER": {
     "DESC":     "Tu barbería de confianza. Cortes modernos y clásicos con la mejor atención personalizada.",
@@ -413,6 +414,8 @@
     "EXITO_AVATAR": "Foto actualizada correctamente",
     "ERROR_PASS_ACTUAL": "La contraseña actual no es correcta",
     "ERROR_PASS_CORTA": "La contraseña debe tener al menos 8 caracteres",
-    "ERROR_PASS_MATCH": "Las contraseñas no coinciden"
+    "ERROR_PASS_MATCH": "Las contraseñas no coinciden",
+    "ERROR_NOMBRE": "Mínimo 3 caracteres",
+    "ERROR_IMAGEN": "Solo se permiten imágenes"
   }
 }

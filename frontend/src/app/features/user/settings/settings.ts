@@ -88,7 +88,7 @@ export class SettingsComponent implements OnInit {
                 setTimeout(() => this.exitoPerfil.set(''), 3000);
             },
             error: (err) => {
-                this.errorPerfil.set(err.error?.message || 'Error al guardar');
+                this.errorPerfil.set(err.error?.message || this.translate.instant('COMUN.ERROR'));
                 this.guardandoPerfil.set(false);
             }
         });
@@ -109,7 +109,7 @@ export class SettingsComponent implements OnInit {
                 setTimeout(() => this.exitoPass.set(''), 3000);
             },
             error: (err) => {
-                this.errorPass.set(err.error?.message || 'Error al cambiar contraseña');
+                this.errorPass.set(err.error?.message || this.translate.instant('COMUN.ERROR'));
                 this.guardandoPass.set(false);
             }
         });
@@ -147,7 +147,7 @@ export class SettingsComponent implements OnInit {
     onAvatarSelected(event: Event): void {
         const file = (event.target as HTMLInputElement).files?.[0];
         if (!file) return;
-        if (!file.type.startsWith('image/')) { this.errorAvatar.set('Solo se permiten imágenes'); return; }
+        if (!file.type.startsWith('image/')) { this.errorAvatar.set(this.translate.instant('SETTINGS.ERROR_IMAGEN')); return; }
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = new Image();
@@ -181,7 +181,7 @@ export class SettingsComponent implements OnInit {
                 setTimeout(() => this.exitoAvatar.set(''), 3000);
             },
             error: (err) => {
-                this.errorAvatar.set(err.error?.message || 'Error al subir la imagen');
+                this.errorAvatar.set(err.error?.message || this.translate.instant('COMUN.ERROR'));
                 this.guardandoAvatar.set(false);
             }
         });

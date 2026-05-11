@@ -47,23 +47,23 @@
             </h2>
 
             <!-- Avatar -->
-            <div class="flex flex-col items-center gap-3 mb-7 pb-6 border-b border-foreground/5">
-              <div class="relative group cursor-pointer" (click)="triggerAvatarInput()">
-                <div class="w-20 h-20 rounded-full border-2 border-gold/30 overflow-hidden flex items-center justify-center bg-gold/10 flex-shrink-0">
+            <div class="flex items-center gap-4 mb-7 pb-6 border-b border-foreground/5">
+              <div class="relative group cursor-pointer flex-shrink-0" (click)="triggerAvatarInput()">
+                <div class="w-16 h-16 rounded-full border-2 border-gold/30 overflow-hidden flex items-center justify-center bg-gold/10">
                   @if (avatarPreview() || usuario()?.avatar) {
                     <img [src]="avatarPreview() ?? usuario()!.avatar!" alt="avatar" class="w-full h-full object-cover" />
                   } @else {
-                    <span class="text-gold font-bold text-3xl font-serif">{{ iniciales() }}</span>
+                    <span class="text-gold font-bold text-2xl font-serif">{{ iniciales() }}</span>
                   }
                 </div>
                 <div class="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  <ng-icon name="lucideCamera" class="text-white" style="font-size:1.3rem" />
+                  <ng-icon name="lucideCamera" class="text-white" style="font-size:0.9rem" />
                 </div>
               </div>
 
               <input #avatarInput type="file" accept="image/*" class="hidden" (change)="onAvatarSelected($event)" />
 
-              <div class="text-center">
+              <div class="min-w-0 flex-1">
                 <p class="text-foreground font-semibold">{{ usuario()?.name }}</p>
                 <p class="text-foreground/40 text-sm">{{ usuario()?.email }}</p>
                 @if (usuario()?.createdAt) {
@@ -71,31 +71,31 @@
                     {{ 'SETTINGS.MIEMBRO_DESDE' | translate }} {{ formatFecha(usuario()!.createdAt) }}
                   </p>
                 }
+
+                @if (avatarPreview()) {
+                  <div class="flex items-center gap-2 mt-2.5">
+                    <button type="button" (click)="guardarAvatar()" [disabled]="guardandoAvatar()"
+                            class="btn-shimmer bg-gold text-background text-xs font-bold px-4 py-1.5 rounded-lg shadow-gold disabled:opacity-50 disabled:cursor-not-allowed">
+                      {{ guardandoAvatar() ? ('SETTINGS.BTN_GUARDANDO' | translate) : ('SETTINGS.GUARDAR_FOTO' | translate) }}
+                    </button>
+                    <button type="button" (click)="cancelarAvatar()"
+                            class="text-foreground/40 hover:text-foreground/70 text-xs px-3 py-1.5 rounded-lg border border-foreground/10 transition-colors">
+                      {{ 'COMUN.CANCELAR' | translate }}
+                    </button>
+                  </div>
+                }
+
+                @if (exitoAvatar()) {
+                  <p class="text-green-400 text-xs flex items-center gap-1 mt-1.5">
+                    <ng-icon name="lucideCheckCircle" style="font-size:0.85rem" /> {{ exitoAvatar() }}
+                  </p>
+                }
+                @if (errorAvatar()) {
+                  <p class="text-red-400 text-xs flex items-center gap-1 mt-1.5">
+                    <ng-icon name="lucideAlertTriangle" style="font-size:0.85rem" /> {{ errorAvatar() }}
+                  </p>
+                }
               </div>
-
-              @if (avatarPreview()) {
-                <div class="flex items-center gap-2">
-                  <button type="button" (click)="guardarAvatar()" [disabled]="guardandoAvatar()"
-                          class="btn-shimmer bg-gold text-background text-xs font-bold px-4 py-1.5 rounded-lg shadow-gold disabled:opacity-50 disabled:cursor-not-allowed">
-                    {{ guardandoAvatar() ? ('SETTINGS.BTN_GUARDANDO' | translate) : ('SETTINGS.GUARDAR_FOTO' | translate) }}
-                  </button>
-                  <button type="button" (click)="cancelarAvatar()"
-                          class="text-foreground/40 hover:text-foreground/70 text-xs px-3 py-1.5 rounded-lg border border-foreground/10 transition-colors">
-                    {{ 'COMUN.CANCELAR' | translate }}
-                  </button>
-                </div>
-              }
-
-              @if (exitoAvatar()) {
-                <p class="text-green-400 text-xs flex items-center gap-1">
-                  <ng-icon name="lucideCheckCircle" style="font-size:0.85rem" /> {{ exitoAvatar() }}
-                </p>
-              }
-              @if (errorAvatar()) {
-                <p class="text-red-400 text-xs flex items-center gap-1">
-                  <ng-icon name="lucideAlertTriangle" style="font-size:0.85rem" /> {{ errorAvatar() }}
-                </p>
-              }
             </div>
 
             @if (exitoPerfil()) {
@@ -114,7 +114,7 @@
                 <label class="block text-foreground/70 text-sm font-medium mb-1.5">{{ 'SETTINGS.NOMBRE_LABEL' | translate }}</label>
                 <input formControlName="name" type="text" [placeholder]="'SETTINGS.NOMBRE_PH' | translate" class="input-field" />
                 @if (perfilForm.get('name')?.invalid && perfilForm.get('name')?.touched) {
-                  <span class="text-red-400 text-xs mt-1 block">Mínimo 3 caracteres</span>
+                  <span class="text-red-400 text-xs mt-1 block">{{ 'SETTINGS.ERROR_NOMBRE' | translate }}</span>
                 }
               </div>
 
