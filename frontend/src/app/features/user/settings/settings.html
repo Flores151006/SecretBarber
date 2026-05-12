@@ -8,7 +8,7 @@
         <span class="label-overline">{{ 'SETTINGS.TITULO' | translate }}</span>
         <div class="h-px flex-1 bg-gradient-to-l from-transparent to-gold/30"></div>
       </div>
-      <h1 class="font-serif text-4xl font-bold text-foreground text-center">{{ 'SETTINGS.TITULO' | translate }}</h1>
+      <h1 class="font-serif text-2xl sm:text-4xl font-bold text-foreground text-center">{{ 'SETTINGS.TITULO' | translate }}</h1>
       <p class="text-foreground/40 text-sm text-center mt-2">{{ 'SETTINGS.SUBTITULO' | translate }}</p>
     </div>
 
@@ -40,7 +40,7 @@
 
         <!-- ── PERFIL ── -->
         @if (seccionActiva() === 'perfil') {
-          <div class="glass rounded-2xl p-7">
+          <div class="glass rounded-2xl p-4 sm:p-7">
             <h2 class="font-serif text-xl font-bold text-foreground mb-6 flex items-center gap-2">
               <ng-icon name="lucideUser" class="text-gold" />
               {{ 'SETTINGS.SECCION_PERFIL' | translate }}
@@ -116,7 +116,7 @@
 
         <!-- ── SEGURIDAD ── -->
         @if (seccionActiva() === 'seguridad') {
-          <div class="glass rounded-2xl p-7">
+          <div class="glass rounded-2xl p-4 sm:p-7">
             <h2 class="font-serif text-xl font-bold text-foreground mb-6 flex items-center gap-2">
               <ng-icon name="lucideLock" class="text-gold" />
               {{ 'SETTINGS.SECCION_SEGURIDAD' | translate }}
@@ -186,7 +186,7 @@
 
         <!-- ── APARIENCIA ── -->
         @if (seccionActiva() === 'apariencia') {
-          <div class="glass rounded-2xl p-7">
+          <div class="glass rounded-2xl p-4 sm:p-7">
             <h2 class="font-serif text-xl font-bold text-foreground mb-6 flex items-center gap-2">
               <ng-icon name="lucidePalette" class="text-gold" />
               {{ 'SETTINGS.SECCION_APARIENCIA' | translate }}
@@ -248,7 +248,7 @@
 
         <!-- ── CUENTA ── -->
         @if (seccionActiva() === 'cuenta') {
-          <div class="glass rounded-2xl p-7">
+          <div class="glass rounded-2xl p-4 sm:p-7">
             <h2 class="font-serif text-xl font-bold text-foreground mb-6 flex items-center gap-2">
               <ng-icon name="lucideShieldAlert" class="text-gold" />
               {{ 'SETTINGS.SECCION_CUENTA' | translate }}

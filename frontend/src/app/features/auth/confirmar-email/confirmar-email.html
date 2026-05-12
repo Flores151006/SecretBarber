@@ -7,12 +7,12 @@
   <div class="relative w-full max-w-md" data-aos="fade-up">
 
     <div class="text-center mb-8">
-      <h1 class="font-serif text-4xl font-bold mb-2">
+      <h1 class="font-serif text-3xl sm:text-4xl font-bold mb-2">
         <span class="text-gradient">Secret</span> <span class="text-foreground">Barber</span>
       </h1>
     </div>
 
-    <div class="glass rounded-2xl p-8 text-center">
+    <div class="glass rounded-2xl p-5 sm:p-8 text-center">
 
       @switch (estado()) {
 
@@ -48,7 +48,7 @@
             <h2 class="font-serif text-2xl text-foreground font-bold mb-3">Enlace inválido</h2>
             <p class="text-foreground/55 text-sm leading-relaxed mb-8">{{ mensaje() }}</p>
             <a routerLink="/verificar-email"
-               class="w-full border border-gold/25 text-foreground/70 hover:border-gold/50 hover:bg-gold/5 font-medium py-2.5 rounded-lg text-sm transition-all duration-200 block text-center mb-3">
+               class="w-full border border-gold/25 text-foreground/70 hover:border-gold/50 hover:bg-gold/5 font-medium py-3 rounded-lg text-sm transition-all duration-200 block text-center mb-3">
               Solicitar nuevo enlace
             </a>
             <a routerLink="/login"

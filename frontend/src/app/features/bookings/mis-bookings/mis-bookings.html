@@ -7,7 +7,7 @@
         <span class="label-overline">{{ 'MIS_RESERVAS.BADGE' | translate }}</span>
         <div class="h-px w-12 bg-gradient-to-l from-transparent to-gold"></div>
       </div>
-      <h1 class="font-serif text-4xl text-foreground font-bold">{{ 'MIS_RESERVAS.TITULO' | translate }}</h1>
+      <h1 class="font-serif text-2xl sm:text-4xl text-foreground font-bold">{{ 'MIS_RESERVAS.TITULO' | translate }}</h1>
     </div>
 
     @if (cargando) {
@@ -40,7 +40,7 @@
     @if (!cargando && bookings.length > 0) {
       <div class="flex flex-col gap-4">
         @for (booking of bookings; track booking._id) {
-          <div class="glass rounded-2xl p-6 border-l-2 border-l-gold/40 hover:border-gold/20 hover:shadow-card-hover card-hover">
+          <div class="glass rounded-2xl p-4 sm:p-6 border-l-2 border-l-gold/40 hover:border-gold/20 hover:shadow-card-hover card-hover">
 
             <div class="flex justify-between items-start mb-5 gap-4">
               <div class="min-w-0">
@@ -179,7 +179,7 @@
                       @if (horasEdicion.length === 0) {
                         <p class="text-foreground/40 text-sm">{{ 'RESERVAS.SELECCIONA_PARA_HORAS' | translate }}</p>
                       } @else {
-                        <div class="grid grid-cols-4 gap-2">
+                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
                           @for (h of horasEdicion; track h) {
                             <button type="button"
                                     (click)="formEditar.get('hora')?.setValue(h)"

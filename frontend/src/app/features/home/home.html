@@ -2,8 +2,8 @@
 <section class="relative bg-background min-h-[90vh] flex items-center justify-center overflow-hidden bg-grid">
 
   <div class="absolute inset-0 opacity-[0.08]">
-    <div class="absolute top-20 left-20 w-80 h-80 bg-gold rounded-full blur-3xl animate-pulse-gold"></div>
-    <div class="absolute bottom-20 right-20 w-[28rem] h-[28rem] bg-gold rounded-full blur-3xl animate-pulse-gold" style="animation-delay:1s"></div>
+    <div class="absolute top-20 left-20 w-40 sm:w-64 md:w-80 h-40 sm:h-64 md:h-80 bg-gold rounded-full blur-3xl animate-pulse-gold"></div>
+    <div class="absolute bottom-20 right-20 w-48 sm:w-72 md:w-[28rem] h-48 sm:h-72 md:h-[28rem] bg-gold rounded-full blur-3xl animate-pulse-gold" style="animation-delay:1s"></div>
   </div>
 
   <div class="absolute inset-0 bg-gradient-to-b from-background/0 via-background/0 to-background pointer-events-none"></div>
@@ -15,12 +15,12 @@
       <div class="h-px w-16 bg-gradient-to-l from-transparent to-gold"></div>
     </div>
 
-    <h1 class="font-serif text-6xl md:text-8xl font-bold mb-4 leading-tight"
+    <h1 class="font-serif text-4xl sm:text-6xl md:text-8xl font-bold mb-4 leading-tight"
         data-aos="fade-up" data-aos-delay="100">
       <span class="text-gradient">Secret</span> <span class="text-foreground">Barber</span>
     </h1>
 
-    <p class="text-foreground/55 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+    <p class="text-foreground/55 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
        data-aos="fade-up" data-aos-delay="200">
       {{ 'HOME.SUBTITULO' | translate }}
     </p>
@@ -47,7 +47,7 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
           @for (resena of resenas(); track resena._id; let i = $index) {
-            <div class="relative glass rounded-xl p-6 text-left hover:border-gold/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-gold"
+            <div class="relative glass rounded-xl p-4 sm:p-6 text-left hover:border-gold/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-gold"
                  [attr.data-aos]="'fade-up'" [attr.data-aos-delay]="i * 100">
               <span class="absolute bottom-4 right-5 text-gold/10 text-6xl font-serif leading-none select-none pointer-events-none">"</span>
               <div class="flex gap-0.5 mb-3">
@@ -82,7 +82,7 @@
 </section>
 
 <!-- SERVICIOS -->
-<section class="bg-surface py-24 px-4 bg-grid">
+<section class="bg-surface py-12 sm:py-24 px-4 bg-grid">
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-16" data-aos="fade-up">
       <div class="flex items-center justify-center gap-4 mb-4">
@@ -90,11 +90,11 @@
         <span class="text-gold text-xs font-semibold tracking-[0.2em] uppercase">{{ 'HOME.SERVICIOS_BADGE' | translate }}</span>
         <div class="h-px w-12 bg-gradient-to-l from-transparent to-gold"></div>
       </div>
-      <h2 class="font-serif text-4xl text-foreground font-bold">{{ 'HOME.SERVICIOS_TITULO' | translate }}</h2>
+      <h2 class="font-serif text-2xl sm:text-4xl text-foreground font-bold">{{ 'HOME.SERVICIOS_TITULO' | translate }}</h2>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 text-center">
       @for (servicio of servicios; track servicio.nombre) {
-        <div class="glass rounded-xl p-6 transition-all duration-300 group card-hover"
+        <div class="glass rounded-xl p-4 sm:p-6 transition-all duration-300 group card-hover"
              data-aos="fade-up">
           
           <h3 class="font-serif text-xl text-foreground font-semibold mb-2">
@@ -111,7 +111,7 @@
 </section>
 
 <!-- POR QUÉ ELEGIRNOS -->
-<section class="bg-background py-24 px-4">
+<section class="bg-background py-12 sm:py-24 px-4">
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-16" data-aos="fade-up">
       <div class="flex items-center justify-center gap-4 mb-4">
@@ -119,7 +119,7 @@
         <span class="text-gold text-xs font-semibold tracking-[0.2em] uppercase">{{ 'HOME.POR_QUE_BADGE' | translate }}</span>
         <div class="h-px w-12 bg-gradient-to-l from-transparent to-gold"></div>
       </div>
-      <h2 class="font-serif text-4xl text-foreground font-bold">{{ 'HOME.POR_QUE_TITULO' | translate }}</h2>
+      <h2 class="font-serif text-2xl sm:text-4xl text-foreground font-bold">{{ 'HOME.POR_QUE_TITULO' | translate }}</h2>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div class="text-center group" data-aos="fade-up" data-aos-delay="0">
@@ -148,12 +148,12 @@
 </section>
 
 <!-- CTA FINAL -->
-<section class="relative py-20 px-4 overflow-hidden bg-surface">
+<section class="relative py-12 sm:py-20 px-4 overflow-hidden bg-surface">
   <div class="absolute inset-0 bg-gradient-to-br from-gold/10 via-transparent to-gold/5"></div>
   <div class="absolute inset-0 bg-grid opacity-40"></div>
   <div class="relative max-w-3xl mx-auto text-center" data-aos="zoom-in">
-    <h2 class="font-serif text-4xl md:text-5xl text-foreground font-bold mb-4">{{ 'HOME.CTA_TITULO' | translate }}</h2>
-    <p class="text-foreground/55 text-lg mb-10">{{ 'HOME.CTA_SUBTITULO' | translate }}</p>
+    <h2 class="font-serif text-2xl sm:text-4xl md:text-5xl text-foreground font-bold mb-4">{{ 'HOME.CTA_TITULO' | translate }}</h2>
+    <p class="text-foreground/55 text-base sm:text-lg mb-8 sm:mb-10">{{ 'HOME.CTA_SUBTITULO' | translate }}</p>
     <a routerLink="/reservas"
        class="btn-shimmer inline-block bg-gold hover:bg-gold-light text-background font-bold px-10 py-4 rounded-lg text-lg shadow-gold hover:shadow-gold-lg">
       {{ 'HOME.CTA_BTN' | translate }}

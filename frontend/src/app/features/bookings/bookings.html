@@ -7,10 +7,10 @@
         <span class="text-gold text-sm tracking-widest uppercase">{{ 'RESERVAS.BADGE' | translate }}</span>
         <div class="h-px w-12 bg-gold"></div>
       </div>
-      <h1 class="font-serif text-4xl text-foreground font-bold">{{ 'RESERVAS.TITULO' | translate }}</h1>
+      <h1 class="font-serif text-2xl sm:text-4xl text-foreground font-bold">{{ 'RESERVAS.TITULO' | translate }}</h1>
     </div>
 
-    <div class="glass rounded-2xl p-8">
+    <div class="glass rounded-2xl p-4 sm:p-8">
 
       @if (error) {
         <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded mb-6 text-sm">
@@ -105,7 +105,7 @@
           } @else if (horas.length === 0) {
             <p class="text-red-400 text-sm">{{ 'RESERVAS.SIN_HORAS' | translate }}</p>
           } @else {
-            <div class="grid grid-cols-4 gap-2">
+            <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
               @for (h of horas; track h) {
                 <button type="button"
                         (click)="form.get('hora')?.setValue(h)"

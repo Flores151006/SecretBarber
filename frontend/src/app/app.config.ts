@@ -22,7 +22,8 @@ import {
     lucideWand2, lucideTag, lucidePackage,
     lucideCalendarRange, lucidePlay, lucidePause, lucideCheckCircle, lucideRefreshCcw,
     lucideKeyRound, lucideMailCheck, lucidePalette, lucideShieldAlert, lucideTriangleAlert,
-    lucideMoon, lucideSun, lucideCamera
+    lucideMoon, lucideSun, lucideCamera,
+    lucideLogIn, lucideUserPlus
 } from '@ng-icons/lucide';
 
 import { routes } from './app.routes';
@@ -54,7 +55,8 @@ export const appConfig: ApplicationConfig = {
             lucideWand2, lucideTag, lucidePackage,
             lucideCalendarRange, lucidePlay, lucidePause, lucideCheckCircle, lucideRefreshCcw,
             lucideKeyRound, lucideMailCheck, lucidePalette, lucideShieldAlert, lucideTriangleAlert,
-            lucideMoon, lucideSun, lucideCamera
+            lucideMoon, lucideSun, lucideCamera,
+            lucideLogIn, lucideUserPlus
         }),
     ]
 };

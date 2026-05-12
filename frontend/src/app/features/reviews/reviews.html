@@ -7,7 +7,7 @@
         <span class="label-overline">{{ 'RESENAS_PAGE.BADGE' | translate }}</span>
         <div class="h-px w-12 bg-gradient-to-l from-transparent to-gold"></div>
       </div>
-      <h1 class="font-serif text-5xl text-foreground font-bold">{{ 'RESENAS_PAGE.TITULO' | translate }}</h1>
+      <h1 class="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground font-bold">{{ 'RESENAS_PAGE.TITULO' | translate }}</h1>
     </div>
 
     @if (cargando) {
@@ -25,10 +25,10 @@
     }
 
     @if (!cargando && reviews.length > 0) {
-      <div class="glass rounded-2xl p-8 text-center mb-10" data-aos="fade-up">
+      <div class="glass rounded-2xl p-5 sm:p-8 text-center mb-10" data-aos="fade-up">
         <p class="label-overline mb-3">{{ 'RESENAS_PAGE.MEDIA_LABEL' | translate }}</p>
         <div class="flex items-baseline justify-center gap-2 mb-3">
-          <span class="text-6xl font-bold text-gradient font-serif">{{ mediaTotal }}</span>
+          <span class="text-4xl sm:text-6xl font-bold text-gradient font-serif">{{ mediaTotal }}</span>
           <span class="text-foreground/40 text-2xl">/ 5</span>
         </div>
         <div class="flex justify-center gap-1 mb-3">
@@ -59,9 +59,9 @@
     }
 
     @if (!cargando && reviews.length > 0) {
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
         @for (review of reviews; track review._id; let i = $index) {
-          <div class="glass rounded-xl p-6 card-hover relative overflow-hidden" data-aos="fade-up" [attr.data-aos-delay]="(i % 4) * 75">
+          <div class="glass rounded-xl p-4 sm:p-6 card-hover relative overflow-hidden" data-aos="fade-up" [attr.data-aos-delay]="(i % 4) * 75">
             <span class="absolute bottom-4 right-5 text-gold/8 text-7xl font-serif leading-none select-none pointer-events-none">"</span>
 
             <div class="flex justify-between items-start mb-4">

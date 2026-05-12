@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center h-16">
 
       <!-- Logo -->
-      <a routerLink="/" class="font-serif text-2xl text-gold font-bold tracking-wide flex-shrink-0">
+      <a routerLink="/" class="font-serif text-xl sm:text-2xl text-gold font-bold tracking-wide flex-shrink-0">
         Secret Barber
       </a>
 
@@ -51,20 +51,27 @@
       </div>
 
       <!-- Acciones escritorio -->
-      <div class="hidden md:flex items-center gap-2">
+      <div class="hidden md:flex items-center gap-1.5">
 
-        <!-- Selector idioma -->
+        <!-- Tema -->
+        <button (click)="themeService.tema.set(themeService.tema() === 'dark' ? 'light' : 'dark')"
+                [title]="themeService.tema() === 'dark' ? 'Modo claro' : 'Modo oscuro'"
+                class="inline-flex items-center justify-center w-8 h-8 text-foreground/40 hover:text-gold transition-colors rounded-full hover:bg-gold/10 flex-shrink-0">
+          <ng-icon [name]="themeService.tema() === 'dark' ? 'lucideSun' : 'lucideMoon'" style="font-size:1rem;display:block" />
+        </button>
+
+        <!-- Idioma -->
         <button (click)="languageService.cambiarIdioma()"
                 title="Cambiar idioma"
-                class="flex items-center gap-1.5 text-foreground/40 hover:text-gold transition-colors
-                       px-2.5 py-1.5 rounded-full border border-transparent hover:border-gold/20 text-xs font-bold tracking-wider">
-          <ng-icon name="lucideGlobe" />
+                class="flex items-center gap-1 text-foreground/40 hover:text-gold transition-colors
+                       px-2 py-1.5 rounded-full border border-transparent hover:border-gold/20 text-xs font-bold tracking-wider">
+          <ng-icon name="lucideGlobe" style="font-size:0.85rem" />
           <span>{{ languageService.idioma() === 'es' ? 'EN' : 'ES' }}</span>
         </button>
 
         @if (authService.isLoggedIn()) {
-          <!-- User chip: avatar + nombre -->
-          <div class="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-foreground/10 bg-foreground/5 select-none">
+          <!-- User chip -->
+          <div class="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-foreground/10 bg-foreground/5 select-none ml-1">
             <div class="w-7 h-7 rounded-full bg-gold/15 border border-gold/30 overflow-hidden flex-shrink-0 flex items-center justify-center">
               @if (authService.avatarUrl()) {
                 <img [src]="authService.avatarUrl()!" alt="avatar" class="w-full h-full object-cover" />
@@ -79,20 +86,20 @@
           <a routerLink="/ayuda"
              [title]="'NAV.AYUDA' | translate"
              class="inline-flex items-center justify-center w-8 h-8 text-foreground/40 hover:text-gold transition-colors rounded-full hover:bg-gold/10 flex-shrink-0">
-            <ng-icon name="lucideHelpCircle" style="font-size:1.1rem;display:block" />
+            <ng-icon name="lucideHelpCircle" style="font-size:1.05rem;display:block" />
           </a>
 
           <!-- Configuración -->
           <a routerLink="/settings"
              [title]="'NAV.CONFIGURACION' | translate"
              class="inline-flex items-center justify-center w-8 h-8 text-foreground/40 hover:text-gold transition-colors rounded-full hover:bg-gold/10 flex-shrink-0">
-            <ng-icon name="lucideSettings" style="font-size:1.1rem;display:block" />
+            <ng-icon name="lucideSettings" style="font-size:1.05rem;display:block" />
           </a>
 
           <!-- Cerrar sesión -->
           <button (click)="logout()"
-                  class="border border-gold/50 text-gold hover:bg-gold hover:text-background px-4 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5">
-            <ng-icon name="lucideLogOut" />
+                  class="border border-gold/50 text-gold hover:bg-gold hover:text-background px-4 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ml-1">
+            <ng-icon name="lucideLogOut" style="font-size:0.85rem" />
             {{ 'NAV.CERRAR_SESION' | translate }}
           </button>
 
@@ -101,11 +108,11 @@
           <a routerLink="/ayuda"
              [title]="'NAV.AYUDA' | translate"
              class="inline-flex items-center justify-center w-8 h-8 text-foreground/40 hover:text-gold transition-colors rounded-full hover:bg-gold/10 flex-shrink-0">
-            <ng-icon name="lucideHelpCircle" style="font-size:1.1rem;display:block" />
+            <ng-icon name="lucideHelpCircle" style="font-size:1.05rem;display:block" />
           </a>
 
           <a routerLink="/login"
-             class="text-foreground/70 hover:text-gold transition-colors text-sm font-medium">
+             class="text-foreground/70 hover:text-gold transition-colors text-sm font-medium px-2">
             {{ 'NAV.INICIAR_SESION' | translate }}
           </a>
           <a routerLink="/register"
@@ -115,111 +122,177 @@
         }
       </div>
 
-      <!-- Hamburguesa móvil -->
-      <button (click)="toggleMenu()"
-              class="md:hidden text-foreground/70 hover:text-gold transition-colors p-1.5">
-        @if (menuAbierto) {
-          <ng-icon name="lucideX" style="font-size:1.4rem" />
-        } @else {
-          <ng-icon name="lucideMenu" style="font-size:1.4rem" />
+      <!-- Botones móvil derecha -->
+      <div class="flex md:hidden items-center gap-1">
+        <!-- Tema (siempre visible) -->
+        <button (click)="themeService.tema.set(themeService.tema() === 'dark' ? 'light' : 'dark')"
+                class="inline-flex items-center justify-center w-9 h-9 text-foreground/50 hover:text-gold transition-colors rounded-full hover:bg-gold/10">
+          <ng-icon [name]="themeService.tema() === 'dark' ? 'lucideSun' : 'lucideMoon'" style="font-size:1.1rem;display:block" />
+        </button>
+        <!-- Avatar pequeño (si logueado) -->
+        @if (authService.isLoggedIn()) {
+          <div class="w-8 h-8 rounded-full bg-gold/15 border border-gold/30 overflow-hidden flex-shrink-0 flex items-center justify-center">
+            @if (authService.avatarUrl()) {
+              <img [src]="authService.avatarUrl()!" alt="avatar" class="w-full h-full object-cover" />
+            } @else {
+              <span class="text-gold font-bold text-xs font-serif leading-none">{{ inicialUsuario() }}</span>
+            }
+          </div>
         }
-      </button>
+        <!-- Hamburguesa -->
+        <button (click)="toggleMenu()"
+                class="inline-flex items-center justify-center w-9 h-9 text-foreground/70 hover:text-gold transition-colors rounded-full hover:bg-gold/10">
+          <ng-icon [name]="menuAbierto ? 'lucideX' : 'lucideMenu'" style="font-size:1.3rem;display:block" />
+        </button>
+      </div>
 
     </div>
   </div>
 
-  <!-- Menú móvil -->
+  <!-- ── Menú móvil ── -->
   @if (menuAbierto) {
-    <div class="md:hidden glass-strong border-t border-gold/10 px-4 py-5 flex flex-col gap-4">
+    <div class="md:hidden border-t border-gold/10 bg-background/98 backdrop-blur-2xl">
 
-      <a routerLink="/" (click)="toggleMenu()"
-         class="text-foreground/70 hover:text-gold transition-colors text-sm font-medium flex items-center gap-2">
-        <ng-icon name="lucideHome" />
-        {{ 'NAV.INICIO' | translate }}
-      </a>
-
-      @if (authService.isLoggedIn()) {
-        <a routerLink="/reservas" (click)="toggleMenu()"
-           class="text-foreground/70 hover:text-gold transition-colors text-sm font-medium flex items-center gap-2">
-          <ng-icon name="lucideCalendar" />
-          {{ 'NAV.RESERVAR' | translate }}
+      <!-- Nav links -->
+      <div class="px-3 pt-3 pb-1 flex flex-col gap-0.5">
+        <a routerLink="/" (click)="toggleMenu()"
+           routerLinkActive="text-gold bg-gold/8" [routerLinkActiveOptions]="{ exact: true }"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl text-foreground/70 hover:text-gold hover:bg-gold/5 transition-all text-sm font-medium">
+          <ng-icon name="lucideHome" class="flex-shrink-0 opacity-70" style="font-size:1rem" />
+          {{ 'NAV.INICIO' | translate }}
         </a>
-        <a routerLink="/mis-reservas" (click)="toggleMenu()"
-           class="text-foreground/70 hover:text-gold transition-colors text-sm font-medium flex items-center gap-2">
-          <ng-icon name="lucideClipboardList" />
-          {{ 'NAV.MIS_RESERVAS' | translate }}
-        </a>
-      }
 
-      <a routerLink="/reviews" (click)="toggleMenu()"
-         class="text-foreground/70 hover:text-gold transition-colors text-sm font-medium flex items-center gap-2">
-        <ng-icon name="lucideStar" />
-        {{ 'NAV.RESENAS' | translate }}
-      </a>
-
-      <a routerLink="/cortes" (click)="toggleMenu()"
-         class="text-foreground/70 hover:text-gold transition-colors text-sm font-medium flex items-center gap-2">
-        <ng-icon name="lucideScissors" />
-        {{ 'NAV.CORTES' | translate }}
-      </a>
-
-      <a routerLink="/ayuda" (click)="toggleMenu()"
-         class="text-foreground/70 hover:text-gold transition-colors text-sm font-medium flex items-center gap-2">
-        <ng-icon name="lucideHelpCircle" />
-        {{ 'NAV.AYUDA' | translate }}
-      </a>
-
-      @if (authService.isAdmin()) {
-        <a routerLink="/admin" (click)="toggleMenu()"
-           class="text-foreground/70 hover:text-gold transition-colors text-sm font-medium flex items-center gap-2">
-          <ng-icon name="lucideShield" />
-          {{ 'NAV.ADMIN' | translate }}
-        </a>
-      }
-
-      <!-- Idioma móvil -->
-      <button (click)="languageService.cambiarIdioma()"
-              class="flex items-center gap-2 text-foreground/50 hover:text-gold transition-colors text-sm font-medium w-fit">
-        <ng-icon name="lucideGlobe" />
-        <span>{{ languageService.idioma() === 'es' ? 'Switch to English' : 'Cambiar a Español' }}</span>
-      </button>
-
-      <div class="border-t border-gold/10 pt-4 flex flex-col gap-3">
         @if (authService.isLoggedIn()) {
-          <!-- Avatar + nombre en móvil -->
-          <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-full bg-gold/15 border border-gold/30 overflow-hidden flex-shrink-0 flex items-center justify-center">
+          <a routerLink="/reservas" (click)="toggleMenu()"
+             routerLinkActive="text-gold bg-gold/8"
+             class="flex items-center gap-3 px-4 py-3 rounded-xl text-foreground/70 hover:text-gold hover:bg-gold/5 transition-all text-sm font-medium">
+            <ng-icon name="lucideCalendar" class="flex-shrink-0 opacity-70" style="font-size:1rem" />
+            {{ 'NAV.RESERVAR' | translate }}
+          </a>
+          <a routerLink="/mis-reservas" (click)="toggleMenu()"
+             routerLinkActive="text-gold bg-gold/8"
+             class="flex items-center gap-3 px-4 py-3 rounded-xl text-foreground/70 hover:text-gold hover:bg-gold/5 transition-all text-sm font-medium">
+            <ng-icon name="lucideClipboardList" class="flex-shrink-0 opacity-70" style="font-size:1rem" />
+            {{ 'NAV.MIS_RESERVAS' | translate }}
+          </a>
+        }
+
+        <a routerLink="/reviews" (click)="toggleMenu()"
+           routerLinkActive="text-gold bg-gold/8"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl text-foreground/70 hover:text-gold hover:bg-gold/5 transition-all text-sm font-medium">
+          <ng-icon name="lucideStar" class="flex-shrink-0 opacity-70" style="font-size:1rem" />
+          {{ 'NAV.RESENAS' | translate }}
+        </a>
+
+        <a routerLink="/cortes" (click)="toggleMenu()"
+           routerLinkActive="text-gold bg-gold/8"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl text-foreground/70 hover:text-gold hover:bg-gold/5 transition-all text-sm font-medium">
+          <ng-icon name="lucideScissors" class="flex-shrink-0 opacity-70" style="font-size:1rem" />
+          {{ 'NAV.CORTES' | translate }}
+        </a>
+
+        <a routerLink="/ayuda" (click)="toggleMenu()"
+           routerLinkActive="text-gold bg-gold/8"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl text-foreground/70 hover:text-gold hover:bg-gold/5 transition-all text-sm font-medium">
+          <ng-icon name="lucideHelpCircle" class="flex-shrink-0 opacity-70" style="font-size:1rem" />
+          {{ 'NAV.AYUDA' | translate }}
+        </a>
+
+        @if (authService.isAdmin()) {
+          <a routerLink="/admin" (click)="toggleMenu()"
+             routerLinkActive="text-gold bg-gold/8"
+             class="flex items-center gap-3 px-4 py-3 rounded-xl text-foreground/70 hover:text-gold hover:bg-gold/5 transition-all text-sm font-medium">
+            <ng-icon name="lucideShield" class="flex-shrink-0 opacity-70" style="font-size:1rem" />
+            {{ 'NAV.ADMIN' | translate }}
+          </a>
+        }
+      </div>
+
+      <!-- Quick settings: tema + idioma -->
+      <div class="mx-3 my-2 p-3 rounded-2xl bg-foreground/3 border border-foreground/5">
+        <p class="text-foreground/30 text-[10px] font-semibold uppercase tracking-widest mb-2.5 px-1">Ajustes rápidos</p>
+        <div class="grid grid-cols-2 gap-2">
+          <!-- Tema -->
+          <button (click)="themeService.tema.set(themeService.tema() === 'dark' ? 'light' : 'dark')"
+                  class="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border transition-all duration-200"
+                  [class]="themeService.tema() === 'dark'
+                    ? 'border-gold/25 bg-gold/8 text-gold'
+                    : 'border-gold/25 bg-gold/8 text-gold'">
+            <div class="flex items-center gap-2">
+              <ng-icon [name]="themeService.tema() === 'dark' ? 'lucideMoon' : 'lucideSun'" style="font-size:0.95rem" />
+              <span class="text-xs font-semibold">
+                {{ themeService.tema() === 'dark' ? ('SETTINGS.TEMA_OSCURO' | translate) : ('SETTINGS.TEMA_CLARO' | translate) }}
+              </span>
+            </div>
+            <!-- toggle pill -->
+            <div class="w-8 h-4 rounded-full relative transition-colors duration-300 flex-shrink-0"
+                 [class]="themeService.tema() === 'dark' ? 'bg-gold' : 'bg-foreground/20'">
+              <span class="absolute top-0.5 w-3 h-3 bg-white rounded-full shadow transition-all duration-300"
+                    [class]="themeService.tema() === 'dark' ? 'right-0.5' : 'left-0.5'"></span>
+            </div>
+          </button>
+
+          <!-- Idioma -->
+          <button (click)="languageService.cambiarIdioma()"
+                  class="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-foreground/10 bg-foreground/5 text-foreground/60 hover:text-gold hover:border-gold/25 hover:bg-gold/5 transition-all duration-200">
+            <div class="flex items-center gap-2">
+              <ng-icon name="lucideGlobe" style="font-size:0.95rem" />
+              <span class="text-xs font-semibold">{{ languageService.idioma() === 'es' ? 'Español' : 'English' }}</span>
+            </div>
+            <span class="text-[10px] font-bold tracking-wider bg-foreground/8 px-1.5 py-0.5 rounded-md">
+              {{ languageService.idioma() === 'es' ? 'EN' : 'ES' }}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- User section -->
+      <div class="mx-3 mb-3 rounded-2xl border border-foreground/5 overflow-hidden">
+        @if (authService.isLoggedIn()) {
+          <!-- Avatar + nombre -->
+          <div class="flex items-center gap-3 px-4 py-3 bg-foreground/3">
+            <div class="w-9 h-9 rounded-full bg-gold/15 border border-gold/30 overflow-hidden flex-shrink-0 flex items-center justify-center">
               @if (authService.avatarUrl()) {
                 <img [src]="authService.avatarUrl()!" alt="avatar" class="w-full h-full object-cover" />
               } @else {
                 <span class="text-gold font-bold text-sm font-serif leading-none">{{ inicialUsuario() }}</span>
               }
             </div>
-            <span class="text-foreground/60 text-sm font-medium">{{ authService.currentUser()?.name }}</span>
+            <div class="min-w-0">
+              <p class="text-foreground font-semibold text-sm truncate">{{ authService.currentUser()?.name }}</p>
+              <p class="text-foreground/40 text-xs truncate">{{ authService.currentUser()?.email }}</p>
+            </div>
           </div>
 
+          <!-- Configuración -->
           <a routerLink="/settings" (click)="toggleMenu()"
-             class="text-foreground/70 hover:text-gold transition-colors text-sm font-medium flex items-center gap-2">
-            <ng-icon name="lucideSettings" />
+             class="flex items-center gap-3 px-4 py-3 text-foreground/60 hover:text-gold hover:bg-gold/5 transition-all text-sm font-medium border-t border-foreground/5">
+            <ng-icon name="lucideSettings" class="flex-shrink-0" style="font-size:1rem" />
             {{ 'NAV.CONFIGURACION' | translate }}
           </a>
 
+          <!-- Cerrar sesión -->
           <button (click)="logout(); toggleMenu()"
-                  class="border border-gold/50 text-gold px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 w-fit">
-            <ng-icon name="lucideLogOut" />
+                  class="w-full flex items-center gap-3 px-4 py-3 text-red-400/80 hover:text-red-400 hover:bg-red-500/5 transition-all text-sm font-medium border-t border-foreground/5">
+            <ng-icon name="lucideLogOut" class="flex-shrink-0" style="font-size:1rem" />
             {{ 'NAV.CERRAR_SESION' | translate }}
           </button>
+
         } @else {
+          <!-- Login / Register -->
           <a routerLink="/login" (click)="toggleMenu()"
-             class="text-foreground/70 hover:text-gold transition-colors text-sm font-medium">
+             class="flex items-center gap-3 px-4 py-3 text-foreground/60 hover:text-gold hover:bg-gold/5 transition-all text-sm font-medium">
+            <ng-icon name="lucideLogIn" class="flex-shrink-0" style="font-size:1rem" />
             {{ 'NAV.INICIAR_SESION' | translate }}
           </a>
           <a routerLink="/register" (click)="toggleMenu()"
-             class="btn-shimmer bg-gold text-background px-4 py-2 rounded-lg text-sm font-bold text-center block">
+             class="flex items-center gap-3 px-4 py-3 text-gold font-bold hover:bg-gold/8 transition-all text-sm border-t border-foreground/5">
+            <ng-icon name="lucideUserPlus" class="flex-shrink-0" style="font-size:1rem" />
             {{ 'NAV.REGISTRARSE' | translate }}
           </a>
         }
       </div>
+
     </div>
   }
 </nav>

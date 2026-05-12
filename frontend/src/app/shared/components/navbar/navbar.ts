@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService }     from '../../../core/services/auth.service';
 import { LanguageService } from '../../../core/services/languaje.service';
+import { ThemeService }    from '../../../core/services/theme.service';
 import { UserService }     from '../../../core/services/user.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule }    from '@angular/common';
@@ -16,6 +17,7 @@ import { NgIconComponent } from '@ng-icons/core';
 export class NavbarComponent implements OnInit {
     authService     = inject(AuthService);
     languageService = inject(LanguageService);
+    themeService    = inject(ThemeService);
     private userService = inject(UserService);
     menuAbierto = false;
 
