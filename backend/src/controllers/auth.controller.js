@@ -32,6 +32,7 @@ export const register = async (req, res) => {
             name,
             email,
             password: hashPassword,
+            active:                   false,
             emailVerified:            false,
             verificationToken,
             verificationTokenExpires: tokenExpires
@@ -68,6 +69,7 @@ export const verificarEmail = async (req, res) => {
             return res.status(400).json({ message: 'El enlace de verificación ha expirado' });
         }
 
+        usuario.active                   = true;
         usuario.emailVerified            = true;
         usuario.verificationToken        = null;
         usuario.verificationTokenExpires = null;
