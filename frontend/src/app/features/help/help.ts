@@ -57,6 +57,11 @@ export class HelpComponent {
             respuestaKey: 'AYUDA.FAQ.A8',
             roles: ['publico', 'cliente', 'admin']
         },
+        {
+            preguntaKey:  'AYUDA.FAQ.Q9',
+            respuestaKey: 'AYUDA.FAQ.A9',
+            roles: ['publico', 'cliente', 'admin']
+        },
         // Solo clientes
         {
             preguntaKey:  'AYUDA.FAQ.Q2',

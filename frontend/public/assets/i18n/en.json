@@ -172,7 +172,9 @@
       "Q7": "Will I receive confirmation of my booking?",
       "A7": "Yes, you will receive an email with all the details of your booking: service, date, time, price and payment method.",
       "Q8": "Is the barbershop open every day?",
-      "A8": "The barbershop is open Monday to Saturday from 09:00 to 20:00. Appointments cannot be booked on Sundays."
+      "A8": "The barbershop is open Monday to Saturday from 09:00 to 20:00. Appointments cannot be booked on Sundays.",
+      "Q9": "How can I reset my password?",
+      "A9": "On the sign-in page, click 'Forgot your password?'. Enter your email address and you will receive a link to create a new password. The link is valid for 1 hour. If you don't receive the email, check your spam folder. Note that this option is not available if you signed in with Google."
     }
   },
   "GALERIA": {

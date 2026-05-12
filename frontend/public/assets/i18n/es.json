@@ -172,7 +172,9 @@
       "Q7": "¿Recibiré confirmación de mi reserva?",
       "A7": "Sí, recibirás un correo electrónico con todos los detalles de tu reserva: servicio, fecha, hora, precio y método de pago.",
       "Q8": "¿La barbería abre todos los días?",
-      "A8": "La barbería abre de lunes a sábado de 09:00 a 20:00. No se pueden reservar citas en domingo."
+      "A8": "La barbería abre de lunes a sábado de 09:00 a 20:00. No se pueden reservar citas en domingo.",
+      "Q9": "¿Cómo puedo restablecer mi contraseña?",
+      "A9": "En la página de inicio de sesión, haz clic en '¿Olvidaste tu contraseña?'. Introduce tu correo electrónico y recibirás un enlace para crear una nueva contraseña. El enlace es válido durante 1 hora. Si no recibes el correo, revisa la carpeta de spam. Ten en cuenta que esta opción no está disponible si iniciaste sesión con Google."
     }
   },
   "GALERIA": {
