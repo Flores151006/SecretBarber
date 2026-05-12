@@ -50,16 +50,19 @@ export class HelpComponent {
         {
             preguntaKey:  'AYUDA.FAQ.Q3',
             respuestaKey: 'AYUDA.FAQ.A3',
+            youtubeId: 'dQw4w9WgXcQ', duracion: '1:45',
             roles: ['publico', 'cliente', 'admin']
         },
         {
             preguntaKey:  'AYUDA.FAQ.Q8',
             respuestaKey: 'AYUDA.FAQ.A8',
+            youtubeId: 'dQw4w9WgXcQ', duracion: '1:10',
             roles: ['publico', 'cliente', 'admin']
         },
         {
             preguntaKey:  'AYUDA.FAQ.Q9',
             respuestaKey: 'AYUDA.FAQ.A9',
+            youtubeId: 'dQw4w9WgXcQ', duracion: '2:00',
             roles: ['publico', 'cliente', 'admin']
         },
         // Solo clientes
@@ -78,6 +81,7 @@ export class HelpComponent {
         {
             preguntaKey:  'AYUDA.FAQ.Q6',
             respuestaKey: 'AYUDA.FAQ.A6',
+            youtubeId: 'dQw4w9WgXcQ', duracion: '1:30',
             roles: ['cliente', 'admin']
         },
         // Solo admin
