@@ -209,9 +209,12 @@ export const forgotPassword = async (req, res) => {
 
         const usuario = await User.findOne({ email: email.toLowerCase() });
 
-        // Respuesta genérica: no revelar si el email existe
-        if (!usuario || usuario.googleId) {
-            return res.status(200).json({ message: 'Si el correo existe, recibirás un enlace en breve.' });
+        if (!usuario) {
+            return res.status(404).json({ message: 'No existe ninguna cuenta con ese correo electrónico' });
+        }
+
+        if (usuario.googleId) {
+            return res.status(400).json({ message: 'Esta cuenta usa Google. Restablece la contraseña desde Google.' });
         }
 
         const token   = crypto.randomBytes(32).toString('hex');
@@ -221,10 +224,9 @@ export const forgotPassword = async (req, res) => {
         usuario.passwordResetExpires = expires;
         await usuario.save();
 
-        enviarEmailResetPassword(usuario, token)
-            .catch(e => console.error('[RESET] Error al enviar email:', e.message));
+        await enviarEmailResetPassword(usuario, token);
 
-        res.status(200).json({ message: 'Si el correo existe, recibirás un enlace en breve.' });
+        res.status(200).json({ message: 'Enlace enviado. Revisa tu correo.' });
     } catch (error) {
         res.status(500).json({ message: 'Error al procesar la solicitud', error: error.message });
     }

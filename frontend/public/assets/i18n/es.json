@@ -362,6 +362,7 @@
   "FORGOT_PASSWORD": {
     "TITULO": "¿Olvidaste tu contraseña?",
     "SUBTITULO": "Introduce tu email y te enviaremos un enlace para restablecerla",
+    "EMAIL_LABEL": "Correo electrónico",
     "BTN": "Enviar enlace de recuperación",
     "BTN_CARGANDO": "Enviando...",
     "VOLVER": "Volver al inicio de sesión",

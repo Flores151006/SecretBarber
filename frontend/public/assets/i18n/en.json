@@ -362,6 +362,7 @@
   "FORGOT_PASSWORD": {
     "TITULO": "Forgot your password?",
     "SUBTITULO": "Enter your email and we'll send you a reset link",
+    "EMAIL_LABEL": "Email address",
     "BTN": "Send reset link",
     "BTN_CARGANDO": "Sending...",
     "VOLVER": "Back to login",

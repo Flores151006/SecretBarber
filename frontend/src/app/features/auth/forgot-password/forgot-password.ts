@@ -3,7 +3,7 @@ import { CommonModule }              from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink }                from '@angular/router';
 import { NgIconComponent }           from '@ng-icons/core';
-import { TranslateModule }           from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService }               from '../../../core/services/auth.service';
 
 @Component({
@@ -15,6 +15,7 @@ import { AuthService }               from '../../../core/services/auth.service';
 export class ForgotPasswordComponent {
     private authService = inject(AuthService);
     private fb          = inject(FormBuilder);
+    private translate   = inject(TranslateService);
 
     form = this.fb.group({
         email: ['', [Validators.required, Validators.email]]
@@ -35,7 +36,7 @@ export class ForgotPasswordComponent {
                 this.cargando.set(false);
             },
             error: (err) => {
-                this.error.set(err.error?.message || 'Error al procesar la solicitud');
+                this.error.set(err.error?.message || this.translate.instant('COMUN.ERROR'));
                 this.cargando.set(false);
             }
         });
