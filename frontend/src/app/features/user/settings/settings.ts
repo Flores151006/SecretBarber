@@ -171,7 +171,7 @@ export class SettingsComponent implements OnInit {
     onAvatarSelected(event: Event): void {
         const file = (event.target as HTMLInputElement).files?.[0];
         if (!file) return;
-        if (!file.type.startsWith('image/')) { this.errorAvatar.set(this.translate.instant('SETTINGS.ERROR_IMAGEN')); return; }
+        if (!file.type.startsWith('image/')) { this.errorPerfil.set(this.translate.instant('SETTINGS.ERROR_IMAGEN')); return; }
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = new Image();
