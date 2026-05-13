@@ -18,6 +18,8 @@ export class AuthService {
 
     constructor() {
         this.cargarUsuarioDesdeToken();
+        const savedAvatar = localStorage.getItem('userAvatar');
+        if (savedAvatar) this.avatarUrl.set(savedAvatar);
     }
 
     register(data: RegisterDto): Observable<{ message: string }> {
@@ -46,6 +48,7 @@ export class AuthService {
     logout(): void {
         this.http.post(`${this.API}/logout`, {}, { withCredentials: true }).subscribe();
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('userAvatar');
         this.avatarUrl.set(null);
         this.currentUser.set(null);
         this.router.navigate(['/login']);
@@ -110,5 +113,10 @@ export class AuthService {
 
     actualizarAvatarLocal(avatar: string | null): void {
         this.avatarUrl.set(avatar);
+        if (avatar) {
+            localStorage.setItem('userAvatar', avatar);
+        } else {
+            localStorage.removeItem('userAvatar');
+        }
     }
 }

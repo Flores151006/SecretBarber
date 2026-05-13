@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, effect, untracked } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService }     from '../../../core/services/auth.service';
 import { LanguageService } from '../../../core/services/languaje.service';
@@ -21,14 +21,21 @@ export class NavbarComponent implements OnInit {
     private userService = inject(UserService);
     menuAbierto = false;
 
-    ngOnInit(): void {
-        if (this.authService.isLoggedIn()) {
-            this.userService.getPerfil().subscribe({
-                next: (res) => this.authService.actualizarAvatarLocal(res.data.avatar ?? null),
-                error: () => {}
-            });
-        }
+    constructor() {
+        effect(() => {
+            const user = this.authService.currentUser();
+            if (user && !this.authService.avatarUrl()) {
+                untracked(() => {
+                    this.userService.getPerfil().subscribe({
+                        next: (res) => this.authService.actualizarAvatarLocal(res.data.avatar ?? null),
+                        error: () => {}
+                    });
+                });
+            }
+        });
     }
+
+    ngOnInit(): void {}
 
     inicialUsuario(): string {
         return this.authService.currentUser()?.name?.charAt(0)?.toUpperCase() ?? '?';
