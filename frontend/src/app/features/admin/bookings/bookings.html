@@ -39,8 +39,7 @@
       { id: 'todas',      label: 'ADMIN.RESERVAS.ESTADO_TODAS'     },
       { id: 'pendiente',  label: 'ADMIN.RESERVAS.ESTADO_PENDIENTE' },
       { id: 'confirmada', label: 'ADMIN.RESERVAS.ESTADO_CONFIRMADA'},
-      { id: 'completada', label: 'ADMIN.RESERVAS.ESTADO_COMPLETADA'},
-      { id: 'cancelada',  label: 'ADMIN.RESERVAS.ESTADO_CANCELADA' }
+      { id: 'completada', label: 'ADMIN.RESERVAS.ESTADO_COMPLETADA'}
     ]; track f.id) {
       <button (click)="filtro = f.id"
               [class]="filtro === f.id ? 'bg-gold text-background shadow-gold' : 'border border-gold/20 text-foreground/55 hover:border-gold/50 hover:bg-gold/5'"

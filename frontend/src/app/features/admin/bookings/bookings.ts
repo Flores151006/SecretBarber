@@ -120,6 +120,20 @@ export class AdminBookingsComponent implements OnInit {
             cancelButtonColor: '#374151'
         }).then(result => {
             if (!result.isConfirmed) return;
+            if (estado === 'cancelada') {
+                this.bookingService.cancelarBooking(id).subscribe({
+                    next: () => {
+                        const idx = this.bookings.findIndex(b => b._id === id);
+                        if (idx !== -1) this.bookings.splice(idx, 1);
+                        this.cdr.detectChanges();
+                        Swal.fire({ icon: 'success', title: t('ADMIN.RESERVAS.SWAL_CANC_TITULO'),
+                            background: '#1C1C1C', color: '#F5F5F5', confirmButtonColor: '#C9A84C', timer: 2000, showConfirmButton: false });
+                    },
+                    error: (err) => Swal.fire({ icon: 'error', title: 'Error', text: err.error?.message,
+                        background: '#1C1C1C', color: '#F5F5F5', confirmButtonColor: '#C9A84C' })
+                });
+                return;
+            }
             this.bookingService.actualizarEstado(id, estado).subscribe({
                 next: () => {
                     const booking = this.bookings.find(b => b._id === id);
@@ -173,7 +187,6 @@ getNombreBarbero(booking: Booking): string {
         switch (estado) {
             case 'confirmada':  return 'text-green-400 bg-green-400/10 border-green-400/20';
             case 'pendiente':   return 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20';
-            case 'cancelada':   return 'text-red-400 bg-red-400/10 border-red-400/20';
             case 'completada':  return 'text-blue-400 bg-blue-400/10 border-blue-400/20';
             default:            return 'text-foreground/50';
         }

@@ -40,8 +40,7 @@ export const getDisponibilidad = async (req, res) => {
 
         const reservas = await Booking.find({
             barbero: barberoId,
-            fecha:   new Date(fecha),
-            estado:  { $nin: ['cancelada'] }
+            fecha:   new Date(fecha)
         });
 
         const ocupados = reservas.map(r => ({
@@ -111,8 +110,7 @@ export const crearBooking = async (req, res) => {
 
         const reservasDelDia = await Booking.find({
             barbero: barberoId,
-            fecha:   new Date(fecha),
-            estado:  { $nin: ['cancelada'] }
+            fecha:   new Date(fecha)
         });
         const finReserva = toMinutes(hora) + duracionTotal;
         const solapada = reservasDelDia.some(r => {
@@ -214,7 +212,7 @@ export const cancelarBooking = async (req, res) => {
             return res.status(403).json({ message: 'No puedes cancelar una reserva que no es tuya' });
         if (!['pendiente', 'confirmada'].includes(booking.estado))
             return res.status(400).json({ message: 'No puedes cancelar esta reserva' });
-        await Booking.findByIdAndUpdate(req.params.id, { estado: 'cancelada' });
+        await Booking.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: 'Reserva cancelada correctamente' });
     } catch (error) {
         res.status(500).json({ message: 'Error al cancelar la reserva', error: error.message });
@@ -227,6 +225,11 @@ export const actualizarEstado = async (req, res) => {
         const { estado } = req.body;
         if (!['pendiente', 'confirmada', 'completada', 'cancelada'].includes(estado))
             return res.status(400).json({ message: 'Estado no válido' });
+        if (estado === 'cancelada') {
+            const deleted = await Booking.findByIdAndDelete(req.params.id);
+            if (!deleted) return res.status(404).json({ message: 'Reserva no encontrada' });
+            return res.status(200).json({ message: 'Reserva cancelada y eliminada' });
+        }
         const booking = await Booking.findByIdAndUpdate(req.params.id, { estado }, { new: true });
         if (!booking) return res.status(404).json({ message: 'Reserva no encontrada' });
         res.status(200).json({ message: `Reserva marcada como ${estado}` });
@@ -266,7 +269,7 @@ export const modificarBooking = async (req, res) => {
         const finReserva = toMinutes(hora) + duracionTotal;
         const reservasDelDia = await Booking.find({
             barbero: barberoId, fecha: new Date(fecha),
-            estado: { $nin: ['cancelada'] }, _id: { $ne: booking._id }
+            _id: { $ne: booking._id }
         });
         const solapada = reservasDelDia.some(r => {
             const rInicio = toMinutes(r.hora);

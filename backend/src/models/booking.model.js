@@ -54,7 +54,7 @@ export const Booking = mongoose.model('Booking', new mongoose.Schema({
     },
     estado: {
         type:    String,
-        enum:    { values: ['pendiente', 'confirmada', 'cancelada', 'completada'], message: 'Estado inválido' },
+        enum:    { values: ['pendiente', 'confirmada', 'completada'], message: 'Estado inválido' },
         default: 'pendiente'
     },
     notas: {
