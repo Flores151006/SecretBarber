@@ -10,9 +10,14 @@ type Rol = 'publico' | 'cliente' | 'admin';
 interface EntradaAyuda {
     preguntaKey:  string;
     respuestaKey: string;
-    youtubeId?:   string;
-    duracion?:    string;
     roles:        Rol[];
+}
+
+interface VideoRol {
+    youtubeId: string;
+    tituloKey: string;
+    descKey:   string;
+    duracion:  string;
 }
 
 @Component({
@@ -25,84 +30,42 @@ export class HelpComponent {
     private authService = inject(AuthService);
     private sanitizer   = inject(DomSanitizer);
 
-    abiertoIdx = signal<number>(-1);
+    abiertoIdx   = signal<number>(-1);
+    videoAbierto = signal<boolean>(false);
+
+    private readonly videos: Record<Rol, VideoRol> = {
+        publico: {
+            youtubeId: 'dQw4w9WgXcQ',
+            tituloKey: 'AYUDA.VIDEOS.REGISTRO_TITULO',
+            descKey:   'AYUDA.VIDEOS.REGISTRO_DESC',
+            duracion:  '2:45'
+        },
+        cliente: {
+            youtubeId: 'dQw4w9WgXcQ',
+            tituloKey: 'AYUDA.VIDEOS.RESERVAR_TITULO',
+            descKey:   'AYUDA.VIDEOS.RESERVAR_DESC',
+            duracion:  '3:20'
+        },
+        admin: {
+            youtubeId: 'dQw4w9WgXcQ',
+            tituloKey: 'AYUDA.VIDEOS.ADMIN_RESERVAS_TITULO',
+            descKey:   'AYUDA.VIDEOS.ADMIN_RESERVAS_DESC',
+            duracion:  '4:00'
+        }
+    };
 
     readonly entradas: EntradaAyuda[] = [
-        // Visibles para todos
-        {
-            preguntaKey:  'AYUDA.FAQ.Q1',
-            respuestaKey: 'AYUDA.FAQ.A1',
-            youtubeId: 'dQw4w9WgXcQ', duracion: '3:15',
-            roles: ['publico', 'cliente', 'admin']
-        },
-        {
-            preguntaKey:  'AYUDA.FAQ.Q7',
-            respuestaKey: 'AYUDA.FAQ.A7',
-            youtubeId: 'dQw4w9WgXcQ', duracion: '2:30',
-            roles: ['publico', 'cliente', 'admin']
-        },
-        {
-            preguntaKey:  'AYUDA.FAQ.Q4',
-            respuestaKey: 'AYUDA.FAQ.A4',
-            youtubeId: 'dQw4w9WgXcQ', duracion: '1:20',
-            roles: ['publico', 'cliente', 'admin']
-        },
-        {
-            preguntaKey:  'AYUDA.FAQ.Q3',
-            respuestaKey: 'AYUDA.FAQ.A3',
-            youtubeId: 'dQw4w9WgXcQ', duracion: '1:45',
-            roles: ['publico', 'cliente', 'admin']
-        },
-        {
-            preguntaKey:  'AYUDA.FAQ.Q8',
-            respuestaKey: 'AYUDA.FAQ.A8',
-            youtubeId: 'dQw4w9WgXcQ', duracion: '1:10',
-            roles: ['publico', 'cliente', 'admin']
-        },
-        {
-            preguntaKey:  'AYUDA.FAQ.Q9',
-            respuestaKey: 'AYUDA.FAQ.A9',
-            youtubeId: 'dQw4w9WgXcQ', duracion: '2:00',
-            roles: ['publico', 'cliente', 'admin']
-        },
-        // Solo clientes
-        {
-            preguntaKey:  'AYUDA.FAQ.Q2',
-            respuestaKey: 'AYUDA.FAQ.A2',
-            youtubeId: 'dQw4w9WgXcQ', duracion: '2:45',
-            roles: ['cliente', 'admin']
-        },
-        {
-            preguntaKey:  'AYUDA.FAQ.Q5',
-            respuestaKey: 'AYUDA.FAQ.A5',
-            youtubeId: 'dQw4w9WgXcQ', duracion: '1:50',
-            roles: ['cliente', 'admin']
-        },
-        {
-            preguntaKey:  'AYUDA.FAQ.Q6',
-            respuestaKey: 'AYUDA.FAQ.A6',
-            youtubeId: 'dQw4w9WgXcQ', duracion: '1:30',
-            roles: ['cliente', 'admin']
-        },
-        // Solo admin
-        {
-            preguntaKey:  'AYUDA.VIDEOS.ADMIN_RESERVAS_TITULO',
-            respuestaKey: 'AYUDA.VIDEOS.ADMIN_RESERVAS_DESC',
-            youtubeId: 'dQw4w9WgXcQ', duracion: '4:00',
-            roles: ['admin']
-        },
-        {
-            preguntaKey:  'AYUDA.VIDEOS.ADMIN_STATS_TITULO',
-            respuestaKey: 'AYUDA.VIDEOS.ADMIN_STATS_DESC',
-            youtubeId: 'dQw4w9WgXcQ', duracion: '3:30',
-            roles: ['admin']
-        },
-        {
-            preguntaKey:  'AYUDA.VIDEOS.ADMIN_USUARIOS_TITULO',
-            respuestaKey: 'AYUDA.VIDEOS.ADMIN_USUARIOS_DESC',
-            youtubeId: 'dQw4w9WgXcQ', duracion: '3:00',
-            roles: ['admin']
-        }
+        { preguntaKey: 'AYUDA.FAQ.Q1', respuestaKey: 'AYUDA.FAQ.A1', roles: ['publico', 'cliente', 'admin'] },
+        { preguntaKey: 'AYUDA.FAQ.Q7', respuestaKey: 'AYUDA.FAQ.A7', roles: ['publico', 'cliente', 'admin'] },
+        { preguntaKey: 'AYUDA.FAQ.Q4', respuestaKey: 'AYUDA.FAQ.A4', roles: ['publico', 'cliente', 'admin'] },
+        { preguntaKey: 'AYUDA.FAQ.Q3', respuestaKey: 'AYUDA.FAQ.A3', roles: ['publico', 'cliente', 'admin'] },
+        { preguntaKey: 'AYUDA.FAQ.Q8', respuestaKey: 'AYUDA.FAQ.A8', roles: ['publico', 'cliente', 'admin'] },
+        { preguntaKey: 'AYUDA.FAQ.Q9', respuestaKey: 'AYUDA.FAQ.A9', roles: ['publico', 'cliente', 'admin'] },
+        { preguntaKey: 'AYUDA.FAQ.Q2', respuestaKey: 'AYUDA.FAQ.A2', roles: ['cliente', 'admin'] },
+        { preguntaKey: 'AYUDA.FAQ.Q5', respuestaKey: 'AYUDA.FAQ.A5', roles: ['cliente', 'admin'] },
+        { preguntaKey: 'AYUDA.FAQ.Q6', respuestaKey: 'AYUDA.FAQ.A6', roles: ['cliente', 'admin'] },
+        { preguntaKey: 'AYUDA.VIDEOS.ADMIN_STATS_TITULO',    respuestaKey: 'AYUDA.VIDEOS.ADMIN_STATS_DESC',    roles: ['admin'] },
+        { preguntaKey: 'AYUDA.VIDEOS.ADMIN_USUARIOS_TITULO', respuestaKey: 'AYUDA.VIDEOS.ADMIN_USUARIOS_DESC', roles: ['admin'] }
     ];
 
     get entradasFiltradas(): EntradaAyuda[] {
@@ -110,6 +73,13 @@ export class HelpComponent {
         if (!usuario)                 return this.entradas.filter(e => e.roles.includes('publico'));
         if (usuario.role === 'Admin') return this.entradas.filter(e => e.roles.includes('admin'));
         return this.entradas.filter(e => e.roles.includes('cliente'));
+    }
+
+    get videoDelRol(): VideoRol {
+        const usuario = this.authService.currentUser();
+        if (!usuario)                 return this.videos['publico'];
+        if (usuario.role === 'Admin') return this.videos['admin'];
+        return this.videos['cliente'];
     }
 
     get rolLabelKey(): string {

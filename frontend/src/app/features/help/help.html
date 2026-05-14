@@ -12,7 +12,62 @@
       <p class="text-foreground/50 text-base sm:text-lg">{{ 'AYUDA.SUBTITULO' | translate }}</p>
     </div>
 
-    <!-- ── Cabecera de sección ──────────────────────────────────────────────── -->
+    <!-- ── Vídeo del rol ─────────────────────────────────────────────────────── -->
+    <div class="mb-12" data-aos="fade-up">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-8 h-8 bg-gold/10 border border-gold/20 rounded-lg flex items-center justify-center flex-shrink-0">
+          <ng-icon name="lucidePlay" class="text-gold" style="font-size:0.85rem" />
+        </div>
+        <div>
+          <h2 class="text-foreground font-semibold">{{ 'AYUDA.VIDEOS_TITULO' | translate }}</h2>
+          <p class="text-foreground/40 text-xs">
+            {{ 'AYUDA.VIDEOS_PERFIL' | translate }}
+            <span class="text-gold font-medium">{{ rolLabelKey | translate }}</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl overflow-hidden shadow-card">
+
+        <!-- Info del vídeo -->
+        <div class="flex items-start gap-4 px-5 py-4 border-b border-gold/10">
+          <div class="flex-1 min-w-0">
+            <p class="text-foreground font-semibold text-sm leading-snug">{{ videoDelRol.tituloKey | translate }}</p>
+            <p class="text-foreground/45 text-xs mt-1 leading-relaxed">{{ videoDelRol.descKey | translate }}</p>
+          </div>
+          <span class="text-foreground/30 text-xs tabular-nums flex items-center gap-1 flex-shrink-0 mt-0.5">
+            <ng-icon name="lucideClock" style="font-size:0.7rem" />
+            {{ videoDelRol.duracion }}
+          </span>
+        </div>
+
+        <!-- Reproductor / thumbnail -->
+        @if (videoAbierto()) {
+          <div class="relative w-full aspect-video bg-black">
+            <iframe [src]="embedUrl(videoDelRol.youtubeId)"
+                    class="absolute inset-0 w-full h-full"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                    loading="lazy"
+                    [title]="videoDelRol.tituloKey | translate">
+            </iframe>
+          </div>
+        } @else {
+          <button (click)="videoAbierto.set(true)"
+                  class="w-full aspect-video bg-gradient-to-br from-surface to-background/80 flex flex-col items-center justify-center gap-4 group cursor-pointer relative overflow-hidden">
+            <div class="absolute inset-0 bg-gold/[0.03] group-hover:bg-gold/[0.06] transition-colors"></div>
+            <div class="w-16 h-16 bg-gold rounded-full flex items-center justify-center shadow-gold group-hover:scale-110 group-hover:shadow-gold-lg transition-all duration-300 relative z-10">
+              <ng-icon name="lucidePlay" class="text-background" style="font-size:1.6rem; margin-left:3px" />
+            </div>
+            <span class="text-foreground/40 text-xs relative z-10">{{ 'AYUDA.REPRODUCIR' | translate }}</span>
+          </button>
+        }
+
+      </div>
+    </div>
+
+    <!-- ── Preguntas frecuentes ──────────────────────────────────────────────── -->
     <div class="flex items-center justify-between mb-5 flex-wrap gap-3" data-aos="fade-up">
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 bg-gold/10 border border-gold/20 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -20,18 +75,14 @@
         </div>
         <div>
           <h2 class="text-foreground font-semibold">{{ 'AYUDA.FAQ_TITULO' | translate }}</h2>
-          <p class="text-foreground/40 text-xs">
-            {{ 'AYUDA.VIDEOS_PERFIL' | translate }}
-            <span class="text-gold font-medium">{{ rolLabelKey | translate }}</span>
-          </p>
+          <p class="text-foreground/40 text-xs">{{ 'AYUDA.FAQ_SUBTITULO' | translate }}</p>
         </div>
       </div>
       <span class="text-gold text-xs border border-gold/20 bg-gold/5 px-3 py-1 rounded-full font-medium">
-        {{ entradasFiltradas.length }} {{ 'AYUDA.VIDEOS_DISPONIBLES' | translate }}
+        {{ entradasFiltradas.length }} {{ 'AYUDA.PREGUNTAS_DISPONIBLES' | translate }}
       </span>
     </div>
 
-    <!-- ── Acordeón fusionado: pregunta + respuesta + vídeo ─────────────────── -->
     <section class="flex flex-col gap-2 mb-14">
       @for (entrada of entradasFiltradas; track entrada.preguntaKey; let i = $index) {
         <div class="glass rounded-xl overflow-hidden transition-shadow duration-300"
@@ -42,7 +93,6 @@
           <button (click)="toggle(i)"
                   class="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gold/5 transition-colors duration-200 group">
 
-            <!-- Número / icono estado -->
             <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300"
                  [class]="abiertoIdx() === i
                    ? 'bg-gold text-background'
@@ -54,18 +104,9 @@
               }
             </div>
 
-            <!-- Pregunta -->
             <span class="flex-1 text-foreground font-medium text-sm leading-snug">
               {{ entrada.preguntaKey | translate }}
             </span>
-
-            <!-- Duración (solo si tiene vídeo) -->
-            @if (entrada.duracion) {
-              <span class="text-foreground/30 text-xs tabular-nums hidden sm:flex items-center gap-1 flex-shrink-0">
-                <ng-icon name="lucidePlay" style="font-size:0.7rem" />
-                {{ entrada.duracion }}
-              </span>
-            }
 
             <ng-icon [name]="abiertoIdx() === i ? 'lucideChevronUp' : 'lucideChevronDown'"
                      class="text-gold/60 transition-transform duration-300 flex-shrink-0" />
@@ -76,27 +117,9 @@
                [style.grid-template-rows]="abiertoIdx() === i ? '1fr' : '0fr'">
             <div class="overflow-hidden">
               <div class="px-5 pb-5 pt-3 border-t border-gold/10">
-
-                <!-- Respuesta -->
-                <p class="text-foreground/60 text-sm leading-relaxed"
-                   [class.mb-5]="entrada.youtubeId">
+                <p class="text-foreground/60 text-sm leading-relaxed">
                   {{ entrada.respuestaKey | translate }}
                 </p>
-
-                <!-- Vídeo (solo si tiene youtubeId y está abierto) -->
-                @if (entrada.youtubeId && abiertoIdx() === i) {
-                  <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black/40">
-                    <iframe [src]="embedUrl(entrada.youtubeId)"
-                            class="absolute inset-0 w-full h-full"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowfullscreen
-                            loading="lazy"
-                            [title]="entrada.preguntaKey | translate">
-                    </iframe>
-                  </div>
-                }
-
               </div>
             </div>
           </div>

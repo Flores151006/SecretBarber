@@ -134,10 +134,13 @@
     "VIDEOS_TITULO": "Video tutorials",
     "VIDEOS_PERFIL": "Personalised content for your",
     "VIDEOS_DISPONIBLES": "tutorials",
+    "PREGUNTAS_DISPONIBLES": "questions",
+    "REPRODUCIR": "Click to play",
     "ROL_PUBLICO": "visitor",
     "ROL_CLIENTE": "client",
     "ROL_ADMIN": "administrator",
     "FAQ_TITULO": "Frequently asked questions",
+    "FAQ_SUBTITULO": "Quick answers to the most common questions",
     "VIDEOS": {
       "REGISTRO_TITULO": "How to create your account",
       "REGISTRO_DESC": "Learn how to sign up on Secret Barber step by step and verify your email to activate the account.",
