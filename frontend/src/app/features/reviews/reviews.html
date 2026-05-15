@@ -62,7 +62,6 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
         @for (review of reviews; track review._id; let i = $index) {
           <div class="glass rounded-xl p-4 sm:p-6 card-hover relative overflow-hidden" data-aos="fade-up" [attr.data-aos-delay]="(i % 4) * 75">
-            <span class="absolute bottom-4 right-5 text-gold/8 text-7xl font-serif leading-none select-none pointer-events-none">"</span>
 
             <div class="flex justify-between items-start mb-4">
               <div class="flex items-center gap-3">
@@ -97,7 +96,7 @@
               </div>
             </div>
 
-            <p class="text-foreground/60 text-sm leading-relaxed italic">"{{ review.comentario }}"</p>
+            <p class="text-foreground/60 text-sm leading-relaxed italic">{{ review.comentario }}</p>
           </div>
         }
       </div>
