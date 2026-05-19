@@ -211,6 +211,129 @@ export const enviarConfirmacionReserva = async (usuario, booking) => {
     console.log('[EMAIL] Confirmación de reserva enviada correctamente');
 };
 
+// ── Email reserva confirmada por el peluquero ─────────────────────────────────
+// Se envía cuando el admin cambia el estado de la reserva a 'confirmada'.
+// Diferencia con enviarConfirmacionReserva: ese email se manda al crear la reserva
+// (recepción). Este se manda cuando el peluquero la revisa y la acepta expresamente.
+export const enviarEmailReservaConfirmada = async (usuario, booking) => {
+    const nombreServicios = Array.isArray(booking.servicios)
+        ? booking.servicios.map(s => s.nombre || s).join(', ')
+        : booking.servicios || 'No especificado';
+
+    const nombreBarbero = booking.barbero?.nombre || booking.barbero || 'No especificado';
+
+    const fecha = new Date(booking.fecha).toLocaleDateString('es-ES', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+
+    // Calcular cuántos días faltan para la cita (para el recordatorio)
+    const hoy       = new Date(); hoy.setHours(0, 0, 0, 0);
+    const diaCita   = new Date(booking.fecha); diaCita.setHours(0, 0, 0, 0);
+    const diffMs    = diaCita.getTime() - hoy.getTime();
+    const diffDias  = Math.round(diffMs / (1000 * 60 * 60 * 24));
+    const recordatorio = diffDias === 0
+        ? 'Tu cita es <strong style="color:#F0F0F0;">hoy</strong>.'
+        : diffDias === 1
+            ? 'Tu cita es <strong style="color:#F0F0F0;">mañana</strong>. Recuerda tenerlo en cuenta.'
+            : `Tu cita es en <strong style="color:#F0F0F0;">${diffDias} días</strong>. Apúntalo en tu agenda.`;
+
+    const content = `
+      <!-- CABECERA DE ESTADO -->
+      <tr>
+        <td style="padding:36px 40px 0;text-align:center;">
+          <div style="display:inline-block;background:#16432a;border:1px solid #22c55e44;border-radius:24px;padding:10px 28px;margin-bottom:20px;">
+            <span style="color:#4ade80;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Reserva confirmada</span>
+          </div>
+          <h2 style="margin:0 0 10px;color:#F0F0F0;font-size:24px;font-weight:700;">Tu cita ha sido confirmada</h2>
+          <p style="margin:0;color:#888888;font-size:14px;line-height:1.6;">
+            Hola <strong style="color:#F0F0F0;">${usuario.name.split(' ')[0]}</strong>,
+            tu peluquero ha revisado y confirmado tu reserva. Todo está listo para el día de tu cita.
+          </p>
+        </td>
+      </tr>
+
+      <!-- RECORDATORIO -->
+      <tr>
+        <td style="padding:24px 40px 0;">
+          <div style="background:#1a1500;border:1px solid #C9A84C33;border-radius:10px;padding:16px 22px;">
+            <p style="margin:0;color:#C9A84C;font-size:13px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px;">Recordatorio</p>
+            <p style="margin:0;color:#888888;font-size:14px;line-height:1.6;">${recordatorio}</p>
+          </div>
+        </td>
+      </tr>
+
+      <!-- DETALLES DE LA CITA -->
+      <tr>
+        <td style="padding:24px 40px;">
+          <p style="margin:0 0 14px;color:#888888;font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Detalles de la cita</p>
+          <div style="background:#1A1A1A;border:1px solid #2A2A2A;border-radius:12px;overflow:hidden;">
+
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding:14px 22px;border-bottom:1px solid #2A2A2A;">
+                  <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                    <td style="color:#888888;font-size:13px;width:110px;">Barbero</td>
+                    <td style="color:#F0F0F0;font-size:14px;font-weight:600;">${nombreBarbero}</td>
+                  </tr></table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:14px 22px;border-bottom:1px solid #2A2A2A;">
+                  <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                    <td style="color:#888888;font-size:13px;width:110px;">Servicio</td>
+                    <td style="color:#F0F0F0;font-size:14px;font-weight:600;">${nombreServicios}</td>
+                  </tr></table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:14px 22px;border-bottom:1px solid #2A2A2A;">
+                  <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                    <td style="color:#888888;font-size:13px;width:110px;">Fecha</td>
+                    <td style="color:#F0F0F0;font-size:14px;font-weight:600;">${fecha}</td>
+                  </tr></table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:14px 22px;border-bottom:1px solid #2A2A2A;">
+                  <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                    <td style="color:#888888;font-size:13px;width:110px;">Hora</td>
+                    <td style="color:#F0F0F0;font-size:14px;font-weight:600;">${booking.hora} h</td>
+                  </tr></table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:14px 22px;">
+                  <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                    <td style="color:#888888;font-size:13px;width:110px;">Total</td>
+                    <td style="color:#C9A84C;font-size:16px;font-weight:700;">${booking.precio} &euro;</td>
+                  </tr></table>
+                </td>
+              </tr>
+            </table>
+
+          </div>
+        </td>
+      </tr>
+
+      <!-- AVISO FINAL -->
+      <tr>
+        <td style="padding:0 40px 36px;">
+          <div style="background:#0D0D0D;border:1px solid #2A2A2A;border-radius:8px;padding:16px 20px;">
+            <p style="margin:0;color:#555555;font-size:12px;line-height:1.7;">
+              Si necesitas cambiar o cancelar tu cita, puedes hacerlo desde
+              <strong style="color:#888888;">Mis reservas</strong> antes de la fecha.
+            </p>
+          </div>
+        </td>
+      </tr>`;
+
+    await sendMail({
+        to:      usuario.email,
+        subject: `Cita confirmada para el ${fecha} — Secret Barber`,
+        html:    shell(content)
+    });
+};
+
 // ── Email reset de contraseña ─────────────────────────────────────────────────
 export const enviarEmailResetPassword = async (usuario, token) => {
     const url = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;

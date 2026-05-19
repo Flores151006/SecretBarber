@@ -12,7 +12,7 @@ import { Booking }  from '../models/booking.model.js';
 import { Servicio } from '../models/servicio.model.js';
 import { Barbero }  from '../models/barbero.model.js';
 import { User }     from '../models/user.model.js';
-import { enviarConfirmacionReserva } from '../helpers/email.helper.js';
+import { enviarConfirmacionReserva, enviarEmailReservaConfirmada } from '../helpers/email.helper.js';
 import { STRIPE_SECRET_KEY } from '../config.js';
 
 // Inicializar el cliente de Stripe con la clave secreta del servidor
@@ -324,8 +324,19 @@ export const actualizarEstado = async (req, res) => {
         }
 
         // Para los demás estados, actualizar el campo estado normalmente
-        const booking = await Booking.findByIdAndUpdate(req.params.id, { estado }, { new: true });
+        const booking = await Booking.findByIdAndUpdate(req.params.id, { estado }, { new: true })
+            .populate('barbero',   'nombre')
+            .populate('servicios', 'nombre precio');
         if (!booking) return res.status(404).json({ message: 'Reserva no encontrada' });
+
+        // Si el admin confirma la reserva, notificar al cliente por email
+        if (estado === 'confirmada') {
+            User.findById(booking.cliente).then(usuario => {
+                if (usuario) enviarEmailReservaConfirmada(usuario, booking)
+                    .catch(e => console.error('[EMAIL] Error al enviar confirmación de admin:', e.message));
+            });
+        }
+
         res.status(200).json({ message: `Reserva marcada como ${estado}` });
     } catch (error) {
         res.status(500).json({ message: 'Error al actualizar el estado', error: error.message });
