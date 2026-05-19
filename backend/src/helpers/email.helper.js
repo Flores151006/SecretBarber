@@ -1,6 +1,33 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// email.helper.js
+//
+// Plantillas HTML para los correos transaccionales de Secret Barber.
+//
+// ¿Por qué estilos inline en lugar de una hoja CSS?
+//   Los clientes de correo (Gmail, Outlook, Apple Mail…) eliminan o ignoran
+//   las etiquetas <style> y los archivos CSS externos por razones de seguridad.
+//   La única forma de garantizar que el diseño se vea igual en todos ellos es
+//   poner los estilos directamente en cada etiqueta con style="...".
+//
+// ¿Por qué tablas HTML en lugar de divs con flexbox/grid?
+//   Outlook (que usa el motor de Word para renderizar) no entiende flexbox.
+//   Las tablas son la única estructura de maquetación 100% compatible entre
+//   clientes de correo. Es una técnica heredada pero sigue siendo el estándar
+//   en el mundo del email marketing.
+//
+// Patrón de plantilla — funciones shell() y row():
+//   shell(content) es el "contenedor maestro": envuelve cualquier contenido
+//   con el header (logo) y el footer comunes a todos los correos.
+//   row(icon, label, value) genera una fila de detalle reutilizable (barbero,
+//   fecha, precio…) para no repetir ese bloque de tabla en cada plantilla.
+//   Ambas son funciones puras que devuelven strings de HTML, fáciles de
+//   componer y de testear.
+// ─────────────────────────────────────────────────────────────────────────────
 import { sendMail } from '../config/mailer.js';
 
-// ── Estilos base compartidos ──────────────────────────────────────────────────
+// ── Paleta de colores centralizada ───────────────────────────────────────────
+// Definir los colores aquí y referenciarlos con BASE.xxx evita que un cambio
+// de marca obligue a editar docenas de cadenas dispersas por el archivo.
 const BASE = {
     bg:       '#0A0A0A',
     surface:  '#141414',
@@ -12,6 +39,10 @@ const BASE = {
     border:   '#2A2A2A',
 };
 
+// ── Contenedor maestro del correo ─────────────────────────────────────────────
+// Recibe el bloque <tr> de contenido específico y lo rodea con el header y
+// footer comunes. Es un template literal: ${content} se sustituye en tiempo
+// de ejecución, por lo que cada correo tiene su propio cuerpo.
 const shell = (content) => `
 <!DOCTYPE html>
 <html lang="es">
@@ -50,6 +81,9 @@ const shell = (content) => `
 </body>
 </html>`;
 
+// ── Fila de detalle reutilizable ──────────────────────────────────────────────
+// Genera un <tr> con icono, etiqueta y valor. Se usa dentro de la tabla de
+// detalles de la reserva para mantener consistencia visual sin repetir código.
 const row = (icon, label, value) => `
   <tr>
     <td style="padding:10px 0;border-bottom:1px solid ${BASE.border};">
@@ -101,16 +135,23 @@ export const enviarEmailVerificacion = async (usuario, token) => {
 
 // ── Email confirmación de reserva ─────────────────────────────────────────────
 export const enviarConfirmacionReserva = async (usuario, booking) => {
+    // Los servicios pueden llegar como objetos populados {nombre, precio...}
+    // o como strings simples dependiendo de si se hizo .populate() antes de llamar aquí
     const nombreServicios = Array.isArray(booking.servicios)
         ? booking.servicios.map(s => s.nombre || s).join(', ')
         : booking.servicios || 'No especificado';
 
     const nombreBarbero = booking.barbero?.nombre || booking.barbero || 'No especificado';
 
+    // toLocaleDateString formatea la fecha según el idioma y la región.
+    // 'es-ES' + opciones produce algo como "martes, 20 de mayo de 2025",
+    // mucho más legible para el usuario que el formato ISO 2025-05-20.
     const fecha = new Date(booking.fecha).toLocaleDateString('es-ES', {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
 
+    // Badge visual distinto según el método de pago para que el cliente
+    // sepa de un vistazo si ya pagó o si pagará en el local
     const pagoBadge = booking.metodoPago === 'tarjeta'
         ? `<span style="background:#16432a;color:#4ade80;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.5px;">PAGADO</span>`
         : `<span style="background:#2a1f00;color:${BASE.gold};font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.5px;">PAGO EN LOCAL</span>`;

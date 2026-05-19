@@ -1,6 +1,37 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// languaje.service.ts
+//
+// Servicio de internacionalización (i18n) de la aplicación.
+// Gestiona el idioma activo (español / inglés) y proporciona todas las
+// traducciones de la UI incrustadas directamente en el bundle de JavaScript.
+//
+// DECISIÓN DE DISEÑO — setTranslation en lugar de archivos JSON externos:
+// La librería @ngx-translate puede cargar traducciones desde archivos JSON
+// (assets/i18n/es.json) mediante HTTP. Sin embargo, aquí se usa setTranslation()
+// para "inyectar" los objetos ES y EN directamente en memoria al arrancar la app.
+// Ventajas:
+//   - No hay peticiones HTTP adicionales para cargar traducciones.
+//   - Funciona sin servidor de estáticos (ideal para Render free tier).
+//   - Todas las traducciones están versionadas junto al código TypeScript.
+// Desventaja:
+//   - Las traducciones aumentan el tamaño del bundle principal (~20 KB).
+//
+// CONCEPTO CLAVE — signal():
+// signal() es la nueva API de Angular 17 para estado reactivo.
+// Es similar a una variable normal, pero cuando su valor cambia Angular
+// actualiza automáticamente los componentes que lo leen.
+// Lectura:  this.idioma()       → devuelve el valor actual ('es' o 'en')
+// Escritura: this.idioma.set('en') → cambia el valor y notifica a los suscriptores
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { Injectable, signal, inject } from '@angular/core';
 import { TranslateService }           from '@ngx-translate/core';
 
+// ─── Objeto de traducciones en ESPAÑOL ────────────────────────────────────────
+// Contiene TODAS las cadenas de texto que aparecen en la UI, organizadas por
+// sección (NAV, HOME, RESERVAS…). Las claves en mayúsculas son solo una
+// convención para diferenciarlas visualmente de las propiedades normales.
+// En las plantillas se accede así: {{ 'NAV.INICIO' | translate }}
 const ES = {
     NAV: {
         INICIO: 'Inicio', RESERVAR: 'Reservar', MIS_RESERVAS: 'Mis reservas',
@@ -282,6 +313,10 @@ const ES = {
     }
 };
 
+// ─── Objeto de traducciones en INGLÉS ─────────────────────────────────────────
+// Misma estructura que ES, con los valores en inglés.
+// Mantener la misma estructura de claves es CRÍTICO: si una clave existe en ES
+// pero no en EN, @ngx-translate usará el fallbackLang ('es') configurado en app.config.
 const EN = {
     NAV: {
         INICIO: 'Home', RESERVAR: 'Book', MIS_RESERVAS: 'My bookings',
@@ -562,24 +597,41 @@ const EN = {
         }
     }
 };
+
+// ─── Clase del servicio ────────────────────────────────────────────────────────
+// @Injectable({ providedIn: 'root' }) crea un singleton: una única instancia
+// compartida por toda la app. Al cambiar el idioma aquí, todos los componentes
+// que usan el pipe | translate se actualizan automáticamente.
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
+    // TranslateService es el motor de @ngx-translate: gestiona el idioma activo
+    // y resuelve las claves de traducción (p.ej. 'NAV.INICIO' → 'Home').
     private translate = inject(TranslateService);
 
+    // signal<'es'|'en'> permite que los componentes que lean this.idioma()
+    // se actualicen reactivamente cuando cambie el idioma, sin necesidad
+    // de BehaviorSubject ni EventEmitter.
     readonly idioma = signal<'es' | 'en'>('es');
 
     constructor() {
+        // setTranslation incrusta los objetos ES/EN directamente en memoria,
+        // evitando peticiones HTTP a assets/i18n/*.json.
         this.translate.setTranslation('es', ES);
         this.translate.setTranslation('en', EN);
         this.translate.addLangs(['es', 'en']);
         this.translate.setDefaultLang('es');
 
+        // Se recupera la preferencia guardada en localStorage para persistir
+        // el idioma elegido entre sesiones. Si no existe, se usa 'es'.
         const guardado = localStorage.getItem('idioma') as 'es' | 'en' | null;
         const inicial  = guardado || 'es';
         this.translate.use(inicial);
         this.idioma.set(inicial);
     }
 
+    // Toggle: alterna entre 'es' y 'en'. Se llama desde el botón del navbar.
+    // Después de cambiar, guarda la preferencia en localStorage para que
+    // persista cuando el usuario recargue la página o vuelva más tarde.
     cambiarIdioma(): void {
         const nuevo = this.idioma() === 'es' ? 'en' : 'es';
         this.translate.use(nuevo);
@@ -587,6 +639,8 @@ export class LanguageService {
         localStorage.setItem('idioma', nuevo);
     }
 
+    // Versión explícita del cambio de idioma (en lugar del toggle).
+    // Se usa desde la página de Settings donde el usuario elige directamente.
     setIdioma(idioma: 'es' | 'en'): void {
         this.translate.use(idioma);
         this.idioma.set(idioma);

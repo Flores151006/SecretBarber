@@ -1,3 +1,28 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// user.validator.js
+//
+// Validaciones para la gestión de usuarios por parte del Admin.
+// Hay dos conjuntos de reglas: creación (todos obligatorios) y
+// actualización (todos opcionales).
+//
+// .optional() vs campos requeridos:
+//   En la creación, todos los campos tienen reglas que se ejecutan siempre.
+//   En la actualización, .optional() hace que la regla solo se evalúe si el
+//   campo está presente en el body. Esto permite al Admin editar solo el
+//   nombre sin necesidad de enviar todos los demás campos.
+//
+// .optional({ nullable: true, checkFalsy: true }) en password (actualización):
+//   - nullable: true → acepta null sin error (el Admin envía null para "no cambiar")
+//   - checkFalsy: true → acepta también string vacío '' sin validar
+//   Juntos permiten que el Admin actualice al usuario sin tocar su contraseña,
+//   simplemente omitiendo el campo o enviando null o ''.
+//   Sin esto, si el Admin edita el rol pero no la contraseña, recibiría un
+//   error de validación por mandar un campo vacío.
+//
+// customSanitizer:
+//   Colapsa espacios múltiples en el nombre antes de guardarlo.
+//   Ver auth.validator.js para más detalles sobre este patrón.
+// ─────────────────────────────────────────────────────────────────────────────
 import { body, param, validationResult } from 'express-validator';
 
 const validationErrors = (req, res, next) => {
@@ -39,6 +64,7 @@ export const validarUsuario = [
         .matches(/[A-Z]/).withMessage('Debe contener al menos una mayúscula')
         .matches(/[0-9]/).withMessage('Debe contener al menos un número'),
 
+    // .optional() → si el Admin no envía 'role', se usará el valor por defecto del controlador
     body('role')
         .optional()
         .isIn(['Admin', 'Cliente']).withMessage('El rol debe ser Admin o Cliente'),
@@ -51,6 +77,8 @@ export const validarUsuario = [
 ];
 
 // ─── Validar actualización de usuario (todos los campos opcionales) ───────────
+// En un PUT/PATCH de actualización, el Admin puede enviar solo los campos
+// que quiere modificar. Por eso todos los campos son .optional().
 export const validarActualizacion = [
     body('name')
         .optional()
@@ -66,6 +94,8 @@ export const validarActualizacion = [
         .isLength({ max: 150 }).withMessage('El email no puede exceder 150 caracteres')
         .normalizeEmail(),
 
+    // nullable:true + checkFalsy:true → acepta null y '' sin validar,
+    // lo que permite al Admin editar otros campos sin tocar la contraseña
     body('password')
         .optional({ nullable: true, checkFalsy: true })
         .isLength({ min: 8 }).withMessage('La contraseña debe tener al menos 8 caracteres')
