@@ -173,22 +173,22 @@ export const enviarConfirmacionReserva = async (usuario, booking) => {
         <td style="padding:24px 40px;">
           <div style="background:${BASE.card};border:1px solid ${BASE.border};border-radius:12px;padding:24px 28px;">
             <table width="100%" cellpadding="0" cellspacing="0">
-              ${row('&#x2702;&#xFE0F;', 'Barbero', nombreBarbero)}
-              ${row('&#x2702;&#xFE0F;', 'Servicios', nombreServicios)}
-              ${row('&#x1F4C5;', 'Fecha', fecha)}
-              ${row('&#x1F550;', 'Hora', booking.hora)}
-              ${row('&#x1F4B0;', 'Total', `<strong style="color:${BASE.gold};font-size:16px;">${booking.precio}&euro;</strong>`)}
-              ${booking.cejas ? row('&#x1F441;&#xFE0F;', 'Cejas', 'Incluido (+1&euro;)') : ''}
+              ${row('', 'Barbero', nombreBarbero)}
+              ${row('', 'Servicios', nombreServicios)}
+              ${row('', 'Fecha', fecha)}
+              ${row('', 'Hora', booking.hora)}
+              ${row('', 'Total', `<strong style="color:${BASE.gold};font-size:16px;">${booking.precio}&euro;</strong>`)}
+              ${booking.cejas ? row('', 'Cejas', 'Incluido (+1&euro;)') : ''}
               <tr><td style="padding:10px 0;">
                 <table width="100%" cellpadding="0" cellspacing="0">
                   <tr>
-                    <td width="32" style="color:${BASE.gold};font-size:16px;">💳</td>
+                    <td width="32" style="color:${BASE.gold};font-size:16px;"></td>
                     <td style="color:${BASE.muted};font-size:13px;width:120px;">Pago</td>
                     <td>${pagoBadge}</td>
                   </tr>
                 </table>
               </td></tr>
-              ${booking.notas ? row('&#x1F4DD;', 'Notas', `<em style="color:${BASE.muted};">${booking.notas}</em>`) : ''}
+              ${booking.notas ? row('', 'Notas', `<em style="color:${BASE.muted};">${booking.notas}</em>`) : ''}
             </table>
           </div>
         </td>
